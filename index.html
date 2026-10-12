@@ -249,6 +249,32 @@ p{margin:0}
 .acct .row2{grid-template-columns:1fr 1fr}
 .acct .field input{min-height:3rem;padding:.45rem .8rem;border-radius:12px;border:1.5px solid var(--line);background:var(--surface);font-family:var(--f-num);font-size:18px;letter-spacing:.4em;width:100%;min-width:0}
 .btn.danger{color:#B3261E;border-color:#E8B4AE}
+.guestlink{display:block;margin:1rem auto 0;font-size:.95rem}
+.link.strong{color:var(--accent);font-weight:600}
+.intro{min-height:100vh;min-height:100dvh;display:flex;flex-direction:column;justify-content:center;gap:1.4rem;padding-block:2rem}
+.slide{display:grid;gap:.8rem;justify-items:center;text-align:center}
+.slide h2{font-size:1.5rem}
+.slide p{color:var(--muted);max-width:22rem}
+.slide .art{display:grid;place-items:center;width:8rem;height:8rem;border-radius:2rem;background:var(--surface);box-shadow:var(--shadow);margin-bottom:.4rem}
+.slide .art svg{width:4.6rem;height:4.6rem;color:var(--fg)}
+.slide .art.num{font-family:var(--f-num);font-size:1.6rem;color:var(--accent)}
+.dotsnav{display:flex;justify-content:center;gap:.4rem}
+.dotsnav i{width:.5rem;height:.5rem;border-radius:50%;background:var(--line)}
+.dotsnav i.on{background:var(--accent);width:1.2rem;border-radius:99px}
+.introbtns{display:grid;gap:.5rem;justify-items:center}
+.introbtns .btn{width:100%}
+.edlist{list-style:none;margin:0;padding:0;display:grid;gap:.35rem}
+.edlist li{display:grid;grid-template-columns:auto 1fr auto;gap:.5rem;align-items:center}
+.edlist li.off .nm{opacity:.45;text-decoration:line-through}
+.edlist .tgl{width:1.45rem;height:1.45rem;accent-color:var(--accent);margin:0}
+.edlist .nm{min-height:2.6rem;padding:.3rem .6rem;border-radius:10px;border:1.5px solid var(--line);background:var(--surface);font-size:16px;min-width:0;width:100%}
+.edlist span.nm{display:flex;align-items:center;border-color:transparent;background:transparent;padding-left:.2rem}
+.edlist select{min-height:2.6rem;padding:.2rem .4rem;border-radius:10px;border:1.5px solid var(--line);background:var(--surface);font-family:var(--f-num);font-size:16px;color:var(--fg)}
+.edlist .rm{min-width:2.6rem;min-height:2.6rem;border:0;background:transparent;color:var(--muted);font-size:1.1rem;cursor:pointer}
+.addck{display:grid;grid-template-columns:1fr auto;gap:.5rem}
+.addck input{min-height:2.9rem;padding:.4rem .75rem;border-radius:12px;border:1.5px solid var(--line);background:var(--surface);font-size:16px;min-width:0}
+.glance .wide{grid-column:1/-1}
+.glance .wx-btn{justify-self:start;margin-top:.3rem;min-height:2.4rem;font-size:.9rem;padding:.3rem .9rem}
 .alert{position:fixed;left:0;right:0;top:calc(env(safe-area-inset-top,0px) + 10px);z-index:40;padding-inline:12px}
 .alert .box{max-width:34rem;margin:0 auto;background:var(--fg);color:var(--bg2);border-radius:18px;padding:1rem 1.1rem;display:grid;grid-template-columns:1fr auto;gap:.3rem .8rem;align-items:center;box-shadow:0 12px 40px rgba(0,0,0,.3)}
 .alert .at{font-family:var(--f-num);font-size:.85rem;opacity:.75}
@@ -295,12 +321,39 @@ p{margin:0}
     </div>
   </form>
   <p class="fine">처음 쓰는 닉네임이면 새로 등록됩니다. 비밀번호는 숫자 그대로가 아니라 변환한 값으로만 저장됩니다.</p>
+  <button id="guestBtn" class="link guestlink" type="button">가입 없이 써 보기</button>
+</section>
+
+<section id="intro" class="wrap intro" hidden>
+  <div class="slides">
+    <div class="slide" data-s="0">
+      <div class="art"><svg aria-hidden="true"><use href="#axislogo"/></svg></div>
+      <h2>기상 시각이 하루의 축</h2>
+      <p>일어난 시각을 고르면 물·햇빛·운동·집중·식사·취침까지 하루 일정이 그 시각 기준으로 한 번에 정렬돼요.</p>
+    </div>
+    <div class="slide" data-s="1" hidden>
+      <div class="art num">지금</div>
+      <h2>지금 할 일 하나만</h2>
+      <p>오늘 탭은 지금 할 일과 남은 시간, 다음 일정을 보여 줘요. 다 했으면 완료 표시 한 번으로 체크까지 끝나요.</p>
+    </div>
+    <div class="slide" data-s="2" hidden>
+      <div class="art num">7 : 8</div>
+      <h2>쌓일수록 보이는 차이</h2>
+      <p>습관 체크와 컨디션 기록이 쌓이면 연속 달성, 기상 시각별 개운함과 집중의 차이를 비교해 보여 줘요.</p>
+    </div>
+  </div>
+  <div class="dotsnav" aria-hidden="true"><i class="on"></i><i></i><i></i></div>
+  <div class="introbtns">
+    <button id="introNext" class="btn primary block" type="button">다음</button>
+    <button id="introGuest" class="btn block" type="button" hidden>가입 없이 써 보기</button>
+    <button id="introLogin" class="link" type="button">닉네임으로 시작하기</button>
+  </div>
 </section>
 
 <div id="main" class="wrap" hidden>
   <header class="top">
     <div class="mark"><svg aria-hidden="true"><use href="#axislogo"/></svg>AXIS</div>
-    <div class="who"><b id="whoName"></b><button id="logout" class="link" type="button">나가기</button></div>
+    <div class="who"><b id="whoName"></b><button id="guestReg" class="link strong" type="button" hidden>등록하기</button><button id="logout" class="link" type="button">나가기</button></div>
   </header>
 
   <section id="tab-today" class="tab" role="tabpanel" aria-label="오늘">
@@ -498,6 +551,19 @@ p{margin:0}
         <li>해는 직접 쳐다보지 않는다. 눈부시면 중단한다.</li>
       </ul></div>
     </details>
+    <details class="acc" id="editAcc">
+      <summary>내 루틴 편집</summary>
+      <div class="in">
+        <p class="note">끈 항목은 타임라인·알림·체크에서 빠져요. 시간은 기상 시각 기준으로 앞뒤 2시간까지 옮길 수 있어요.</p>
+        <h4>타임라인</h4>
+        <ul id="edTl" class="edlist"></ul>
+        <h4>매일 체크</h4>
+        <ul id="edCk" class="edlist"></ul>
+        <div class="addck"><input id="edNew" maxlength="24" placeholder="나만의 체크 추가 (최대 3개)"><button id="edAdd" class="btn" type="button">추가</button></div>
+        <div class="datarow"><button id="edSave" class="btn primary block" type="button">저장</button><button id="edReset" class="btn block" type="button">처음 상태로</button></div>
+        <p id="edMsg" class="note" role="status"></p>
+      </div>
+    </details>
     <details class="acc" id="dataAcc">
       <summary>내 데이터 · 계정</summary>
       <div class="in">
@@ -595,7 +661,24 @@ function exerciseToday(dow){
   if(dow===0)return "일요일: Zone 2 60~75분";
   return [1,3,5].includes(dow)?"오늘은 웨이트":"오늘은 Zone 2";
 }
+/* stable ids for baseTimeline() rows, in order; routine edits and the push server refer to these */
+const TL_IDS=["water","sun1","move","shower","commute","deep1","hard","meal1","sun2","work","caffmark","nsdr","deep2","light","sun3","home","meal2","read","plan","dim","screen","sleep"];
+/* the timeline after this person's edits: hidden rows dropped, renamed, shifted (minutes), re-sorted */
 function timeline(W,dow){
+  const P=prefs().tl||{};
+  return baseTimeline(W,dow).map((it,i)=>Object.assign(it,{id:TL_IDS[i]}))
+    .filter(it=>!(P[it.id]&&P[it.id].off))
+    .map(it=>{
+      const p=P[it.id]||{},dt=clampDt(p.dt);
+      if(p.t)it.t=String(p.t).slice(0,30);
+      if(dt){it.o+=dt;if(it.e<2000)it.e+=dt;it.shift=dt}
+      if(it.ck&&!CHECKS.some(c=>c.id===it.ck))delete it.ck;
+      return it;
+    })
+    .sort((a,b)=>a.o-b.o);
+}
+const clampDt=v=>{v=Math.round(+v||0);return Math.max(-120,Math.min(120,v))};
+function baseTimeline(W,dow){
   const c=o=>clk(W+o);
   return [
     {o:0,e:10,t:"물과 소금",d:"물 0.5~1L + 소금(한 꼬집에서 시작, 최대 약 반 티스푼). 일어난 시각을 메모해 체온 최저점(기상 약 2시간 전)을 파악한다. 폰은 침대 밖에 두고 보지 않기. 염분 제한이 있으면 의사 확인"},
@@ -636,7 +719,8 @@ const CORE=[
   [930,"조명 낮추기","따뜻한 샤워, 천장등 끄고 간접등, 화면 밝기 낮추기."],
   [1020,"취침","폰은 침대 밖에 두고, 방은 어둡고 시원하게."]
 ];
-const CHECKS=[
+const CORE_IDS={0:"water",10:"sun1",40:"move",180:"deep1",300:"meal1",340:"sun2",480:"nsdr",660:"sun3",750:"meal2",930:"dim",1020:"sleep"};
+const BASE_CHECKS=[
   {id:"sleep",t:"숙면 7시간 이상",s:"6시간 이하인 날은 고강도 운동을 뺀다"},
   {id:"move",t:"운동 1시간 내외",s:""},
   {id:"sun",t:"햇빛 3번",s:"기상 후 10~30분(늦어도 1시간 안), 점심 후, 퇴근길"},
@@ -646,10 +730,21 @@ const CHECKS=[
   {id:"caff",t:"카페인 마감 지키기",s:"7시 기상 15:00, 8시 기상 16:00"},
   {id:"dark",t:"저녁 조명 낮추기",s:"화면 끄기, 폰은 침대 밖"}
 ];
+/* checks in use = base minus hidden, plus up to 3 of the person's own; a day passes with half of them */
+let CHECKS=BASE_CHECKS,GOAL=4;
+function applyChecks(){
+  const P=prefs(),off=(P.ck&&P.ck.off)||[];
+  CHECKS=BASE_CHECKS.filter(c=>!off.includes(c.id))
+    .concat((P.custom||[]).filter(c=>c&&c.id&&c.t).slice(0,3).map(c=>({id:c.id,t:String(c.t).slice(0,24),s:"",custom:true})));
+  if(!CHECKS.length)CHECKS=BASE_CHECKS;
+  GOAL=Math.max(1,Math.ceil(CHECKS.length/2));
+  buildCheck();
+}
 
 /* ---------- state ---------- */
-const S={key:null,nick:null,proof:null,days:{},dirty:{},timers:{},today:ymd(logical()),view:null,tab:"today",loaded:false,tlKey:"",ckKey:"",lastLoad:0};
+const S={key:null,nick:null,proof:null,guest:false,prefs:{},days:{},dirty:{},timers:{},today:ymd(logical()),view:null,tab:"today",loaded:false,tlKey:"",ckKey:"",lastLoad:0};
 S.view=S.today;
+const prefs=()=>S.prefs||{};
 
 /* ---------- crypto ---------- */
 const enc=s=>new TextEncoder().encode(s);
@@ -726,9 +821,10 @@ $("#regYes").addEventListener("click",async()=>{
 });
 function logout(note){
   LS.del("axis.session");
-  if(S.key){LS.del(CK());LS.del(PK())}
+  if(S.key&&!S.guest){LS.del(CK());LS.del(PK());LS.del(FK())}
   Object.values(S.timers).forEach(clearTimeout);
-  Object.assign(S,{key:null,nick:null,proof:null,days:{},dirty:{},timers:{},loaded:false,tlKey:"",ckKey:""});
+  Object.assign(S,{key:null,nick:null,proof:null,guest:false,prefs:{},days:{},dirty:{},timers:{},loaded:false,tlKey:"",ckKey:""});
+  applyChecks();
   $("#main").hidden=true;$("#tabbar").hidden=true;$("#wakeSheet").hidden=true;$("#splash").hidden=false;$("#pin").value="";msg.textContent=note||"";
 }
 $("#logout").addEventListener("click",()=>{
@@ -737,20 +833,30 @@ $("#logout").addEventListener("click",()=>{
   logout();
 });
 
-function enter(key,nick,proof){
-  S.key=key;S.nick=nick;S.proof=proof;LS.set("axis.session",JSON.stringify({key,nick,proof}));
+function enter(key,nick,proof,guest){
+  S.key=key;S.nick=nick;S.proof=proof;S.guest=!!guest;S.migrate=!guest&&LS.get("axis.migrate")==="1";
+  LS.set("axis.session",JSON.stringify(guest?{guest:true}:{key,nick,proof}));
   $("#whoName").textContent=nick;
-  $("#splash").hidden=true;$("#main").hidden=false;$("#tabbar").hidden=false;
+  $("#guestReg").hidden=!guest;
+  $$(".acct").forEach(el=>el.hidden=!!guest);
+  $("#splash").hidden=true;$("#intro").hidden=true;$("#main").hidden=false;$("#tabbar").hidden=false;
   S.today=ymd(logical());S.view=S.today;
   restoreLocal();
   setTab(LS.get("axis.tab")||"today");
+  pushState();
   load();
+  wxFetch();
 }
+/* guest: everything stays in this browser until the person registers a nickname */
+function enterGuest(){LS.set("axis.intro","1");enter("guest","게스트",null,true)}
 
-/* ---------- offline copy: last loaded days + edits not yet saved ---------- */
-const CK=()=>"axis.cache."+S.key,PK=()=>"axis.pending."+S.key;
+/* ---------- offline copy: last loaded days + edits not yet saved (a guest's copy IS the record) ---------- */
+const CK=()=>S.guest?"axis.guest.days":"axis.cache."+S.key,PK=()=>"axis.pending."+S.key,FK=()=>S.guest?"axis.guest.prefs":"axis.prefs."+S.key;
 function restoreLocal(){
+  try{const f=JSON.parse(LS.get(FK())||"null");S.prefs=f&&typeof f==="object"?f:{}}catch(e){S.prefs={}}
+  applyChecks();
   try{const c=JSON.parse(LS.get(CK())||"null");if(c&&typeof c==="object"){S.days=c;S.loaded=true}}catch(e){}
+  if(S.guest){S.loaded=true;return}
   try{const p=JSON.parse(LS.get(PK())||"null");
     if(p&&typeof p==="object")for(const k in p){S.days[k]=p[k];S.dirty[k]=1;S.timers[k]=setTimeout(()=>save(k),1500)}
   }catch(e){}
@@ -766,7 +872,9 @@ window.addEventListener("online",()=>{for(const k in S.dirty){clearTimeout(S.tim
 /* ---------- data ---------- */
 let loading=false;
 async function load(){
-  if(!S.key||loading)return;loading=true;S.lastLoad=Date.now();
+  if(!S.key||loading)return;
+  if(S.guest){S.loaded=true;renderAll();askWakeIfNeeded();return}
+  loading=true;S.lastLoad=Date.now();
   try{
     const res=await rpc("axis_days_get",{p_key:S.key,p_proof:S.proof});
     if(!res.ok){
@@ -778,6 +886,10 @@ async function load(){
     (res.days||[]).forEach(x=>{if(x&&x.date)m[x.date]=Object.assign({checks:{}},x.data,{date:x.date})});
     for(const k in S.dirty){if(S.days[k])m[k]=S.days[k]}
     S.days=m;S.loaded=true;keepCache();
+    if(res.prefs&&typeof res.prefs==="object"&&!S.prefsDirty&&JSON.stringify(res.prefs)!==JSON.stringify(S.prefs)){
+      S.prefs=res.prefs;LS.set(FK(),JSON.stringify(S.prefs));applyChecks();S.tlKey="";
+    }
+    if(S.migrate)mergeGuest();
     renderAll();askWakeIfNeeded();
   }catch(e){
     if(S.loaded){toast("오프라인이에요. 이 기기에 저장된 기록으로 보여 드려요.");renderAll();askWakeIfNeeded()}
@@ -796,6 +908,7 @@ function patch(date,fn){
 }
 function save(date){
   if(!S.key||!S.days[date])return;
+  if(S.guest){delete S.dirty[date];keepPending();keepCache();$("#savedMsg").textContent="이 기기에 저장됨 · 닉네임을 등록하면 다른 기기에서도 보여요";return}
   const ver=S.dirty[date],data=Object.assign({},S.days[date]);delete data.date;
   rpc("axis_day_put",{p_key:S.key,p_proof:S.proof,p_day:date,p_data:data}).then(res=>{
     if(!res.ok){if(res.error==="bad_pin"||res.error==="no_user"){logout("다시 로그인해 주세요.");return}throw res}
@@ -860,7 +973,8 @@ function renderToday(){
     $("#nowBox").innerHTML='<div class="empty"><p>'+(S.loaded?"오늘 기상 시각을 고르면 그 타입의 타임라인과 지금 할 일을 보여 드려요.":"기록을 불러오는 중이에요…")+'</p></div>';
     $("#glance").innerHTML="";$("#tl").innerHTML="";S.tlKey="";return;
   }
-  const W=w*60,items=timeline(W,parseYmd(S.today).getDay()),k=S.today+":"+w;
+  const W=w*60,items=timeline(W,parseYmd(S.today).getDay()),k=S.today+":"+w+":"+JSON.stringify(prefs())+":"+(wx?wx.at:0);
+  items.forEach(it=>{const n=wxNote(W,it);if(n)it.tag=(it.tag?it.tag+" · ":"")+n});
   if(S.tlKey!==k){
     S.tlKey=k;
     $("#tl").innerHTML=items.map((it,i)=>it.mark
@@ -903,7 +1017,7 @@ function renderToday(){
   if(rel<90){cv="첫 잔은 "+clk(W+90)+" 이후";cs="기상 후 90~120분 뒤"}
   else if(rel<480){cv="마셔도 되는 시간";cs="마감 "+clk(W+480)+" · 4시간 간격"}
   else{cv="카페인 마감";cs=clk(W+480)+"에 끝났어요"}
-  $("#glance").innerHTML='<div class="card"><span class="lbl">수분</span><span class="v">'+wv+'</span><span class="s">'+ws+'</span></div><div class="card"><span class="lbl">카페인</span><span class="v">'+cv+'</span><span class="s">'+cs+'</span></div>';
+  $("#glance").innerHTML='<div class="card"><span class="lbl">수분</span><span class="v">'+wv+'</span><span class="s">'+ws+'</span></div><div class="card"><span class="lbl">카페인</span><span class="v">'+cv+'</span><span class="s">'+cs+'</span></div>'+wxCard(W,items);
 }
 
 /* ---------- timeline items that count toward a check (sun = 3 separate walks) ---------- */
@@ -957,7 +1071,7 @@ function renderCheck(){
   $$("#checks [data-ck]").forEach(b=>b.setAttribute("aria-checked",String(!!(d.checks&&d.checks[b.dataset.ck]))));
   const sm=(id,txt)=>{const el=$('#checks [data-ck="'+id+'"] small');if(el)el.textContent=txt};
   const sn=sunOf(d).filter(Boolean).length;
-  sm("sun",(sn&&!(d.checks&&d.checks.sun)?"오늘 "+sn+" / 3 · ":"")+CHECKS.find(c=>c.id==="sun").s);
+  sm("sun",(sn&&!(d.checks&&d.checks.sun)?"오늘 "+sn+" / 3 · ":"")+BASE_CHECKS.find(c=>c.id==="sun").s);
   sm("caff",d.wake?"이날 마감 "+clk(Math.round(d.wake*60)+480)+" (기상 8시간 뒤)":"기상 8시간 뒤 (7시 기상 15:00, 8시 기상 16:00)");
   const n=CHECKS.filter(c=>d.checks&&d.checks[c.id]).length,p=Math.round(n/CHECKS.length*100);
   $("#scorePct").textContent=p+"%";$("#scoreN").textContent=n+" / "+CHECKS.length+" 항목";$("#scoreBar").style.width=p+"%";
@@ -969,8 +1083,7 @@ function renderCheck(){
   $("#streakN").textContent=isToday&&st.cur?st.cur+"일 연속"+(st.todayOn?"":" · 오늘 "+Math.max(0,GOAL-n)+"개 더"):"";
 }
 
-/* ---------- streak: days with GOAL+ of the 8 checks, in a row ---------- */
-const GOAL=4;
+/* ---------- streak: days with GOAL+ of the checks in use, in a row ---------- */
 const passes=d=>!!(d&&d.wake&&CHECKS.filter(c=>d.checks&&d.checks[c.id]).length>=GOAL);
 function shift(date,n){const d=parseYmd(date);d.setDate(d.getDate()+n);return ymd(d)}
 function streakOf(){
@@ -999,7 +1112,7 @@ function renderLog(){
     dots.push('<i class="'+(passes(x)?"on":p>0?"p":"")+(i===0?" today":"")+'" title="'+esc(dateLabel(k))+" "+Math.round(p*100)+'%"></i>')}
   let h='<div class="card strk"><div class="hd"><span class="eyebrow">연속 달성</span><span class="note">최고 '+st.best+'일</span></div>'
     +'<span class="big">'+st.cur+'<small>일</small></span>'
-    +'<div class="dots">'+dots.join("")+'</div><div class="dots-lb"><span>2주 전</span><span>8개 중 '+GOAL+'개 이상이면 달성</span><span>오늘</span></div></div>';
+    +'<div class="dots">'+dots.join("")+'</div><div class="dots-lb"><span>2주 전</span><span>'+CHECKS.length+'개 중 '+GOAL+'개 이상이면 달성</span><span>오늘</span></div></div>';
   h+='<div class="stat"><div class="card"><span class="eyebrow">전체 평균</span><span class="big">'+avg(all)+'%</span><span class="note">'+all.length+'일 기록</span></div>'
     +'<div class="card"><span class="eyebrow">최근 7일</span><span class="big">'+avg(all.slice(0,7))+'%</span><span class="note">기록한 날 기준</span></div></div>';
   h+='<div class="card cmp"><div class="head"><span class="eyebrow">기상 타입별 달성률</span></div>'
@@ -1104,6 +1217,7 @@ function b64uToBytes(s){const p="=".repeat((4-s.length%4)%4),b=atob((s+p).replac
 async function pushSub(){try{const reg=await navigator.serviceWorker.getRegistration();return reg?await reg.pushManager.getSubscription():null}catch(e){return null}}
 async function pushState(){
   const b=$("#pushBtn"),t=$("#pushTest"),m=$("#pushMsg");
+  if(S.guest){b.hidden=true;t.hidden=true;m.textContent="게스트 모드에서는 쓸 수 없어요. 위쪽 ‘등록하기’로 닉네임을 만들면 켤 수 있어요.";return}
   if(!pushSupported()){b.hidden=true;t.hidden=true;m.textContent=isIOS&&!standalone()?"아이폰은 사파리 공유 버튼 → ‘홈 화면에 추가’로 AXIS를 설치한 뒤, 그 앱에서 켤 수 있어요(iOS 16.4 이상).":"이 브라우저는 잠금 화면 알림을 지원하지 않아요.";return}
   if(isIOS&&!standalone()){b.hidden=true;t.hidden=true;m.textContent="사파리 공유 버튼 → ‘홈 화면에 추가’로 AXIS를 설치한 뒤, 홈 화면의 AXIS 앱에서 켜 주세요.";return}
   const sub=await pushSub();pushOn=!!sub&&Notification.permission==="granted";
@@ -1145,6 +1259,165 @@ $("#pushTest").addEventListener("click",async()=>{
 });
 pushState();
 
+/* ---------- routine settings: saved locally at once, then on the server (guests: locally only) ---------- */
+let prefsTimer=null;
+function savePrefs(next){
+  S.prefs=next;LS.set(FK(),JSON.stringify(next));applyChecks();S.tlKey="";renderAll();
+  if(S.guest)return Promise.resolve(true);
+  S.prefsDirty=true;clearTimeout(prefsTimer);
+  return rpc("axis_prefs_put",{p_key:S.key,p_proof:S.proof,p_prefs:next}).then(res=>{
+    if(!res.ok)throw res;S.prefsDirty=false;return true;
+  }).catch(()=>{prefsTimer=setTimeout(()=>{if(S.prefsDirty&&S.key)savePrefs(S.prefs)},15000);return false});
+}
+
+/* ---------- guest -> account: carry the guest's days and settings over once ---------- */
+function mergeGuest(){
+  S.migrate=false;LS.del("axis.migrate");
+  let g={},gp=null;
+  try{g=JSON.parse(LS.get("axis.guest.days")||"{}")||{}}catch(e){}
+  try{gp=JSON.parse(LS.get("axis.guest.prefs")||"null")}catch(e){}
+  const dates=Object.keys(g).filter(k=>/^\d{4}-\d{2}-\d{2}$/.test(k)&&!S.days[k]);
+  dates.forEach((k,i)=>{S.days[k]=g[k];S.dirty[k]=1;S.timers[k]=setTimeout(()=>save(k),300+i*250)});
+  keepPending();
+  if(gp&&Object.keys(gp).length&&!Object.keys(S.prefs||{}).length)savePrefs(gp);
+  LS.del("axis.guest.days");LS.del("axis.guest.prefs");
+  if(dates.length||gp)toast("게스트 기록 "+dates.length+"일을 이 계정으로 옮겼어요.");
+}
+$("#guestBtn").addEventListener("click",()=>{LS.del("axis.migrate");enterGuest()});
+$("#guestReg").addEventListener("click",()=>{
+  let n=0;try{n=Object.keys(JSON.parse(LS.get("axis.guest.days")||"{}")).length}catch(e){}
+  LS.set("axis.migrate","1");
+  logout("닉네임과 비밀번호를 정하면 지금까지의 기록 "+n+"일을 옮겨 드려요.");
+  $("#nick").focus();
+});
+
+/* ---------- first-run intro ---------- */
+let introAt=0;
+function showIntro(i){
+  introAt=i;
+  $$("#intro .slide").forEach(s=>s.hidden=+s.dataset.s!==i);
+  $$("#intro .dotsnav i").forEach((d,j)=>d.classList.toggle("on",j===i));
+  const last=i===2;
+  $("#introNext").textContent=last?"닉네임으로 시작하기":"다음";
+  $("#introGuest").hidden=!last;$("#introLogin").hidden=last;
+}
+$("#introNext").addEventListener("click",()=>{
+  if(introAt<2){showIntro(introAt+1);return}
+  LS.set("axis.intro","1");$("#intro").hidden=true;$("#splash").hidden=false;$("#nick").focus();
+});
+$("#introGuest").addEventListener("click",enterGuest);
+$("#introLogin").addEventListener("click",()=>{LS.set("axis.intro","1");$("#intro").hidden=true;$("#splash").hidden=false});
+
+/* ---------- routine editor (기준 탭) ---------- */
+let ed=null;
+const DT_OPTS=[-120,-90,-60,-45,-30,-15,0,15,30,45,60,90,120];
+const dtLabel=v=>v===0?"그대로":(v>0?"+":"−")+(Math.abs(v)>=60?Math.floor(Math.abs(v)/60)+"시간"+(Math.abs(v)%60?" "+Math.abs(v)%60+"분":""):Math.abs(v)+"분");
+function edOpen(){ed=JSON.parse(JSON.stringify(prefs()));ed.tl=ed.tl||{};ed.ck=ed.ck||{off:[]};ed.ck.off=ed.ck.off||[];ed.custom=ed.custom||[];edRender();$("#edMsg").textContent=""}
+function edRender(){
+  if(!ed)return;
+  const base=baseTimeline(420,1);
+  $("#edTl").innerHTML=base.map((it,i)=>{const id=TL_IDS[i];if(it.mark)return "";const p=ed.tl[id]||{},on=!p.off,dt=clampDt(p.dt);
+    return '<li class="'+(on?"":"off")+'"><input class="tgl" type="checkbox" data-ed-tl="'+id+'"'+(on?" checked":"")+' aria-label="'+esc(it.t)+' 켜기">'
+      +'<input class="nm" data-ed-name="'+id+'" maxlength="30" value="'+esc(p.t||it.t)+'" aria-label="이름">'
+      +'<select data-ed-dt="'+id+'" aria-label="시간 옮기기">'+DT_OPTS.map(v=>'<option value="'+v+'"'+(v===dt?" selected":"")+'>'+dtLabel(v)+'</option>').join("")+'</select></li>'}).join("");
+  $("#edCk").innerHTML=BASE_CHECKS.map(c=>{const on=!ed.ck.off.includes(c.id);
+      return '<li class="'+(on?"":"off")+'"><input class="tgl" type="checkbox" data-ed-ck="'+c.id+'"'+(on?" checked":"")+' aria-label="'+esc(c.t)+' 켜기"><span class="nm">'+esc(c.t)+'</span><span></span></li>'}).join("")
+    +ed.custom.map((c,i)=>'<li><input class="tgl" type="checkbox" checked disabled aria-hidden="true"><span class="nm">'+esc(c.t)+'</span><button class="rm" type="button" data-ed-rm="'+i+'" aria-label="'+esc(c.t)+' 지우기">✕</button></li>').join("");
+  $("#edAdd").disabled=ed.custom.length>=3;$("#edNew").disabled=ed.custom.length>=3;
+}
+$("#editAcc").addEventListener("toggle",()=>{if($("#editAcc").open)edOpen()});
+$("#edTl").addEventListener("change",e=>{
+  const t=e.target;if(!ed)return;
+  if(t.dataset.edTl){const id=t.dataset.edTl,p=ed.tl[id]=ed.tl[id]||{};if(t.checked)delete p.off;else p.off=true;t.closest("li").classList.toggle("off",!t.checked)}
+  if(t.dataset.edDt){const id=t.dataset.edDt,p=ed.tl[id]=ed.tl[id]||{},v=clampDt(t.value);if(v)p.dt=v;else delete p.dt}
+});
+$("#edTl").addEventListener("input",e=>{
+  const t=e.target;if(!ed||!t.dataset.edName)return;
+  const id=t.dataset.edName,p=ed.tl[id]=ed.tl[id]||{},base=baseTimeline(420,1)[TL_IDS.indexOf(id)].t,v=t.value.trim();
+  if(v&&v!==base)p.t=v;else delete p.t;
+});
+$("#edCk").addEventListener("change",e=>{
+  const t=e.target;if(!ed||!t.dataset.edCk)return;const id=t.dataset.edCk;
+  ed.ck.off=ed.ck.off.filter(x=>x!==id);if(!t.checked)ed.ck.off.push(id);
+  t.closest("li").classList.toggle("off",!t.checked);
+});
+$("#edCk").addEventListener("click",e=>{const b=e.target.closest("[data-ed-rm]");if(!b||!ed)return;ed.custom.splice(+b.dataset.edRm,1);edRender()});
+$("#edAdd").addEventListener("click",()=>{
+  const v=$("#edNew").value.trim();if(!ed||!v||ed.custom.length>=3)return;
+  ed.custom.push({id:"c"+Date.now().toString(36),t:v.slice(0,24)});$("#edNew").value="";edRender();
+});
+$("#edSave").addEventListener("click",async()=>{
+  if(!ed)return;
+  for(const id in ed.tl)if(!Object.keys(ed.tl[id]).length)delete ed.tl[id];
+  if(BASE_CHECKS.every(c=>ed.ck.off.includes(c.id))&&!ed.custom.length){$("#edMsg").textContent="체크 항목을 하나 이상 남겨 주세요.";return}
+  $("#edMsg").textContent="저장 중…";
+  const ok=await savePrefs(JSON.parse(JSON.stringify(ed)));
+  $("#edMsg").textContent=ok?"저장했어요. 타임라인·체크·알림에 바로 반영돼요.":"이 기기에는 반영했어요. 연결되면 서버에도 저장할게요.";
+});
+$("#edReset").addEventListener("click",async()=>{
+  if(!confirm("타임라인과 체크를 처음 상태로 되돌릴까요? 나만의 체크도 지워져요."))return;
+  ed={tl:{},ck:{off:[]},custom:[]};edRender();
+  const ok=await savePrefs({});$("#edMsg").textContent=ok?"처음 상태로 되돌렸어요.":"이 기기에는 반영했어요. 연결되면 서버에도 저장할게요.";
+});
+
+/* ---------- weather & sunrise (open-meteo, no key; location rounded to ~1 km, asked once) ---------- */
+let wx=null;
+function wxLoc(){try{return JSON.parse(LS.get("axis.wxloc")||"null")}catch(e){return null}}
+function wxCached(){try{const c=JSON.parse(LS.get("axis.wx")||"null");return c&&c.v===1?c:null}catch(e){return null}}
+async function wxFetch(force){
+  const loc=wxLoc();if(!loc)return;
+  const c=wxCached();
+  if(!force&&c&&c.lat===loc.lat&&c.lon===loc.lon&&Date.now()-c.at<3600000){wx=c;return}
+  try{
+    const u="https://api.open-meteo.com/v1/forecast?latitude="+loc.lat+"&longitude="+loc.lon+"&daily=sunrise,sunset&hourly=cloud_cover,precipitation_probability&timezone=auto&forecast_days=2";
+    const r=await fetch(u).then(r=>{if(!r.ok)throw r;return r.json()});
+    wx={v:1,at:Date.now(),lat:loc.lat,lon:loc.lon,sunrise:r.daily.sunrise,sunset:r.daily.sunset,time:r.hourly.time,cloud:r.hourly.cloud_cover,rain:r.hourly.precipitation_probability};
+    LS.set("axis.wx",JSON.stringify(wx));S.tlKey="";renderAll();
+  }catch(e){if(c)wx=c}
+}
+const hm=s=>{const m=/T(\d{2}):(\d{2})/.exec(s||"");return m?+m[1]*60+ +m[2]:null};
+/* forecast for a minute-of-day (may be ≥1440 past midnight) on the logical day */
+function wxAt(dateStr,min){
+  if(!wx||!wx.time)return null;
+  const d=min>=1440?shift(dateStr,1):dateStr,h=Math.floor((min%1440)/60);
+  const i=wx.time.indexOf(d+"T"+pad(h)+":00");if(i<0)return null;
+  return {cloud:wx.cloud[i],rain:wx.rain[i]};
+}
+function wxSun(dateStr){
+  if(!wx||!wx.sunrise)return null;
+  const i=wx.sunrise.findIndex(s=>s.startsWith(dateStr));if(i<0)return null;
+  return {rise:hm(wx.sunrise[i]),set:hm(wx.sunset[i])};
+}
+function skyWord(f){if(!f)return "";if(f.rain>=50)return "비 소식";if(f.cloud>=80)return "흐림";if(f.cloud>=50)return "구름 많음";if(f.cloud>=20)return "구름 조금";return "맑음"}
+function sunMinutes(f){if(!f)return null;if(f.rain>=50||f.cloud>=80)return "30분";if(f.cloud>=40)return "15~20분";return "10분 안팎"}
+async function wxEnable(){
+  const m=$("#wxMsg");
+  if(!("geolocation" in navigator)){if(m)m.textContent="이 기기에서는 위치를 쓸 수 없어요.";return}
+  if(m)m.textContent="위치를 확인하는 중…";
+  navigator.geolocation.getCurrentPosition(p=>{
+    LS.set("axis.wxloc",JSON.stringify({lat:Math.round(p.coords.latitude*100)/100,lon:Math.round(p.coords.longitude*100)/100}));
+    wxFetch(true);
+  },()=>{if(m)m.textContent="위치 권한이 없어 켜지 못했어요. 설정에서 허용한 뒤 다시 눌러 주세요."},{maximumAge:3600000,timeout:15000});
+}
+$("#glance").addEventListener("click",e=>{if(e.target.closest("[data-wx]"))wxEnable()});
+/* the full-width sunlight card under 수분/카페인, and per-walk notes for the sun items */
+function wxCard(W,items){
+  if(!wxLoc())return '<div class="card wide"><span class="lbl">햇빛 · 날씨</span><span class="s">날씨와 일출에 맞춰 햇빛 걷기 시간을 알려 드려요. 위치는 약 1km 단위로만 날씨 서버(open-meteo)에 보내요.</span><button class="btn wx-btn" type="button" data-wx>날씨·일출 연동 켜기</button><span id="wxMsg" class="s" role="status"></span></div>';
+  const sun=wxSun(S.today);
+  if(!sun)return '<div class="card wide"><span class="lbl">햇빛 · 날씨</span><span class="s">예보를 불러오는 중이에요…</span></div>';
+  const s1=items.find(it=>it.id==="sun1"),f=s1?wxAt(S.today,W+s1.o):null;
+  let v=s1&&f?"아침 햇빛 "+sunMinutes(f)+" · "+skyWord(f):"일출 "+clk(sun.rise);
+  let s="일출 "+clk(sun.rise)+" · 일몰 "+clk(sun.set);
+  if(W<sun.rise)s+=" · 일출 전 기상: 밝은 조명을 켜고 해 뜬 뒤 나가기";
+  const s3=items.find(it=>it.id==="sun3");if(s3&&W+s3.o>=sun.set)s+=" · 퇴근길엔 해가 진 뒤라 점심 햇빛을 늘려 주세요";
+  return '<div class="card wide"><span class="lbl">햇빛 · 날씨</span><span class="v">'+esc(v)+'</span><span class="s">'+esc(s)+'</span></div>';
+}
+function wxNote(W,it){
+  if(!["sun1","sun2","sun3"].includes(it.id))return "";
+  const f=wxAt(S.today,W+it.o);if(!f)return "";
+  return "오늘 예보 "+skyWord(f)+" (구름 "+f.cloud+"%"+(f.rain?", 비 "+f.rain+"%":"")+") → "+sunMinutes(f);
+}
+
 /* ---------- alerts ---------- */
 let alertsOn=LS.get("axis.alerts")!=="0";
 const sw=$("#alertSw");sw.setAttribute("aria-checked",String(alertsOn));
@@ -1162,7 +1435,10 @@ function fired(){try{return JSON.parse(LS.get("axis.fired")||"{}")}catch(e){retu
 function checkAlerts(){
   if(!alertsOn||pushOn||!S.key)return;const d=day(S.today);if(!d.wake)return;
   const W=d.wake*60,n=nowMin(),f=fired(),list=f[S.today]||[];
-  for(const [o,t,line] of CORE){
+  const P=prefs().tl||{};
+  for(const [o0,t0,line] of CORE){
+    const p=P[CORE_IDS[o0]]||{};if(p.off)continue;
+    const o=o0+clampDt(p.dt),t=p.t||t0;
     const at=W+o,id=d.wake+"@"+o;
     if(n>=at&&n<at+3&&!list.includes(id)){list.push(id);LS.set("axis.fired",JSON.stringify({[S.today]:list}));showAlert(clk(at),t,line);break}
   }
@@ -1175,6 +1451,7 @@ function tick(){
   if(t!==S.today){const was=S.view===S.today;S.today=t;if(was)S.view=t;S.tlKey="";askWakeIfNeeded()}
   if(S.key){
     renderAll();checkAlerts();
+    if(wxLoc()&&Date.now()-(wx?wx.at:0)>3600000)wxFetch();
     if(!document.hidden&&!Object.keys(S.dirty).length&&Date.now()-S.lastLoad>60000)load();
   }
 }
@@ -1188,7 +1465,9 @@ if(!configured){
   msg.textContent="config.js에 Supabase 주소와 키를 넣어 주세요.";
 }else{
   let sess=null;try{sess=JSON.parse(LS.get("axis.session")||"null")}catch(e){}
-  if(sess&&sess.key&&sess.nick&&sess.proof)enter(sess.key,sess.nick,sess.proof);
+  if(sess&&sess.guest)enter("guest","게스트",null,true);
+  else if(sess&&sess.key&&sess.nick&&sess.proof)enter(sess.key,sess.nick,sess.proof);
+  else if(!LS.get("axis.intro")){$("#splash").hidden=true;$("#intro").hidden=false;showIntro(0)}
 }
 })();
 </script>

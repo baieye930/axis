@@ -7,7 +7,11 @@
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-title" content="AXIS">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<meta name="theme-color" content="#FFF1DA">
 <title>AXIS</title>
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="apple-touch-icon" href="icon-180.png">
 <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Ccircle cx='32' cy='32' r='22' fill='none' stroke='%2333250E' stroke-width='4'/%3E%3Cline x1='32' y1='3' x2='32' y2='61' stroke='%2333250E' stroke-width='4' stroke-linecap='round'/%3E%3Ccircle cx='32' cy='19' r='6' fill='%23C9741E'/%3E%3C/svg%3E">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -129,6 +133,7 @@ p{margin:0}
 .score{display:flex;align-items:baseline;gap:.6rem}
 .score b{font-family:var(--f-num);font-size:2.2rem;line-height:1}
 .score span{color:var(--muted)}
+.score .streak{margin-left:auto;font-size:.82rem;font-weight:600;color:var(--accent)}
 .checks{list-style:none;margin:0;padding:0;display:grid;gap:.45rem}
 .ck{width:100%;display:grid;grid-template-columns:1.45rem 1fr;gap:.7rem;align-items:center;text-align:left;min-height:3.2rem;padding:.55rem .85rem;border-radius:14px;border:1.5px solid var(--line);background:var(--surface);cursor:pointer}
 .ck .box{width:1.45rem;height:1.45rem;border-radius:7px;border:2px solid var(--line);display:grid;place-items:center;transition:background .2s,border-color .2s}
@@ -157,6 +162,7 @@ p{margin:0}
 .cmp{display:grid;gap:.9rem}
 .cmp .r{display:grid;gap:.3rem}
 .cmp .r .lb{display:flex;justify-content:space-between;gap:.5rem;font-size:.95rem;font-weight:600}
+.cmp .r .lb span{color:var(--muted);font-weight:500;font-size:.78rem}
 .pair{display:grid;grid-template-columns:2.6rem 1fr 3rem;gap:.5rem;align-items:center;font-size:.82rem;color:var(--muted)}
 .pair .bar{height:10px}
 .pair.w8 .bar i{background:var(--muted)}
@@ -172,6 +178,16 @@ p{margin:0}
 .legend{display:flex;gap:.8rem;font-size:.82rem;color:var(--muted)}
 .legend i{display:inline-block;width:.8rem;height:.8rem;border-radius:3px;background:var(--accent);margin-right:.35rem;vertical-align:-1px}
 .legend i.w8{background:var(--muted)}
+.strk{display:grid;gap:.6rem}
+.strk .hd{display:flex;align-items:baseline;justify-content:space-between;gap:.5rem}
+.strk .big{font-family:var(--f-num);font-size:1.7rem;line-height:1.1}
+.strk .big small{font-family:var(--f-body);font-size:.85rem;font-weight:600;margin-left:.2rem}
+.dots{display:grid;grid-template-columns:repeat(14,1fr);gap:.3rem}
+.dots i{aspect-ratio:1;border-radius:5px;background:var(--surface2)}
+.dots i.p{background:var(--soft)}
+.dots i.on{background:var(--accent)}
+.dots i.today{outline:1.5px solid var(--accent);outline-offset:1px}
+.dots-lb{display:flex;justify-content:space-between;font-size:.75rem;color:var(--muted)}
 .empty{display:grid;gap:.8rem;justify-items:start;padding:1.3rem;border-radius:var(--r);border:1.5px dashed var(--line);background:var(--surface)}
 
 .acc{background:var(--surface);border-radius:var(--r);box-shadow:var(--shadow)}
@@ -284,7 +300,7 @@ p{margin:0}
       <button type="button" data-wake="7" aria-pressed="false">7시 기상</button>
       <button type="button" data-wake="8" aria-pressed="false">8시 기상</button>
     </div>
-    <div class="score"><b id="scorePct" class="num">0%</b><span id="scoreN">0 / 8</span></div>
+    <div class="score"><b id="scorePct" class="num">0%</b><span id="scoreN">0 / 8</span><span id="streakN" class="streak"></span></div>
     <div class="bar"><i id="scoreBar" style="width:0%"></i></div>
     <ul id="checks" class="checks"></ul>
     <details class="memo card" id="memo">
@@ -364,18 +380,18 @@ p{margin:0}
     <details class="acc">
       <summary>하루 수분 양</summary>
       <div class="in">
-        <p>하루 합계 115온스(약 3.4L)가 상단 기준이다. 기상 후 10시간 동안은 매시간 8온스(약 0.24L) × 10회 = 80온스(약 2.37L), 그 뒤 취침 1시간 전까지는 매시간 5온스(약 0.15L) × 7회 = 35온스(약 1.04L)를 마신다. 3.4L는 상단이라 갈증에 맞춰 조절하고, 땀이 많이 난 날은 더 마신다. 두통·메스꺼움이 오면 줄이고, 수분 제한이 있는 질환이 있으면 의사에게 먼저 확인한다.</p>
+        <p>하루 합계 약 3.4L가 상단 기준이다. 기상 후 10시간 동안은 매시간 약 240ml × 10회 = 약 2.4L, 그 뒤 취침 1시간 전까지는 매시간 약 150ml × 7회 = 약 1L를 마신다. 3.4L는 상단이라 갈증에 맞춰 조절하고, 땀이 많이 난 날은 더 마신다. 두통·메스꺼움이 오면 줄이고, 수분 제한이 있는 질환이 있으면 의사에게 먼저 확인한다.</p>
         <table class="tbl">
-          <tr><th>기상</th><th>매시간 8온스 (10회)</th><th>매시간 5온스 (7회)</th></tr>
+          <tr><th>기상</th><th>매시간 240ml (10회)</th><th>매시간 150ml (7회)</th></tr>
           <tr><td>7시</td><td class="num">7:00~16:00</td><td class="num">17:00~23:00</td></tr>
           <tr><td>8시</td><td class="num">8:00~17:00</td><td class="num">18:00~24:00</td></tr>
         </table>
         <h4>함께 알아 둘 것</h4>
         <ul>
-          <li>기상 직후에는 물 16~32온스 + 소금을 마신다. 아침에는 갈증이 없어도 의식적으로 마신다. 밤사이 몸이 탈수되고, 일 시작 전에 수분과 전해질을 채우면 정신 수행에 도움이 된다.</li>
+          <li>기상 직후에는 물 0.5~1L + 소금을 마신다. 아침에는 갈증이 없어도 의식적으로 마신다. 밤사이 몸이 탈수되고, 일 시작 전에 수분과 전해질을 채우면 정신 수행에 도움이 된다.</li>
           <li>첫 식사 전까지는 물과 전해질만 마신다(공복 중 물과 전해질은 괜찮다).</li>
-          <li>커피 전에 물 16온스. 커피 1에 물 2 비율로 마시면 수분이 유지된다. 카페인 때문에 어지럽거나 떨리거나 갑자기 배고프면 나트륨 부족일 때가 많아, 소금 한 꼬집을 넣은 물(레몬즙 약간)이 도움이 된다.</li>
-          <li>운동 중 수분: 체중(lb) ÷ 30 = 15~20분마다 마실 온스. 전해질(나트륨:칼륨 약 5:1, 마그네슘 약 60mg)을 같이 넣는다. 더운 환경에서는 50~100% 늘리고, 사우나는 20~30분마다 약 500ml.</li>
+          <li>커피 전에 물 약 500ml. 커피 1에 물 2 비율로 마시면 수분이 유지된다. 카페인 때문에 어지럽거나 떨리거나 갑자기 배고프면 나트륨 부족일 때가 많아, 소금 한 꼬집을 넣은 물(레몬즙 약간)이 도움이 된다.</li>
+          <li>운동 중 수분: 체중(kg) × 2.2 = 15~20분마다 마실 ml(70kg이면 약 150ml). 전해질(나트륨:칼륨 약 5:1, 마그네슘 약 60mg)을 같이 넣는다. 더운 환경에서는 50~100% 늘리고, 사우나는 20~30분마다 약 500ml.</li>
           <li>나트륨은 개인차가 커서 하루 2,000~5,000mg 범위에서 혈압에 맞춰 조절한다(일반 권고는 2,300mg). 혈압을 먼저 확인하고, 고혈압이면 의사 확인 없이 소금을 늘리지 않는다.</li>
           <li>술을 마시는 날은 술 1잔당 물 2잔과 전해질을 챙긴다.</li>
         </ul>
@@ -524,7 +540,7 @@ function exerciseToday(dow){
 function timeline(W,dow){
   const c=o=>clk(W+o);
   return [
-    {o:0,e:10,t:"물과 소금",d:"물 16~32온스 + 소금(한 꼬집에서 시작, 최대 약 반 티스푼). 일어난 시각을 메모해 체온 최저점(기상 약 2시간 전)을 파악한다. 폰은 침대 밖에 두고 보지 않기. 염분 제한이 있으면 의사 확인"},
+    {o:0,e:10,t:"물과 소금",d:"물 0.5~1L + 소금(한 꼬집에서 시작, 최대 약 반 티스푼). 일어난 시각을 메모해 체온 최저점(기상 약 2시간 전)을 파악한다. 폰은 침대 밖에 두고 보지 않기. 염분 제한이 있으면 의사 확인"},
     {o:10,e:40,t:"아침 햇빛 + 걷기",d:"야외 햇빛 + 앞으로 걷기 10~30분(늦어도 "+c(60)+" 안에 시작). 해 쪽을 보되 직접 쳐다보지 않기(눈부시면 중단, 깜빡임은 자연스럽게). 맑으면 10분 안팎(밝은 날은 최소 2분도 효과), 구름 끼면 15~20분, 아주 흐리거나 비 오면 30분. 선글라스·유리창·차 앞유리 없이(안경·렌즈는 가능). 일출 전에 일어나면 밝은 조명을 켜고, 해가 뜬 뒤 다시 나가기"},
     {o:40,e:90,t:"공복 운동",d:"1시간 이내. 월·수·금 웨이트, 화·목 Zone 2. 출근이 없거나 여유가 있으면 90분 작업 블록 뒤에 운동해도 된다",tag:exerciseToday(dow)},
     {o:90,e:120,t:"샤워 · 스트레칭 · 호흡",d:"샤워 후 스트레칭 + 호흡 5~10분. Zone 2 날은 샤워 마지막에 찬물 1~3분, 웨이트 날은 30초~1분"},
@@ -550,7 +566,7 @@ function timeline(W,dow){
 }
 /* 캘린더 파일과 같은 핵심 11개: 화면 알림에 사용 */
 const CORE=[
-  [0,"물과 소금","물 16~32온스에 소금 한 꼬집을 타 마시고, 일어난 시각을 메모한다."],
+  [0,"물과 소금","물 0.5~1L에 소금 한 꼬집을 타 마시고, 일어난 시각을 메모한다."],
   [10,"아침 햇빛 걷기","선글라스 없이 밖에서 10~30분 걷는다."],
   [40,"공복 운동","1시간 이내로 운동한다."],
   [180,"딥워크 1","알림과 폰을 완전히 끄고 90분 집중한다."],
@@ -652,20 +668,41 @@ $("#regYes").addEventListener("click",async()=>{
 });
 function logout(note){
   LS.del("axis.session");
+  if(S.key){LS.del(CK());LS.del(PK())}
   Object.values(S.timers).forEach(clearTimeout);
   Object.assign(S,{key:null,nick:null,proof:null,days:{},dirty:{},timers:{},loaded:false,tlKey:"",ckKey:""});
   $("#main").hidden=true;$("#tabbar").hidden=true;$("#wakeSheet").hidden=true;$("#splash").hidden=false;$("#pin").value="";msg.textContent=note||"";
 }
-$("#logout").addEventListener("click",()=>logout());
+$("#logout").addEventListener("click",()=>{
+  if(Object.keys(S.dirty).length&&!confirm("아직 서버에 저장되지 않은 기록이 있어요. 나가면 이 기기에서 지워집니다. 나갈까요?"))return;
+  logout();
+});
 
 function enter(key,nick,proof){
   S.key=key;S.nick=nick;S.proof=proof;LS.set("axis.session",JSON.stringify({key,nick,proof}));
   $("#whoName").textContent=nick;
   $("#splash").hidden=true;$("#main").hidden=false;$("#tabbar").hidden=false;
   S.today=ymd(logical());S.view=S.today;
+  restoreLocal();
   setTab(LS.get("axis.tab")||"today");
   load();
 }
+
+/* ---------- offline copy: last loaded days + edits not yet saved ---------- */
+const CK=()=>"axis.cache."+S.key,PK=()=>"axis.pending."+S.key;
+function restoreLocal(){
+  try{const c=JSON.parse(LS.get(CK())||"null");if(c&&typeof c==="object"){S.days=c;S.loaded=true}}catch(e){}
+  try{const p=JSON.parse(LS.get(PK())||"null");
+    if(p&&typeof p==="object")for(const k in p){S.days[k]=p[k];S.dirty[k]=1;S.timers[k]=setTimeout(()=>save(k),1500)}
+  }catch(e){}
+}
+function keepPending(){
+  if(!S.key)return;const p={};
+  for(const k in S.dirty)if(S.days[k])p[k]=S.days[k];
+  if(Object.keys(p).length)LS.set(PK(),JSON.stringify(p));else LS.del(PK());
+}
+function keepCache(){if(S.key)LS.set(CK(),JSON.stringify(S.days))}
+window.addEventListener("online",()=>{for(const k in S.dirty){clearTimeout(S.timers[k]);save(k)}});
 
 /* ---------- data ---------- */
 let loading=false;
@@ -681,16 +718,19 @@ async function load(){
     const m={};
     (res.days||[]).forEach(x=>{if(x&&x.date)m[x.date]=Object.assign({checks:{}},x.data,{date:x.date})});
     for(const k in S.dirty){if(S.days[k])m[k]=S.days[k]}
-    S.days=m;S.loaded=true;
+    S.days=m;S.loaded=true;keepCache();
     renderAll();askWakeIfNeeded();
-  }catch(e){toast("기록을 불러오지 못했어요. 인터넷 연결을 확인해 주세요.")}
+  }catch(e){
+    if(S.loaded){toast("오프라인이에요. 이 기기에 저장된 기록으로 보여 드려요.");renderAll();askWakeIfNeeded()}
+    else toast("기록을 불러오지 못했어요. 인터넷 연결을 확인해 주세요.");
+  }
   finally{loading=false}
 }
 function day(date){return S.days[date]||{date,checks:{}}}
 function patch(date,fn){
   const d=JSON.parse(JSON.stringify(day(date)));d.checks=d.checks||{};
   fn(d);d.date=date;d.updated=new Date().toISOString();
-  S.days[date]=d;S.dirty[date]=(S.dirty[date]||0)+1;
+  S.days[date]=d;S.dirty[date]=(S.dirty[date]||0)+1;keepPending();
   clearTimeout(S.timers[date]);
   $("#savedMsg").textContent="저장 중…";
   S.timers[date]=setTimeout(()=>save(date),450);
@@ -701,9 +741,10 @@ function save(date){
   rpc("axis_day_put",{p_key:S.key,p_proof:S.proof,p_day:date,p_data:data}).then(res=>{
     if(!res.ok){if(res.error==="bad_pin"||res.error==="no_user"){logout("다시 로그인해 주세요.");return}throw res}
     if(S.dirty[date]===ver)delete S.dirty[date];
+    keepPending();keepCache();
     $("#savedMsg").textContent="저장됨 · 다른 기기에서도 같은 닉네임으로 보입니다";
   }).catch(()=>{
-    $("#savedMsg").textContent="저장 대기 중 · 연결되면 자동으로 다시 저장합니다";
+    $("#savedMsg").textContent="이 기기에 보관함 · 연결되면 자동으로 저장합니다";
     clearTimeout(S.timers[date]);S.timers[date]=setTimeout(()=>save(date),10000);
   });
 }
@@ -765,7 +806,7 @@ function renderToday(){
   let html;
   if(cur<0){
     const f=items[0];
-    html='<div class="now"><span class="k">기상 전</span><h3>'+clk(W)+' 기상</h3><p class="d">일어나면 먼저 물 16~32온스와 소금 한 꼬집. 폰은 침대 밖에 두세요.</p><div class="next">첫 할 일 <b>'+clk(W+f.o)+'</b> '+f.t+'</div></div>';
+    html='<div class="now"><span class="k">기상 전</span><h3>'+clk(W)+' 기상</h3><p class="d">일어나면 먼저 물 0.5~1L와 소금 한 꼬집. 폰은 침대 밖에 두세요.</p><div class="next">첫 할 일 <b>'+clk(W+f.o)+'</b> '+f.t+'</div></div>';
   }else{
     const it=items[cur],nx=nextOf(cur),end=it.e>2000?null:it.e;
     const prog=end?Math.min(100,Math.max(0,(rel-it.o)/(end-it.o)*100)):100;
@@ -777,9 +818,9 @@ function renderToday(){
   }
   $("#nowBox").innerHTML=html;
   const h=Math.floor(rel/60);let wv,ws;
-  if(rel<0){wv="기상 직후 16~32온스";ws="소금 한 꼬집과 함께"}
-  else if(h<10){wv="이번 시간 8온스";ws="약 240ml · "+(h+1)+" / 17회"}
-  else if(h<17){wv="이번 시간 5온스";ws="약 150ml · "+(h+1)+" / 17회"}
+  if(rel<0){wv="기상 직후 물 0.5~1L";ws="소금 한 꼬집과 함께"}
+  else if(h<10){wv="이번 시간 240ml";ws="한 컵 · "+(h+1)+" / 17회"}
+  else if(h<17){wv="이번 시간 150ml";ws="반 컵 남짓 · "+(h+1)+" / 17회"}
   else{wv="오늘 수분 마침";ws="취침 1시간 전부터는 쉬기"}
   let cv,cs;
   if(rel<90){cv="첫 잔은 "+clk(W+90)+" 이후";cs="기상 후 90~120분 뒤"}
@@ -816,6 +857,21 @@ function renderCheck(){
   $$(".yn").forEach(r=>$$("button",r).forEach(b=>b.setAttribute("aria-pressed",String(d[r.dataset.y]===(b.dataset.v==="1")))));
   $$("#memo [data-f]").forEach(inp=>{if(document.activeElement!==inp||S.ckKey!==S.view){const v=d[inp.dataset.f];inp.value=v==null?"":v}});
   if(S.ckKey!==S.view){S.ckKey=S.view;$("#savedMsg").textContent=""}
+  const st=streakOf();
+  $("#streakN").textContent=isToday&&st.cur?st.cur+"일 연속"+(st.todayOn?"":" · 오늘 "+Math.max(0,GOAL-n)+"개 더"):"";
+}
+
+/* ---------- streak: days with GOAL+ of the 8 checks, in a row ---------- */
+const GOAL=4;
+const passes=d=>!!(d&&d.wake&&CHECKS.filter(c=>d.checks&&d.checks[c.id]).length>=GOAL);
+function shift(date,n){const d=parseYmd(date);d.setDate(d.getDate()+n);return ymd(d)}
+function streakOf(){
+  const todayOn=passes(S.days[S.today]);
+  let cur=0,d=todayOn?S.today:shift(S.today,-1);
+  while(passes(S.days[d])){cur++;d=shift(d,-1)}
+  let best=0,run=0,prev=null;
+  Object.keys(S.days).filter(k=>passes(S.days[k])).sort().forEach(k=>{run=prev&&shift(prev,1)===k?run+1:1;prev=k;if(run>best)best=run});
+  return {cur,best,todayOn};
 }
 
 /* ---------- render: log ---------- */
@@ -826,11 +882,28 @@ function renderLog(){
   const avg=a=>a.length?Math.round(a.reduce((s,x)=>s+pctOf(x),0)/a.length*100):null;
   const rate=(a,id)=>a.length?Math.round(a.filter(x=>x.checks&&x.checks[id]).length/a.length*100):null;
   const pair=(cls,lbl,v)=>'<div class="pair '+cls+'"><span>'+lbl+'</span><div class="bar"><i style="width:'+(v||0)+'%"></i></div><span class="pv">'+(v==null?"–":v+"%")+'</span></div>';
-  let h='<div class="stat"><div class="card"><span class="eyebrow">전체 평균</span><span class="big">'+avg(all)+'%</span><span class="note">'+all.length+'일 기록</span></div>'
+  const bar=(cls,lbl,w,txt)=>'<div class="pair '+cls+'"><span>'+lbl+'</span><div class="bar"><i style="width:'+(w==null?0:Math.max(0,Math.min(100,w)))+'%"></i></div><span class="pv">'+(txt==null?"–":txt)+'</span></div>';
+  const num=v=>v!==null&&v!==undefined&&v!==""&&isFinite(+v);
+  const mean=(a,f)=>{const v=a.map(x=>x[f]).filter(num).map(Number);return v.length?v.reduce((s,x)=>s+x,0)/v.length:null};
+  const yes=(a,f)=>{const v=a.filter(x=>typeof x[f]==="boolean");return v.length?Math.round(v.filter(x=>x[f]).length/v.length*100):null};
+  const st=streakOf();
+  const dots=[];for(let i=13;i>=0;i--){const k=shift(S.today,-i),x=S.days[k],p=x&&x.wake?pctOf(x):0;
+    dots.push('<i class="'+(passes(x)?"on":p>0?"p":"")+(i===0?" today":"")+'" title="'+esc(dateLabel(k))+" "+Math.round(p*100)+'%"></i>')}
+  let h='<div class="card strk"><div class="hd"><span class="eyebrow">연속 달성</span><span class="note">최고 '+st.best+'일</span></div>'
+    +'<span class="big">'+st.cur+'<small>일</small></span>'
+    +'<div class="dots">'+dots.join("")+'</div><div class="dots-lb"><span>2주 전</span><span>8개 중 '+GOAL+'개 이상이면 달성</span><span>오늘</span></div></div>';
+  h+='<div class="stat"><div class="card"><span class="eyebrow">전체 평균</span><span class="big">'+avg(all)+'%</span><span class="note">'+all.length+'일 기록</span></div>'
     +'<div class="card"><span class="eyebrow">최근 7일</span><span class="big">'+avg(all.slice(0,7))+'%</span><span class="note">기록한 날 기준</span></div></div>';
   h+='<div class="card cmp"><div class="head"><span class="eyebrow">기상 타입별 달성률</span></div>'
     +pair("w7","7시",avg(g[7]))+pair("w8","8시",avg(g[8]))
     +'<p class="note">7시 '+g[7].length+'일 · 8시 '+g[8].length+'일 (오늘 포함)</p></div>';
+  const cond=[["아침 개운함","fresh"],["낮 집중과 에너지","focus"]].map(([t,f])=>{const a=mean(g[7],f),b=mean(g[8],f);
+      return '<div class="r"><div class="lb">'+t+'<span>5점 만점</span></div>'+bar("w7","7시",a==null?null:a/5*100,a==null?null:a.toFixed(1))+bar("w8","8시",b==null?null:b/5*100,b==null?null:b.toFixed(1))+'</div>'}).join("")
+    +(()=>{const a=yes(g[7],"slump"),b=yes(g[8],"slump");return '<div class="r"><div class="lb">오후 졸림 있었던 날<span>낮을수록 좋음</span></div>'+pair("w7","7시",a)+pair("w8","8시",b)+'</div>'})()
+    +(()=>{const a=mean(g[7],"sleepH"),b=mean(g[8],"sleepH");return '<div class="r"><div class="lb">평균 수면<span>9시간 기준 막대</span></div>'+bar("w7","7시",a==null?null:a/9*100,a==null?null:a.toFixed(1)+"h")+bar("w8","8시",b==null?null:b/9*100,b==null?null:b.toFixed(1)+"h")+'</div>'})();
+  const rated=all.filter(x=>num(x.fresh)||num(x.focus)||typeof x.slump==="boolean"||num(x.sleepH)).length;
+  h+='<div class="card cmp"><div class="head"><span class="eyebrow">기상 타입별 컨디션</span><div class="legend"><span><i></i>7시</span><span><i class="w8"></i>8시</span></div></div>'
+    +(rated?cond+'<p class="note">체크 탭 ‘기록해 볼 것’을 입력한 '+rated+'일 기준</p>':'<p class="note">체크 탭의 ‘기록해 볼 것’에 개운함·집중·졸림·수면을 남기면 7시와 8시 기상을 컨디션으로 비교해 보여 드려요.</p>')+'</div>';
   h+='<div class="card cmp"><div class="head"><span class="eyebrow">항목별 비교</span><div class="legend"><span><i></i>7시</span><span><i class="w8"></i>8시</span></div></div>'
     +CHECKS.map(c=>'<div class="r"><div class="lb">'+c.t+'</div>'+pair("w7","7시",rate(g[7],c.id))+pair("w8","8시",rate(g[8],c.id))+'</div>').join("")+'</div>';
   h+='<div class="head"><span class="eyebrow">날짜별 · 누르면 고칠 수 있어요</span></div><ul class="days">'
@@ -886,6 +959,7 @@ setInterval(tick,20000);
 document.addEventListener("visibilitychange",()=>{if(!document.hidden){tick();if(S.key&&!Object.keys(S.dirty).length&&Date.now()-S.lastLoad>5000)load()}});
 
 /* ---------- boot ---------- */
+if("serviceWorker" in navigator&&location.protocol==="https:")navigator.serviceWorker.register("sw.js").catch(()=>{});
 if(!configured){
   loginBtn.disabled=true;loginBtn.textContent="설정이 필요해요";
   msg.textContent="config.js에 Supabase 주소와 키를 넣어 주세요.";

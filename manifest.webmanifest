@@ -1,0 +1,17 @@
+{
+  "name": "AXIS",
+  "short_name": "AXIS",
+  "description": "기상 시각을 축으로 하루를 정렬하는 타임라인·체크 앱",
+  "lang": "ko",
+  "start_url": "./",
+  "scope": "./",
+  "display": "standalone",
+  "orientation": "portrait",
+  "background_color": "#FFFAF2",
+  "theme_color": "#FFF1DA",
+  "icons": [
+    { "src": "icon-192.png", "sizes": "192x192", "type": "image/png", "purpose": "any" },
+    { "src": "icon-512.png", "sizes": "512x512", "type": "image/png", "purpose": "any" },
+    { "src": "icon-512.png", "sizes": "512x512", "type": "image/png", "purpose": "maskable" }
+  ]
+}

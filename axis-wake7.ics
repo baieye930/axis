@@ -21,7 +21,7 @@ DTSTART;TZID=Asia/Seoul:20261012T070000
 DURATION:PT10M
 RRULE:FREQ=DAILY
 SUMMARY:AXIS · 물과 소금
-DESCRIPTION:물 16~32온스에 소금 한 꼬집을 타 마시고\, 일어난 시각을 메모한다(폰은 침대 밖).
+DESCRIPTION:물 0.5~1L에 소금 한 꼬집을 타 마시고\, 일어난 시각을 메모한다(폰은 침대 밖).
 BEGIN:VALARM
 ACTION:DISPLAY
 TRIGGER:PT0M

@@ -274,6 +274,67 @@ p{margin:0}
 .addck{display:grid;grid-template-columns:1fr auto;gap:.5rem}
 .addck input{min-height:2.9rem;padding:.4rem .75rem;border-radius:12px;border:1.5px solid var(--line);background:var(--surface);font-size:16px;min-width:0}
 .glance .wide{grid-column:1/-1}
+/* workout */
+.modesw{margin:-.4rem 0 1rem}
+.modesw button{min-height:2.1rem;font-size:.9rem}
+.wobody{display:grid;gap:.75rem}
+.chips{display:flex;flex-wrap:wrap;gap:.35rem}
+.chips .chip{min-height:2rem;font-size:.82rem;padding:.2rem .75rem;background:var(--surface);border:1.5px solid var(--line);color:var(--muted)}
+.chips .chip.on{background:var(--accent);border-color:var(--accent);color:var(--accent-fg)}
+.chips .chip:disabled{opacity:.4}
+.chips .chip.did::after{content:" ✓"}
+.cond{display:grid;gap:.5rem}
+.yn3{display:grid;grid-template-columns:repeat(3,1fr);gap:.35rem}
+.yn3 button{min-height:2.4rem;border-radius:10px;border:1.5px solid var(--line);background:var(--surface);font-weight:600;cursor:pointer}
+.yn3 button[aria-pressed="true"]{background:var(--accent);border-color:var(--accent);color:var(--accent-fg)}
+.warn{font-size:.85rem;padding:.55rem .7rem;border-radius:10px;background:var(--soft)}
+.card .lbl{display:block;font-size:.8rem;font-weight:600;color:var(--muted);letter-spacing:.04em;margin-bottom:.35rem}
+.card .s{display:block;font-size:.82rem;color:var(--muted)}
+.wohead{display:grid;gap:.55rem}
+.wohead .row{display:flex;justify-content:space-between;align-items:baseline;gap:.5rem}
+.wohead .big{font-family:var(--f-num);font-size:1.7rem;line-height:1.1}
+.wohead .big small{font-size:.85rem;color:var(--muted);font-family:var(--f-body)}
+.wochk{list-style:none;margin:0;padding:0;display:grid;gap:.3rem}
+.ck.mini{min-height:2.6rem;padding:.35rem .6rem;border-radius:10px;grid-template-columns:1.3rem 1fr;gap:.6rem}
+.ck.mini .box{width:1.3rem;height:1.3rem;border-radius:6px}
+.ck.mini .tx{font-size:.88rem}
+.exc{display:grid;gap:.45rem}
+.exh{display:grid;grid-template-columns:auto 1fr;gap:.6rem;align-items:start}
+.exh .idx{display:grid;place-items:center;width:1.6rem;height:1.6rem;border-radius:50%;background:var(--soft);color:var(--accent);font-size:.85rem}
+.exh b{display:block;font-size:1rem;line-height:1.35}
+.exh small{display:block;font-size:.78rem;color:var(--muted)}
+.cue{font-size:.85rem;color:var(--muted)}
+.cue span{display:block;font-size:.78rem;margin-top:.15rem}
+.hint{font-size:.8rem;font-weight:600;color:var(--accent)}
+.sets{display:grid;grid-template-columns:2rem 1fr 1fr 2.6rem;gap:.35rem .45rem;align-items:center}
+.sets .sh{font-size:.72rem;color:var(--muted);font-weight:600}
+.sets .sn{text-align:center;color:var(--muted)}
+.sets input{min-height:2.6rem;padding:.2rem .5rem;border-radius:10px;border:1.5px solid var(--line);background:var(--surface);font-size:16px;min-width:0;width:100%;text-align:center}
+.sdone{display:grid;place-items:center;min-height:2.6rem;border-radius:10px;border:1.5px solid var(--line);background:var(--surface);cursor:pointer}
+.sdone svg{width:1rem;height:1rem;opacity:.25;color:var(--muted)}
+.sdone[aria-pressed="true"]{background:var(--accent);border-color:var(--accent)}
+.sdone[aria-pressed="true"] svg{opacity:1;color:var(--accent-fg)}
+.timer{display:grid;gap:.5rem;text-align:center}
+.timer .clock{font-family:var(--f-num);font-size:2.6rem;line-height:1.1}
+.timer.hard{border:2px solid var(--accent)}
+.timer.hard .clock{color:var(--accent)}
+.phases{display:flex;gap:2px;height:10px;border-radius:99px;overflow:hidden}
+.phases i{display:block;background:var(--surface2)}
+.phases i.hard{background:var(--soft)}
+.phases i.past{opacity:.35}
+.phases i.now{background:var(--accent)}
+.row2.two{grid-template-columns:1fr 1fr}
+.wo-go{justify-self:stretch;min-height:2.6rem;font-size:.9rem}
+.days.wk button.today{background:var(--soft)}
+.days button:disabled{cursor:default;color:inherit}
+.big2{font-size:1rem;font-weight:600;color:var(--accent)}
+.cmp .r .big2{justify-self:end}
+.restbar{position:fixed;left:0;right:0;bottom:calc(3.9rem + env(safe-area-inset-bottom,0px));z-index:12;padding:0 12px}
+.restbar .in{max-width:34rem;margin:0 auto;display:grid;grid-template-columns:auto auto 1fr auto auto;gap:.5rem;align-items:center;background:var(--fg);color:var(--bg2);border-radius:14px;padding:.45rem .6rem .45rem .9rem;box-shadow:0 10px 30px rgba(0,0,0,.25)}
+.restbar .lbl{font-size:.75rem;opacity:.75}
+.restbar b{font-family:var(--f-num);font-size:1.3rem}
+.restbar .s{font-size:.75rem;opacity:.8;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.restbar .btn{min-height:2.2rem;padding:.2rem .6rem;font-size:.78rem;background:transparent;color:inherit;border-color:rgba(255,255,255,.3)}
 .glance .wx-btn{justify-self:start;margin-top:.3rem;min-height:2.4rem;font-size:.9rem;padding:.3rem .9rem}
 .alert{position:fixed;left:0;right:0;top:calc(env(safe-area-inset-top,0px) + 10px);z-index:40;padding-inline:12px}
 .alert .box{max-width:34rem;margin:0 auto;background:var(--fg);color:var(--bg2);border-radius:18px;padding:1rem 1.1rem;display:grid;grid-template-columns:1fr auto;gap:.3rem .8rem;align-items:center;box-shadow:0 12px 40px rgba(0,0,0,.3)}
@@ -355,6 +416,10 @@ p{margin:0}
     <div class="mark"><svg aria-hidden="true"><use href="#axislogo"/></svg>AXIS</div>
     <div class="who"><b id="whoName"></b><button id="guestReg" class="link strong" type="button" hidden>등록하기</button><button id="logout" class="link" type="button">나가기</button></div>
   </header>
+  <div class="modesw seg" role="group" aria-label="화면 전환">
+    <button type="button" data-mode="routine" aria-pressed="true">루틴</button>
+    <button type="button" data-mode="workout" aria-pressed="false">워크아웃</button>
+  </div>
 
   <section id="tab-today" class="tab" role="tabpanel" aria-label="오늘">
     <div class="head">
@@ -589,6 +654,84 @@ p{margin:0}
     </details>
     <p class="note">하루의 경계는 새벽 4시입니다. 자정을 넘겨도 새벽 4시 전까지는 전날 기록으로 이어집니다.</p>
   </section>
+
+  <!-- ===== WORKOUT ===== -->
+  <section id="tab-wtoday" class="tab" role="tabpanel" aria-label="오늘 운동" hidden>
+    <div class="head">
+      <span id="woDate" class="eyebrow"></span>
+      <h2 id="woTitle">오늘 운동</h2>
+      <p id="woSub" class="note"></p>
+    </div>
+    <div id="woSwap" class="chips" role="group" aria-label="오늘 운동 바꾸기"></div>
+    <div id="woBody" class="wobody"></div>
+  </section>
+
+  <section id="tab-wweek" class="tab" role="tabpanel" aria-label="주간 계획" hidden>
+    <div class="head"><span class="eyebrow">이번 주</span><h2>주간 계획</h2></div>
+    <div id="wkBody" class="wobody"></div>
+  </section>
+
+  <section id="tab-wlog" class="tab" role="tabpanel" aria-label="운동 기록" hidden>
+    <div class="head"><span class="eyebrow">운동 기록</span><h2>쌓인 기록</h2></div>
+    <div id="wlBody" class="wobody"></div>
+  </section>
+
+  <section id="tab-wguide" class="tab" role="tabpanel" aria-label="운동 가이드" hidden>
+    <div class="head"><span class="eyebrow">루틴설계서 1~7 기준</span><h2>운동 가이드</h2></div>
+    <details class="acc" open>
+      <summary>내 정보</summary>
+      <div class="in">
+        <p>나이를 넣으면 Zone 2 심박 범위를 계산해요. 비워 두면 기본값 118~137bpm(문서1)을 씁니다.</p>
+        <div class="addck"><input id="woAge" type="number" inputmode="numeric" min="12" max="90" placeholder="나이"><button id="woAgeSave" class="btn" type="button">저장</button></div>
+        <p id="woAgeMsg" class="note" role="status"></p>
+      </div>
+    </details>
+    <details class="acc">
+      <summary>한 주 구조</summary>
+      <div class="in"><ul>
+        <li><b>근력 3 : 지구력 2, 토요일 완전 휴식</b>: 월·수·금 전신 웨이트, 화·목 Zone 2, 일요일 길고 느린 야외 운동(60~75분). 요일은 컨디션에 맞춰 하루씩 옮겨도 된다. (문서1)</li>
+        <li><b>한 세션 60분(±15분) 이내</b>: 1시간을 넘기는 격렬한 운동은 코르티솔을 높일 수 있다. 강한 운동 두 가지를 같은 날 하지 않는다. (문서1)</li>
+        <li><b>일정이 자주 깨지면 전신 3회</b>: 하루를 빠져도 한 부위를 2주씩 안 하게 되지 않는다. 같은 근육은 48~72시간 간격. (문서1·7)</li>
+        <li><b>바쁜 시기 최소량</b>: 전신 근력 20분 × 주 2회, 또는 3종목 × 3세트 × 3회(약 20분). (문서1·7)</li>
+        <li><b>운동 시각</b>: 기본은 아침 공복(문서1). 공복이 힘들면 바나나·단백질을 먼저 먹는다. 아침이 어려우면 늦은 오후도 좋다(문서3·4). 취침 직전 격렬한 운동만 피한다.</li>
+      </ul></div>
+    </details>
+    <details class="acc">
+      <summary>근력 기본값</summary>
+      <div class="in"><ul>
+        <li><b>동작으로 고른다</b>: 밀기·당기기·힌지·스쿼트·회전 + 캐리. 회전은 6개월, 힌지는 8~10주 이상 빼지 않는다. (문서7)</li>
+        <li><b>볼륨</b>: 근육별 주 9~12세트(최소 10세트), 유지만 하려면 주 5세트 이상. (문서1·7)</li>
+        <li><b>강도</b>: 실패 1~3회 전(RIR 1~3)까지. 세트의 약 10~20%만 한계까지, 바벨 스쿼트는 RIR 1~2에서 멈춘다. 자세가 무너지는 순간이 실패다. (문서1·7)</li>
+        <li><b>반복·휴식</b>: 근력 3~5회·휴식 3~5분, 근비대 8~12회(5~30회 모두 유효)·휴식 약 2분. 큰 복합 운동 먼저, 고립은 뒤에. (문서7)</li>
+        <li><b>템포</b>: 올릴 때 최대한 빠르게(의도가 중요), 내릴 때만 조절. (문서1·7)</li>
+        <li><b>진행</b>: 범위 상단을 2회 이상 넘기면 다음 세트 +2.5%, 하단보다 2회 이상 모자라면 −10%. 강도는 주 3~5%, 볼륨은 주 5% 이내로 올린다. (문서7)</li>
+        <li><b>종목 유지·디로드</b>: 종목은 6주(현실적으로 10~12주) 유지, 약 5주(최대 8주)마다 한 주는 볼륨 약 50%로 쉰다. (문서1·7)</li>
+      </ul></div>
+    </details>
+    <details class="acc">
+      <summary>Zone 2 · 4×4 · 장시간</summary>
+      <div class="in"><ul>
+        <li><b>Zone 2</b>: 최대심박(220−나이)의 60~70%, 코 호흡이 유지되고 대화할 수 있는 강도. 주 180~195분이 기본. 일상 걷기도 합산된다. (문서1)</li>
+        <li><b>노르웨이 4×4</b>: 4분은 대화가 안 될 만큼(최대심박 약 75~85%) 하지만 4분을 끝까지 유지할 강도, 3분은 아주 가볍게. 4세트, 주 1회 화요일 Zone 2를 대신한다. 처음엔 강도를 낮춰 시작한다. (문서1·3)</li>
+        <li><b>장시간</b>: 일요일 걷기·하이킹·러킹·느린 조깅 60~75분. 속도를 올리지 않는 것이 핵심. (문서1)</li>
+        <li><b>운동 스낵</b>: 20초 계단 오르기나 맨몸 스쿼트 30개를 하루 3회. 앉아 있는 날 혈당과 심폐 체력에 도움. (문서3·7)</li>
+      </ul></div>
+    </details>
+    <details class="acc">
+      <summary>워밍업 · 마무리 · 회복</summary>
+      <div class="in"><ul>
+        <li><b>워밍업</b>: 동적 5~7분(뻐근하면 10분). 운동 전 정적 스트레칭은 하지 않는다. 무거운 날은 점진 세트 8 → 5 → 4 → 2회. (문서1·7)</li>
+        <li><b>마무리</b>: 누워서 코로 박스 호흡 3~5분, 느린 날숨을 60초 이상 할 수 있으면 회복된 것. 정적 스트레칭은 근육군당 30초 × 3세트를 운동 뒤에. (문서1·7)</li>
+        <li><b>찬물</b>: Zone 2 날은 샤워 마지막 1~3분, 웨이트 날은 30초~1분. 근력 직후 얼음물 입수는 근성장 신호를 둔화시킨다. (문서1·7)</li>
+        <li><b>컨디션 나쁜 날</b>: 취소보다 RPE 6, 무게 50% × 10회 × 3세트, 또는 Zone 2·걷기로 대체. 수면 6시간 이하면 고강도를 뺀다. 근육통 6/10 초과 부위는 쉰다. (문서1·7)</li>
+        <li><b>수면이 가장 강력한 회복</b>: 6시간 미만이면 근력·점프·지구력이 최대 30% 떨어진다. (문서5·7)</li>
+      </ul></div>
+    </details>
+    <p class="note">근거: 루틴설계서 1(Huberman)·7(Galpin)의 운동 장을 중심으로, 3(Patrick)의 4×4·운동 스낵, 4(Panda)의 운동 시각, 5(Walker)의 수면과 운동, 6(Newport)·2(Yousef)의 휴식 원칙을 반영했습니다. 질환·부상이 있으면 시작 전에 의사와 상의하세요.</p>
+  </section>
+</div>
+<div id="restBar" class="restbar" hidden>
+  <div class="in"><span class="lbl">휴식</span><b id="restLeft" class="num">0:00</b><span id="restNext" class="s"></span><button id="restPlus" class="btn" type="button">+30초</button><button id="restSkip" class="btn" type="button">건너뛰기</button></div>
 </div>
 
 <nav id="tabbar" class="tabbar" hidden>
@@ -597,6 +740,10 @@ p{margin:0}
     <button type="button" role="tab" data-tab="check" aria-selected="false"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3.5" y="3.5" width="17" height="17" rx="4" fill="none" stroke="currentColor" stroke-width="2"/><path d="M8 12.3l2.8 2.8L16.3 9.5" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>체크</button>
     <button type="button" role="tab" data-tab="log" aria-selected="false"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 20V12M10 20V6M15 20v-9M20 20V4" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"/></svg>기록</button>
     <button type="button" role="tab" data-tab="guide" aria-selected="false"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 5.5C6.5 4 9.5 4 12 5.8 14.5 4 17.5 4 20 5.5V19c-2.5-1.4-5.5-1.4-8 .5-2.5-1.9-5.5-1.9-8-.5z" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/><path d="M12 5.8v13.7" stroke="currentColor" stroke-width="2"/></svg>기준</button>
+    <button type="button" role="tab" data-tab="wtoday" aria-selected="false" hidden><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 9.5v5M6 7.5v9M18 7.5v9M21 9.5v5M6 12h12" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"/></svg>오늘 운동</button>
+    <button type="button" role="tab" data-tab="wweek" aria-selected="false" hidden><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3.5" y="5" width="17" height="15.5" rx="3" fill="none" stroke="currentColor" stroke-width="2"/><path d="M3.5 10h17M8 3v4M16 3v4" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>주간</button>
+    <button type="button" role="tab" data-tab="wlog" aria-selected="false" hidden><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 19l5-6 4 3 7-9" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg>운동 기록</button>
+    <button type="button" role="tab" data-tab="wguide" aria-selected="false" hidden><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="8.5" fill="none" stroke="currentColor" stroke-width="2"/><path d="M12 11v5.5M12 7.6v.2" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"/></svg>가이드</button>
   </div>
 </nav>
 
@@ -842,7 +989,7 @@ function enter(key,nick,proof,guest){
   $("#splash").hidden=true;$("#intro").hidden=true;$("#main").hidden=false;$("#tabbar").hidden=false;
   S.today=ymd(logical());S.view=S.today;
   restoreLocal();
-  setTab(LS.get("axis.tab")||"today");
+  setMode(LS.get("axis.mode")||"routine");
   pushState();
   load();
   wxFetch();
@@ -955,13 +1102,20 @@ $("#wakeClose").addEventListener("click",()=>$("#wakeSheet").hidden=true);
 $("#wakeChip").addEventListener("click",()=>openWake(false));
 
 /* ---------- tabs ---------- */
+/* two modes share one tab bar: 루틴 (today/check/log/guide) and 워크아웃 (wtoday/wweek/wlog/wguide) */
+const R_TABS=["today","check","log","guide"],W_TABS=["wtoday","wweek","wlog","wguide"];
 function setTab(t){
-  if(!["today","check","log","guide"].includes(t))t="today";
-  S.tab=t;LS.set("axis.tab",t);
-  $$(".tabbar [data-tab]").forEach(b=>b.setAttribute("aria-selected",String(b.dataset.tab===t)));
-  ["today","check","log","guide"].forEach(k=>$("#tab-"+k).hidden=k!==t);
+  if(![...R_TABS,...W_TABS].includes(t))t="today";
+  const workout=W_TABS.includes(t);
+  S.tab=t;S.mode=workout?"workout":"routine";
+  LS.set(workout?"axis.wtab":"axis.tab",t);LS.set("axis.mode",S.mode);
+  $$(".tabbar [data-tab]").forEach(b=>{b.hidden=W_TABS.includes(b.dataset.tab)!==workout;b.setAttribute("aria-selected",String(b.dataset.tab===t))});
+  $$(".modesw [data-mode]").forEach(b=>b.setAttribute("aria-pressed",String(b.dataset.mode===S.mode)));
+  [...R_TABS,...W_TABS].forEach(k=>$("#tab-"+k).hidden=k!==t);
   renderAll();window.scrollTo(0,0);
 }
+function setMode(m){setTab(m==="workout"?(LS.get("axis.wtab")||"wtoday"):(LS.get("axis.tab")||"today"))}
+$$(".modesw [data-mode]").forEach(b=>b.addEventListener("click",()=>setMode(b.dataset.mode)));
 $$(".tabbar [data-tab]").forEach(b=>b.addEventListener("click",()=>{if(b.dataset.tab==="check"&&S.tab!=="check")S.view=S.today;setTab(b.dataset.tab)}));
 
 /* ---------- render: today ---------- */
@@ -981,7 +1135,7 @@ function renderToday(){
       ?'<li class="markrow" data-i="'+i+'"><span class="t">'+clk(W+it.o)+'</span><span>'+it.t+'</span></li>'
       :'<li data-i="'+i+'"><details><summary'+(it.ck?' class="has-done"':'')+'><span class="t">'+clk(W+it.o)+'</span><span class="tt">'+it.t+'</span>'
         +(it.ck?'<button class="tdone" type="button" data-done="'+i+'" aria-pressed="false" aria-label="'+it.t+' 완료"><i><svg aria-hidden="true"><use href="#ic-check"/></svg></i></button>':'')
-        +'</summary><p>'+it.d+(it.ck?' <b>· 완료 표시하면 체크 탭 ‘'+CHECKS.find(c=>c.id===it.ck).t+'’에 반영돼요.</b>':'')+'</p>'+(it.tag?'<p class="tag">'+it.tag+'</p>':'')+'</details></li>').join("");
+        +'</summary><p>'+it.d+(it.id==="move"?' <button class="link strong" type="button" data-gowo>워크아웃에서 오늘 운동 보기 →</button>':'')+(it.ck?' <b>· 완료 표시하면 체크 탭 ‘'+CHECKS.find(c=>c.id===it.ck).t+'’에 반영돼요.</b>':'')+'</p>'+(it.tag?'<p class="tag">'+it.tag+'</p>':'')+'</details></li>').join("");
   }
   S.items=items;
   const rel=nowMin()-W;
@@ -1004,6 +1158,7 @@ function renderToday(){
     html='<div class="now"><span class="k">지금 · '+clk(W+it.o)+(end?'–'+clk(W+end):'')+'</span><h3>'+it.t+'</h3><p class="d">'+it.d+'</p>'
       +(it.tag?'<span class="tag">'+it.tag+'</span>':'')
       +(it.ck?'<button class="done-btn" type="button" data-done="'+cur+'" aria-pressed="'+isDone(d,it)+'"><i><svg aria-hidden="true"><use href="#ic-check"/></svg></i>'+(isDone(d,it)?"완료했어요":"완료로 표시")+'</button>':'')
+      +(it.id==="move"?'<button class="btn primary wo-go" type="button" data-gowo>워크아웃 열기 · '+esc(WO[planFor(S.today)].t)+'</button>':'')
       +(end?'<div class="bar"><i style="width:'+prog.toFixed(1)+'%"></i></div><span class="left">'+left+'분 남음</span>':'')
       +(nx?'<div class="next">다음 <b>'+clk(W+nx.o)+'</b> '+nx.t+'</div>':'<div class="next">오늘 하루 끝. 내일 기상 시각을 지켜 주세요.</div>')+'</div>';
   }
@@ -1036,6 +1191,7 @@ function onDone(e){
   const it=S.items[+b.dataset.done];if(it&&it.ck)toggleDone(it);
 }
 $("#tl").addEventListener("click",onDone);
+document.addEventListener("click",e=>{if(e.target.closest("[data-gowo]")){e.preventDefault();setTab("wtoday")}});
 $("#nowBox").addEventListener("click",onDone);
 
 /* ---------- render: check ---------- */
@@ -1141,7 +1297,266 @@ function renderAll(){
   if(S.tab==="today")renderToday();
   else if(S.tab==="check")renderCheck();
   else if(S.tab==="log")renderLog();
+  else if(S.tab==="wtoday"){const a=document.activeElement;if(!(a&&a.closest&&a.closest("#woBody")&&a.tagName==="INPUT"))renderWoToday()}
+  else if(S.tab==="wweek")renderWoWeek();
+  else if(S.tab==="wlog")renderWoLog();
+  else if(S.tab==="wguide")renderWoGuide();
 }
+
+/* =================== WORKOUT =================== */
+/* Basic routine distilled from 루틴설계서 1 (Huberman) & 7 (Galpin), with 3·4·5 for intervals, timing and recovery.
+   Mon/Wed/Fri full-body A/B/C, Tue/Thu Zone 2 (one may become 4×4), Sun long & slow, Sat rest. */
+const EX={
+  sq:{n:"고블릿 스쿼트 / 백 스쿼트",p:"스쿼트",m:["다리","둔근"],s:3,r:"5~8",rest:180,c:"상체를 세우고 무릎은 발끝 방향. 일어설 때는 최대한 빠르게, 내릴 때만 조절",alt:"맨몸: 3초 내리는 템포 스쿼트"},
+  dbp:{n:"덤벨 벤치프레스",p:"밀기",m:["가슴","삼두"],s:3,r:"8~12",rest:120,c:"어깨뼈를 모아 고정하고 가슴 아래쪽으로 내리기",alt:"푸시업 (발을 올리면 더 어렵게)"},
+  row1:{n:"원암 덤벨 로우",p:"당기기",m:["등","이두"],s:3,r:"8~12",rest:120,c:"팔꿈치를 엉덩이 쪽으로 당기고 끝에서 1초 멈춤",alt:"밴드 로우 · 인버티드 로우"},
+  rdl:{n:"루마니안 데드리프트",p:"힌지",m:["햄스트링","둔근"],s:3,r:"8~10",rest:150,c:"허리는 중립, 엉덩이를 뒤로 빼며 햄스트링이 늘어날 때까지",alt:"덤벨·케틀벨 RDL"},
+  pallof:{n:"팰로프 프레스",p:"회전",m:["코어"],s:2,r:"10/쪽",rest:60,c:"몸이 돌아가지 않게 버티며 팔을 앞으로 뻗기",alt:"사이드 플랭크 30초씩"},
+  carry:{n:"농부 걷기",p:"캐리",m:["악력","코어"],s:2,r:"40m",rest:90,c:"어깨를 내리고 곧게 걷기. 목표는 양손에 체중 ½씩",alt:"무거운 가방 들고 계단"},
+  tbdl:{n:"트랩바 데드리프트",p:"힌지",m:["다리","둔근","등"],s:3,r:"4~6",rest:180,c:"바닥을 밀어내듯 일어서기, 바는 몸 가까이. 점진 세트 8→5→3 후 본 세트",alt:"케틀벨 데드리프트"},
+  ohp:{n:"오버헤드 프레스",p:"밀기",m:["어깨","삼두"],s:3,r:"6~10",rest:150,c:"갈비뼈를 내리고 머리 위로 똑바로",alt:"덤벨 숄더 프레스 · 파이크 푸시업"},
+  pull:{n:"턱걸이 / 랫 풀다운",p:"당기기",m:["등","이두"],s:3,r:"6~10",rest:150,c:"피로하기 전에. 가슴을 바 쪽으로",alt:"밴드 보조 턱걸이"},
+  bss:{n:"불가리안 스플릿 스쿼트",p:"스쿼트",m:["다리","둔근"],s:2,r:"8~12/쪽",rest:90,c:"앞발에 체중, 뒷무릎을 바닥 가까이. 좌우 불균형 방지",alt:"리버스 런지"},
+  rot:{n:"케이블 로테이션 / 메디신볼 회전 던지기",p:"회전",m:["코어"],s:3,r:"6/쪽",rest:60,c:"엉덩이부터 돌려 빠르게. 6개월 이상 회전을 빼지 않는다",alt:"밴드 우드찹"},
+  hang:{n:"데드 행 (매달리기)",p:"악력",m:["악력","어깨"],s:2,r:"30~60초",rest:60,c:"어깨를 살짝 끌어내린 채 버티기. 녹내장이 있으면 생략",alt:"농부 걷기"},
+  lp:{n:"레그 프레스 / 프론트 스쿼트",p:"스쿼트",m:["다리"],s:3,r:"8~12",rest:150,c:"무릎이 안으로 모이지 않게, 깊게",alt:"고블릿 스쿼트"},
+  idb:{n:"인클라인 덤벨 프레스",p:"밀기",m:["가슴","어깨"],s:3,r:"8~12",rest:120,c:"낮은 각도(15~30°), 아래에서 가슴이 늘어나게",alt:"발 올린 푸시업"},
+  crow:{n:"시티드 케이블 로우",p:"당기기",m:["등"],s:3,r:"10~12",rest:90,c:"가슴을 세우고 어깨뼈를 모아 당기기",alt:"밴드 로우"},
+  hip:{n:"힙 쓰러스트 / 글루트 브릿지",p:"힌지",m:["둔근","햄스트링"],s:3,r:"10~12",rest:90,c:"정점에서 1초 멈춤, 갈비뼈 내리기",alt:"한발 글루트 브릿지"},
+  lc:{n:"레그 컬 + 레그 익스텐션",p:"고립",m:["햄스트링","다리"],s:2,r:"10~15",rest:60,c:"마지막 세트만 한계 근처까지",alt:"노르딕 컬 · 시시 스쿼트"},
+  core3:{n:"허리 안정 3종",p:"코어",m:["코어"],s:2,r:"각 8~10초×5",rest:45,c:"버드독 · 사이드 플랭크 · 데드버그. 허리를 굽히지 않고 버티기",alt:""}
+};
+const WARM=["가벼운 유산소·줄넘기 3~5분","고관절·어깨 동적 가동 2분 (런지 워크, 팔 돌리기)","첫 운동 점진 세트: 가볍게 8회 → 5회 → 3회"];
+const COOL=["누워서 코로 박스 호흡 3~5분 (느린 날숨 60초 가능하면 회복)","정적 스트레칭 근육군당 30초","찬물 샤워 30초~1분 (웨이트 날은 짧게)"];
+const WO={
+  A:{t:"웨이트 A",kind:"lift",sub:"전신 · 스쿼트 · 가슴 밀기 · 등 당기기 · 힌지 · 회전 · 캐리",ex:["sq","dbp","row1","rdl","pallof","carry"]},
+  B:{t:"웨이트 B",kind:"lift",sub:"전신 · 데드리프트 · 머리 위 밀기 · 턱걸이 · 한발 스쿼트 · 회전 · 악력",ex:["tbdl","ohp","pull","bss","rot","hang"]},
+  C:{t:"웨이트 C",kind:"lift",sub:"전신 · 볼륨 · 고립 · 허리 안정",ex:["lp","idb","crow","hip","lc","core3"]},
+  Z2:{t:"Zone 2",kind:"z2",sub:"45~60분 · 코 호흡이 유지되고 대화할 수 있는 강도",goal:[45,60]},
+  X44:{t:"4×4 인터벌",kind:"x44",sub:"워밍업 10분 → 4분 강하게 + 3분 회복 × 4 → 마무리 5분",goal:[40,40]},
+  LONG:{t:"길고 느린 야외 운동",kind:"z2",sub:"60~75분 · 걷기·하이킹·러킹·느린 조깅, 속도를 올리지 않기",goal:[60,75]},
+  REST:{t:"완전 휴식",kind:"rest",sub:"야외 걷기와 사람 만나기. 원하면 운동 스낵이나 스트레칭만"}
+};
+const DOW_PLAN=["LONG","A","Z2","B","Z2","C","REST"]; // Sun..Sat
+const planFor=date=>{const x=S.days[date],o=x&&x.wo&&x.wo.type;return WO[o]?o:DOW_PLAN[parseYmd(date).getDay()]};
+/* d.wo = {type?, cond?, s:{A:{…},Z2:{…}}}: each workout type keeps its own session, so trying 4×4 after A never overwrites A */
+const sessions=d=>((d&&d.wo&&d.wo.s)||{});
+const woOf=(d,type)=>sessions(d)[type||planFor(d&&d.date||S.today)]||{};
+function woPatch(fn){const type=planFor(S.today);patch(S.today,d=>{d.wo=d.wo||{};d.wo.s=d.wo.s||{};fn(d.wo.s[type]=d.wo.s[type]||{},d,d.wo)})}
+function woMeta(fn){patch(S.today,d=>{d.wo=d.wo||{};fn(d.wo,d)})}
+const age=()=>{const a=+((prefs().wo||{}).age);return a>=12&&a<=90?a:null};
+function z2Range(){const a=age();if(!a)return [118,137];const m=220-a;return [Math.round(m*.6),Math.round(m*.7)]}
+const mmss=s=>{s=Math.max(0,Math.round(s));return Math.floor(s/60)+":"+pad(s%60)};
+const range=r=>{const m=/^(\d+)\s*~\s*(\d+)/.exec(r||"");return m?[+m[1],+m[2]]:null};
+/* last time this exercise was done (before today): its sets */
+function lastSets(id){
+  const ks=Object.keys(S.days).filter(k=>k<S.today).sort().reverse();
+  for(const k of ks){const ss=sessions(S.days[k]);for(const ty in ss){const e=ss[ty].ex;if(e&&e[id]&&e[id].some(s=>s&&s.done))return {date:k,sets:e[id].filter(s=>s&&s.done)}}}
+  return null;
+}
+/* Galpin's autoregulation: top of range +2 → +2.5%, bottom −2 → −10%, else same weight, more reps */
+function nextHint(id){
+  const L=lastSets(id),rg=range(EX[id].r);if(!L||!rg)return "";
+  const top=L.sets.reduce((a,s)=>(+s.w||0)>(+a.w||0)?s:a,L.sets[0]),w=+top.w||0,reps=L.sets.map(s=>+s.r||0);
+  const head="지난번 "+(w?w+"kg × ":"")+reps.join("·")+"회";
+  if(!w)return head;
+  if(reps.every(r=>r>=rg[1]))return head+" → 이번엔 "+(Math.round(w*1.025/1.25)*1.25)+"kg";
+  if(reps.some(r=>r&&r<=rg[0]-2))return head+" → 이번엔 "+(Math.round(w*.9/1.25)*1.25)+"kg";
+  return head+" → 같은 무게로 횟수 늘리기";
+}
+const e1rm=(w,r)=>w&&r?w*(1+r/30):0;
+
+/* ---------- rest timer (floating bar) ---------- */
+let rest=null;
+function startRest(sec,next){rest={end:Date.now()+sec*1000,next:next||""};$("#restBar").hidden=false;restTick()}
+function stopRest(){rest=null;$("#restBar").hidden=true}
+function restTick(){
+  if(!rest)return;const left=(rest.end-Date.now())/1000;
+  $("#restLeft").textContent=mmss(left);$("#restNext").textContent=rest.next;
+  if(left<=0){stopRest();beep();try{navigator.vibrate&&navigator.vibrate([200,100,200])}catch(e){}toast("휴식 끝. 다음 세트를 시작하세요.")}
+}
+$("#restPlus").addEventListener("click",()=>{if(rest){rest.end+=30000;restTick()}});
+$("#restSkip").addEventListener("click",stopRest);
+
+/* ---------- 4×4 phases (seconds) ---------- */
+const X44=(()=>{const a=[{n:"워밍업",d:600,k:"easy"}];for(let i=1;i<=4;i++){a.push({n:i+"라운드 · 강하게",d:240,k:"hard"});if(i<4)a.push({n:i+"라운드 회복",d:180,k:"easy"})}a.push({n:"마무리",d:300,k:"easy"});return a})();
+const swElapsed=t=>t?(t.acc||0)+(t.run?(Date.now()-t.run)/1000:0):0;
+function x44Phase(sec){let s=0;for(let i=0;i<X44.length;i++){if(sec<s+X44[i].d)return {i,ph:X44[i],left:s+X44[i].d-sec};s+=X44[i].d}return null}
+let lastPh=-1;
+
+/* ---------- 오늘 운동 ---------- */
+function renderWoToday(){
+  const d=day(S.today),type=planFor(S.today),P=WO[type],w=Object.assign({},woOf(d,type),{cond:(d.wo||{}).cond});
+  $("#woDate").textContent=dateLabel(S.today)+" · "+(w.end?"완료":w.start?"진행 중":"오늘");
+  $("#woTitle").textContent=P.t;$("#woSub").textContent=P.sub;
+  $("#woSwap").innerHTML=["A","B","C","Z2","X44","LONG","REST"].map(k=>'<button type="button" class="chip'+(k===type?" on":"")+(sessDone(woOf(d,k))?" did":"")+'" data-wtype="'+k+'">'+WO[k].t.replace("길고 느린 야외 운동","장시간")+'</button>').join("");
+  const sleepLow=num(d.sleepH)&&+d.sleepH<=6,bad=w.cond==="bad";
+  let h='<div class="card cond"><span class="lbl">오늘 컨디션</span><div class="yn3">'+[["good","좋음"],["ok","보통"],["bad","나쁨"]].map(([k,t])=>'<button type="button" data-cond="'+k+'" aria-pressed="'+(w.cond===k)+'">'+t+'</button>').join("")+'</div>'
+    +((sleepLow||bad)&&P.kind!=="rest"?'<p class="warn">'+(sleepLow?"수면 "+d.sleepH+"시간: ":"")+'오늘은 강도를 낮추세요. 웨이트는 무게 50% × 10회 × 3세트(RPE 6), 또는 Zone 2·걷기로 바꿔도 돼요.</p>':'')
+    +(w.cond==="good"&&P.kind==="lift"?'<p class="note">워밍업 마지막 세트가 평소보다 가볍게 느껴지면 좋은 날이에요. 계획대로 밀어 보세요.</p>':'')+'</div>';
+  if(P.kind==="lift")h+=liftHtml(w,P);
+  else if(P.kind==="z2")h+=z2Html(w,P,type);
+  else if(P.kind==="x44")h+=x44Html(w);
+  else h+=restHtml(w);
+  $("#woBody").innerHTML=h;
+}
+const num=v=>v!==null&&v!==undefined&&v!==""&&isFinite(+v);
+function checklist(id,items,state){return '<ul class="wochk">'+items.map((t,i)=>'<li><button type="button" class="ck mini" role="checkbox" data-wchk="'+id+'" data-i="'+i+'" aria-checked="'+!!(state&&state[i])+'"><span class="box"><svg aria-hidden="true"><use href="#ic-check"/></svg></span><span class="tx">'+esc(t)+'</span></button></li>').join("")+'</ul>'}
+function liftHtml(w,P){
+  const started=!!w.start,ex=w.ex||{};
+  let done=0,total=0;P.ex.forEach(id=>{total+=EX[id].s;done+=(ex[id]||[]).filter(s=>s&&s.done).length});
+  let h='<div class="card wohead"><div class="row"><span class="big num">'+done+'<small> / '+total+' 세트</small></span>'
+    +(w.end?'<span class="tag">완료 · '+Math.round((w.end-w.start)/60000)+'분</span>':started?'<span class="tag">진행 '+Math.round((Date.now()-w.start)/60000)+'분</span>':'')+'</div>'
+    +'<div class="bar"><i style="width:'+(total?done/total*100:0)+'%"></i></div>'
+    +(started?'':'<button class="btn primary block" type="button" data-wact="start">운동 시작</button>')+'</div>';
+  h+='<div class="card"><span class="lbl">워밍업 5~7분</span>'+checklist("warm",WARM,w.warm)+'</div>';
+  P.ex.forEach((id,n)=>{
+    const E=EX[id],sets=ex[id]||[],hint=nextHint(id);
+    h+='<div class="card exc"><div class="exh"><span class="num idx">'+(n+1)+'</span><div><b>'+esc(E.n)+'</b><small>'+E.s+'세트 × '+esc(E.r)+' · 휴식 '+mmss(E.rest)+' · '+esc(E.p)+'</small></div></div>'
+      +'<p class="cue">'+esc(E.c)+(E.alt?' <span>대체: '+esc(E.alt)+'</span>':'')+'</p>'
+      +(hint?'<p class="hint">'+esc(hint)+'</p>':'')
+      +'<div class="sets"><span class="sh">세트</span><span class="sh">kg</span><span class="sh">회</span><span></span>';
+    for(let i=0;i<E.s;i++){const s=sets[i]||{};
+      h+='<span class="num sn">'+(i+1)+'</span>'
+        +'<input class="num" type="number" inputmode="decimal" step="0.5" min="0" data-wset="'+id+'" data-i="'+i+'" data-f="w" value="'+(s.w??"")+'" placeholder="'+((sets[i-1]&&sets[i-1].w)||"")+'" aria-label="'+(i+1)+'세트 무게">'
+        +'<input class="num" type="number" inputmode="numeric" min="0" data-wset="'+id+'" data-i="'+i+'" data-f="r" value="'+(s.r??"")+'" placeholder="'+((range(E.r)||[""])[1]||"")+'" aria-label="'+(i+1)+'세트 횟수">'
+        +'<button type="button" class="sdone" data-wdone="'+id+'" data-i="'+i+'" aria-pressed="'+!!s.done+'" aria-label="'+(i+1)+'세트 완료"><svg aria-hidden="true"><use href="#ic-check"/></svg></button>';
+    }
+    h+='</div></div>';
+  });
+  h+='<div class="card"><span class="lbl">마무리</span>'+checklist("cool",COOL,w.cool)+'</div>';
+  h+='<div class="field"><label for="woNote">메모 (무게 느낌, 통증 등)</label><input id="woNote" data-wnote maxlength="120" value="'+esc(w.note||"")+'"></div>';
+  h+=w.end?'<button class="btn block" type="button" data-wact="reopen">기록 이어서 고치기</button>':'<button class="btn primary block" type="button" data-wact="finish">운동 끝내기</button>';
+  return h;
+}
+function z2Html(w,P,type){
+  const [lo,hi]=z2Range(),t=w.sw||{},sec=swElapsed(t),run=!!t.run,goal=P.goal;
+  const pct=Math.min(100,sec/60/goal[0]*100);
+  return '<div class="card wohead"><span class="lbl">목표 심박</span><span class="big num">'+lo+'~'+hi+'<small> bpm</small></span>'
+    +'<span class="s">'+(age()?"최대심박 "+(220-age())+"의 60~70%":"기본값 (가이드 탭에서 나이를 넣으면 맞춰 계산)")+' · 코로만 숨 쉬고 말할 수 있으면 맞는 강도</span></div>'
+    +'<div class="card timer"><span class="lbl">'+(type==="LONG"?"장시간":"Zone 2")+' 타이머 · 목표 '+goal[0]+(goal[1]!==goal[0]?"~"+goal[1]:"")+'분</span>'
+    +'<b class="clock num" data-clock="sw">'+mmss(sec)+'</b><div class="bar"><i data-clockbar style="width:'+pct.toFixed(1)+'%"></i></div>'
+    +'<div class="datarow"><button class="btn '+(run?"":"primary")+' block" type="button" data-wact="'+(run?"pause":"go")+'">'+(run?"일시정지":sec?"이어서":"시작")+'</button>'
+    +'<button class="btn block" type="button" data-wact="z2done"'+(sec<60?" disabled":"")+'>끝내고 기록</button></div>'
+    +(w.z2min?'<p class="note">기록됨: '+w.z2min+'분'+(w.hr?' · 평균 '+w.hr+'bpm':'')+'</p>':'')+'</div>'
+    +'<div class="card"><span class="lbl">직접 기록 (시계·밴드로 잰 경우)</span><div class="row2 two"><div class="field"><label for="z2min">시간(분)</label><input id="z2min" class="num" type="number" inputmode="numeric" data-wz="z2min" value="'+(w.z2min??"")+'"></div><div class="field"><label for="z2hr">평균 심박</label><input id="z2hr" class="num" type="number" inputmode="numeric" data-wz="hr" value="'+(w.hr??"")+'"></div></div></div>'
+    +'<div class="card"><span class="lbl">마무리</span>'+checklist("cool",["느린 날숨 호흡 3~5분","찬물 샤워 1~3분 (Zone 2 날)"],w.cool)+'</div>';
+}
+function x44Html(w){
+  const t=w.sw||{},sec=swElapsed(t),run=!!t.run,ph=x44Phase(sec),[lo,hi]=z2Range(),max=age()?220-age():195;
+  const cur=ph?ph.ph:{n:"끝",k:"easy"},hard=cur.k==="hard";
+  return '<div class="card wohead"><span class="lbl">강도</span><span class="s">강하게 4분: 최대심박의 약 75~85% ('+Math.round(max*.75)+'~'+Math.round(max*.85)+'bpm), 대화가 안 되지만 4분을 끝까지 유지할 수 있는 정도 · 회복 3분: 아주 가볍게. 자전거·에어바이크·로잉·오르막 걷기가 좋아요. 처음엔 낮게 시작하세요.</span></div>'
+    +'<div class="card timer'+(hard?" hard":"")+'"><span class="lbl" data-x44name>'+(ph?cur.n:"모두 끝났어요")+'</span>'
+    +'<b class="clock num" data-clock="x44">'+(ph?mmss(ph.left):"0:00")+'</b>'
+    +'<div class="phases">'+X44.map((p,i)=>'<i class="'+p.k+(ph&&i<ph.i?" past":"")+(ph&&i===ph.i?" now":"")+'" style="flex:'+p.d+'"></i>').join("")+'</div>'
+    +'<span class="s">전체 '+mmss(sec)+' / 40:00</span>'
+    +'<div class="datarow"><button class="btn '+(run?"":"primary")+' block" type="button" data-wact="'+(run?"pause":"go")+'">'+(run?"일시정지":sec?"이어서":"시작")+'</button>'
+    +'<button class="btn block" type="button" data-wact="z2done"'+(sec<60?" disabled":"")+'>끝내고 기록</button></div></div>'
+    +'<p class="note">라운드가 바뀔 때 소리와 진동으로 알려 드려요. 화면을 켜 둔 채 사용하세요.</p>';
+}
+function restHtml(w){
+  return '<div class="card"><span class="lbl">오늘은 쉬는 날</span><p>강한 운동은 쉬고 몸을 회복시켜요. 아래는 원하면 하는 것들이에요.</p>'
+    +checklist("rest",["야외 걷기 30분 이상 (햇빛과 함께)","운동 스낵: 20초 계단 오르기 또는 맨몸 스쿼트 30개","허리 안정 3종 5~10분 (버드독·사이드 플랭크·컬업)","정적 스트레칭 5~10분 (취침 전)","사우나·온탕 (있으면)"],w.rest)+'</div>';
+}
+/* events (delegated; inputs save without re-rendering so typing is never interrupted) */
+$("#woSwap").addEventListener("click",e=>{const b=e.target.closest("[data-wtype]");if(!b||b.disabled)return;const k=b.dataset.wtype;woMeta(m=>{if(k===DOW_PLAN[parseYmd(S.today).getDay()])delete m.type;else m.type=k});lastPh=-1;renderWoToday()});
+$("#woBody").addEventListener("click",e=>{
+  const c=e.target.closest("[data-cond]");if(c){woMeta(m=>{m.cond=m.cond===c.dataset.cond?null:c.dataset.cond});renderWoToday();return}
+  const k=e.target.closest("[data-wchk]");if(k){const id=k.dataset.wchk,i=+k.dataset.i;woPatch(w=>{w[id]=w[id]||[];w[id][i]=!w[id][i]});renderWoToday();return}
+  const s=e.target.closest("[data-wdone]");
+  if(s){
+    const id=s.dataset.wdone,i=+s.dataset.i,E=EX[id];let nowDone=false;
+    woPatch(w=>{w.start=w.start||Date.now();w.ex=w.ex||{};const a=w.ex[id]=w.ex[id]||[];const v=a[i]=a[i]||{};
+      if(!v.w&&i>0&&a[i-1]&&a[i-1].w)v.w=a[i-1].w;
+      if(!v.r){const rg=range(E.r);if(rg)v.r=rg[1]}
+      v.done=!v.done;nowDone=v.done});
+    if(nowDone){const P=WO[planFor(S.today)],last=i===E.s-1,ni=P.ex.indexOf(id);
+      startRest(E.rest,last?(P.ex[ni+1]?"다음: "+EX[P.ex[ni+1]].n:"다음: 마무리"):"다음: "+(i+2)+"세트")}
+    renderWoToday();return;
+  }
+  const a=e.target.closest("[data-wact]");if(!a)return;const act=a.dataset.wact;
+  if(act==="start"){woPatch(w=>{w.start=w.start||Date.now();delete w.end});toast("시작했어요. 워밍업부터 체크해 보세요.")}
+  if(act==="finish"){
+    const P=WO[planFor(S.today)],w0=woOf(day(S.today),planFor(S.today)),n=P.ex.reduce((t,id)=>t+((w0.ex||{})[id]||[]).filter(s=>s&&s.done).length,0);
+    if(!n&&!confirm("완료한 세트가 없어요. 그래도 끝낼까요?"))return;
+    woPatch((w,d)=>{w.start=w.start||Date.now();w.end=Date.now();if(n&&CHECKS.some(c=>c.id==="move"))d.checks.move=true});stopRest();
+    toast(n?"수고했어요! 체크 탭 ‘운동’에도 반영했어요.":"운동을 끝냈어요.");
+  }
+  if(act==="reopen")woPatch(w=>{delete w.end});
+  if(act==="go")woPatch(w=>{w.start=w.start||Date.now();w.sw=w.sw||{acc:0};w.sw.run=Date.now();delete w.end});
+  if(act==="pause")woPatch(w=>{const t=w.sw||{};t.acc=swElapsed(t);t.run=null;w.sw=t});
+  if(act==="z2done")woPatch((w,d)=>{const t=w.sw||{};t.acc=swElapsed(t);t.run=null;w.sw=t;w.z2min=Math.round(t.acc/60);w.end=Date.now();if(w.z2min>=20&&CHECKS.some(c=>c.id==="move"))d.checks.move=true});
+  if(act==="z2done")toast("기록했어요. 체크 탭 ‘운동’에도 반영했어요.");
+  renderWoToday();
+});
+$("#woBody").addEventListener("input",e=>{
+  const t=e.target;
+  if(t.dataset.wset){const id=t.dataset.wset,i=+t.dataset.i,f=t.dataset.f,v=t.value===""?null:+t.value;woPatch(w=>{w.ex=w.ex||{};const a=w.ex[id]=w.ex[id]||[];a[i]=a[i]||{};a[i][f]=v})}
+  else if(t.dataset.wz){const f=t.dataset.wz,v=t.value===""?null:+t.value;woPatch((w,d)=>{w[f]=v;if(f==="z2min"&&v>=20&&CHECKS.some(c=>c.id==="move"))d.checks.move=true})}
+  else if(t.hasAttribute("data-wnote"))woPatch(w=>{w.note=t.value});
+});
+/* 1-second tick: rest bar, stopwatch, 4×4 phase changes */
+setInterval(()=>{
+  restTick();
+  if(!S.key||S.tab!=="wtoday")return;
+  const w=woOf(day(S.today),planFor(S.today)),t=w.sw;if(!t||!t.run)return;
+  const sec=swElapsed(t),c=$('[data-clock]');if(!c)return;
+  if(c.dataset.clock==="sw"){c.textContent=mmss(sec);const P=WO[planFor(S.today)],b=$("[data-clockbar]");if(b&&P.goal)b.style.width=Math.min(100,sec/60/P.goal[0]*100).toFixed(1)+"%"}
+  else{const ph=x44Phase(sec);
+    if(!ph){woPatch(w=>{w.sw.acc=2400;w.sw.run=null});beep();renderWoToday();return}
+    c.textContent=mmss(ph.left);
+    if(ph.i!==lastPh){if(lastPh>=0){beep();try{navigator.vibrate&&navigator.vibrate([300,120,300])}catch(e){}renderWoToday()}lastPh=ph.i}
+  }
+},1000);
+
+/* ---------- 주간 ---------- */
+function weekDates(){const t=parseYmd(S.today),dow=(t.getDay()+6)%7;return [0,1,2,3,4,5,6].map(i=>shift(S.today,i-dow))}
+const sessDone=w=>!!(w&&(w.end||(w.z2min>=20)));
+const woDone=x=>Object.values(sessions(x)).some(sessDone);
+function setsByMuscle(dates){
+  const m={};dates.forEach(k=>{const ss=sessions(S.days[k]);for(const ty in ss){const ex=ss[ty].ex||{};for(const id in ex){if(!EX[id])continue;const n=ex[id].filter(s=>s&&s.done).length;EX[id].m.forEach(g=>m[g]=(m[g]||0)+n)}}});return m;
+}
+function renderWoWeek(){
+  const ds=weekDates(),[lo,hi]=z2Range();
+  let lift=0,z2=0,x44=false;
+  ds.forEach(k=>{const ss=sessions(S.days[k]);for(const ty in ss){const w=ss[ty],P=WO[ty];if(!P||!sessDone(w))continue;if(P.kind==="lift")lift++;if(P.kind==="z2"||P.kind==="x44")z2+=+w.z2min||0;if(P.kind==="x44")x44=true}});
+  const vol=setsByMuscle(ds);
+  let h='<div class="stat"><div class="card"><span class="eyebrow">근력</span><span class="big">'+lift+'<small> / 3회</small></span><span class="note">월·수·금 전신</span></div>'
+    +'<div class="card"><span class="eyebrow">Zone 2</span><span class="big">'+z2+'<small> / 180분</small></span><span class="note">'+lo+'~'+hi+'bpm'+(x44?' · 4×4 완료':'')+'</span></div></div>';
+  h+='<ul class="days wk">'+ds.map(k=>{const P=WO[planFor(k)],x=S.days[k],done=woDone(x),isT=k===S.today;
+    return '<li><button type="button" data-wkday="'+k+'"'+(isT?' class="today"':'')+'><span>'+esc(dateLabel(k))+(isT?' · 오늘':'')+'</span><span class="wk">'+esc(P.t.replace("길고 느린 야외 운동","장시간"))+'</span><span class="pc">'+(P.kind==="rest"?"–":done?"완료":k<S.today?"놓침":"")+'</span></button></li>'}).join("")+'</ul>';
+  const groups=["다리","둔근","햄스트링","가슴","등","어깨","삼두","이두","코어"];
+  h+='<div class="card cmp"><div class="head"><span class="eyebrow">이번 주 근육별 세트</span><span class="note">목표 주 9~12세트</span></div>'
+    +groups.map(g=>{const v=vol[g]||0;return '<div class="pair w7"><span>'+g+'</span><div class="bar"><i style="width:'+Math.min(100,v/12*100)+'%"></i></div><span class="pv">'+v+'</span></div>'}).join("")
+    +'<p class="note">완료 표시한 세트만 셉니다. 9세트 미만인 부위는 다음 주에 한두 세트 더하세요.</p></div>';
+  h+='<div class="card"><span class="lbl">요일 옮기기</span><p class="note">오늘 할 운동이 다르면 ‘오늘 운동’ 위쪽 칩에서 바꾸세요. 하체를 제대로 한 다음 날은 쉬고, 강한 운동은 이틀 연속 하지 않아요.</p></div>';
+  $("#wkBody").innerHTML=h;
+}
+$("#wkBody").addEventListener("click",e=>{const b=e.target.closest("[data-wkday]");if(b&&b.dataset.wkday===S.today)setTab("wtoday")});
+
+/* ---------- 운동 기록 ---------- */
+function renderWoLog(){
+  const ks=Object.keys(S.days).filter(k=>woDone(S.days[k])).sort().reverse();
+  if(!ks.length){$("#wlBody").innerHTML='<div class="empty"><p>아직 끝낸 운동이 없어요. 오늘 운동에서 세트를 완료하고 ‘운동 끝내기’를 누르면 여기에 쌓여요.</p><button class="btn" type="button" data-go="wtoday">오늘 운동 보기</button></div>';return}
+  const best={};
+  ks.forEach(k=>{const ss=sessions(S.days[k]);for(const ty in ss){const ex=ss[ty].ex||{};for(const id in ex)(ex[id]||[]).forEach(s=>{if(!s||!s.done||!EX[id])return;const v=e1rm(+s.w,+s.r);if(v>((best[id]||{}).v||0))best[id]={v,w:+s.w,r:+s.r,date:k}})}});
+  let h='<div class="card cmp"><div class="head"><span class="eyebrow">종목별 최고 (추정 1RM)</span></div>'
+    +(Object.keys(best).length?Object.keys(best).map(id=>'<div class="r"><div class="lb">'+esc(EX[id].n)+'<span>'+best[id].w+'kg × '+best[id].r+'회 · '+esc(dateLabel(best[id].date))+'</span></div><span class="num big2">'+Math.round(best[id].v)+'kg</span></div>').join(""):'<p class="note">무게를 기록하면 여기에 나와요.</p>')+'</div>';
+  const rows=[];ks.forEach(k=>{const ss=sessions(S.days[k]);for(const ty in ss)if(WO[ty]&&sessDone(ss[ty]))rows.push([k,ty,ss[ty]])});
+  h+='<div class="head"><span class="eyebrow">날짜별</span></div><ul class="days">'+rows.slice(0,60).map(([k,ty,w])=>{const P=WO[ty];
+    let info="";if(P.kind==="lift"){let n=0,vol=0;for(const id in (w.ex||{}))(w.ex[id]||[]).forEach(s=>{if(s&&s.done){n++;vol+=(+s.w||0)*(+s.r||0)}});info=n+"세트"+(vol?" · "+Math.round(vol).toLocaleString()+"kg":"")}else info=(w.z2min||0)+"분";
+    return '<li><button type="button" disabled><span>'+esc(dateLabel(k))+'</span><span class="wk">'+esc(P.t.replace("길고 느린 야외 운동","장시간"))+'</span><span class="pc">'+info+'</span></button></li>'}).join("")+'</ul>';
+  $("#wlBody").innerHTML=h;
+}
+$("#wlBody").addEventListener("click",e=>{if(e.target.closest("[data-go]"))setTab("wtoday")});
+
+/* ---------- 가이드: age ---------- */
+function renderWoGuide(){const a=age();if(document.activeElement!==$("#woAge"))$("#woAge").value=a||""}
+$("#woAgeSave").addEventListener("click",async()=>{
+  const v=+$("#woAge").value;if(!(v>=12&&v<=90)){$("#woAgeMsg").textContent="12~90 사이로 넣어 주세요.";return}
+  const p=JSON.parse(JSON.stringify(prefs()));p.wo=Object.assign({},p.wo,{age:v});await savePrefs(p);
+  const [lo,hi]=z2Range();$("#woAgeMsg").textContent="저장했어요. Zone 2 심박 "+lo+"~"+hi+"bpm";
+});
 
 /* ---------- export ---------- */
 function exportRows(){

@@ -224,6 +224,27 @@ p{margin:0}
 .wakebtn b{font-family:var(--f-num);font-size:1.6rem;line-height:1.1}
 .wakebtn span{color:var(--muted);font-size:.9rem}
 .wakebtn[aria-pressed="true"]{border-color:var(--accent);background:var(--soft)}
+.wakeother{display:grid;gap:.35rem}
+.wakeother label{font-size:.85rem;font-weight:600;color:var(--muted)}
+.wakeother label small{font-weight:500;margin-left:.3rem}
+.wakeother .row{display:grid;grid-template-columns:1fr auto;gap:.5rem}
+.wakeother input{min-height:3.1rem;padding:.4rem .8rem;border-radius:12px;border:1.5px solid var(--line);background:var(--surface);font-family:var(--f-num);font-size:18px;min-width:0}
+.wakeother.on input{border-color:var(--accent);background:var(--soft)}
+.seg.seg3{grid-template-columns:1fr 1fr 1fr}
+.tl summary.has-done{grid-template-columns:4.2rem 1fr auto auto}
+.tdone{display:grid;place-items:center;width:2.2rem;height:2.2rem;margin:-.3rem 0;padding:0;border:0;background:transparent;cursor:pointer;border-radius:50%}
+.tdone i{display:grid;place-items:center;width:1.45rem;height:1.45rem;border-radius:50%;border:2px solid var(--line);background:var(--surface)}
+.tdone svg{width:.85rem;height:.85rem;opacity:0;color:var(--accent-fg)}
+.tdone[aria-pressed="true"] i{background:var(--accent);border-color:var(--accent)}
+.tdone[aria-pressed="true"] svg{opacity:1}
+.tl li.done .tt{text-decoration:line-through;text-decoration-color:var(--muted)}
+.now .done-btn{justify-self:start;display:inline-flex;align-items:center;gap:.45rem;min-height:2.4rem;padding:.3rem .9rem .3rem .45rem;border-radius:999px;border:1.5px solid var(--line);background:var(--surface);font-weight:600;font-size:.9rem;cursor:pointer}
+.now .done-btn i{display:grid;place-items:center;width:1.45rem;height:1.45rem;border-radius:50%;border:2px solid var(--line)}
+.now .done-btn svg{width:.85rem;height:.85rem;opacity:0;color:var(--accent-fg)}
+.now .done-btn[aria-pressed="true"]{border-color:var(--accent);color:var(--accent)}
+.now .done-btn[aria-pressed="true"] i{background:var(--accent);border-color:var(--accent)}
+.now .done-btn[aria-pressed="true"] svg{opacity:1}
+.datarow{display:grid;grid-template-columns:1fr 1fr;gap:.5rem}
 .alert{position:fixed;left:0;right:0;top:calc(env(safe-area-inset-top,0px) + 10px);z-index:40;padding-inline:12px}
 .alert .box{max-width:34rem;margin:0 auto;background:var(--fg);color:var(--bg2);border-radius:18px;padding:1rem 1.1rem;display:grid;grid-template-columns:1fr auto;gap:.3rem .8rem;align-items:center;box-shadow:0 12px 40px rgba(0,0,0,.3)}
 .alert .at{font-family:var(--f-num);font-size:.85rem;opacity:.75}
@@ -296,9 +317,10 @@ p{margin:0}
       <h2 id="checkDate"></h2>
     </div>
     <div id="backToday" class="back" hidden><span>지난 날짜를 고치는 중</span><button id="goToday" class="link" type="button">오늘로</button></div>
-    <div id="wakeSeg" class="seg" role="group" aria-label="기상 시각">
+    <div id="wakeSeg" class="seg seg3" role="group" aria-label="기상 시각">
       <button type="button" data-wake="7" aria-pressed="false">7시 기상</button>
       <button type="button" data-wake="8" aria-pressed="false">8시 기상</button>
+      <button type="button" data-wake="other" aria-pressed="false">다른 시각</button>
     </div>
     <div class="score"><b id="scorePct" class="num">0%</b><span id="scoreN">0 / 8</span><span id="streakN" class="streak"></span></div>
     <div class="bar"><i id="scoreBar" style="width:0%"></i></div>
@@ -467,6 +489,17 @@ p{margin:0}
         <li>해는 직접 쳐다보지 않는다. 눈부시면 중단한다.</li>
       </ul></div>
     </details>
+    <details class="acc" id="dataAcc">
+      <summary>내 데이터</summary>
+      <div class="in">
+        <p>지금까지의 기록을 파일로 받아 둘 수 있어요. CSV는 엑셀·넘버스에서 바로 열리고, JSON은 모든 값을 그대로 담습니다.</p>
+        <div class="datarow">
+          <button class="btn block" type="button" data-export="csv">CSV로 받기</button>
+          <button class="btn block" type="button" data-export="json">JSON으로 받기</button>
+        </div>
+        <p id="exportMsg" class="note" role="status"></p>
+      </div>
+    </details>
     <p class="note">하루의 경계는 새벽 4시입니다. 자정을 넘겨도 새벽 4시 전까지는 전날 기록으로 이어집니다.</p>
   </section>
 </div>
@@ -486,7 +519,11 @@ p{margin:0}
     <h2 id="wakeTitle">오늘 기상 시각을 골라 주세요</h2>
     <button class="wakebtn" type="button" data-pick="7" aria-pressed="false"><b>7:00</b><span>업무 10:00 · 첫 식사 12:00 · 취침 24:00</span></button>
     <button class="wakebtn" type="button" data-pick="8" aria-pressed="false"><b>8:00</b><span>업무 11:00 · 첫 식사 13:00 · 취침 01:00</span></button>
-    <p class="note">잘못 골랐으면 오늘 안에 언제든 바꿀 수 있어요.</p>
+    <div class="wakeother">
+      <label for="wakeTime">다른 시각 <small>5:00~10:30, 15분 단위</small></label>
+      <div class="row"><input id="wakeTime" type="time" step="900" min="05:00" max="10:30"><button id="wakeApply" class="btn primary" type="button">이 시각으로</button></div>
+    </div>
+    <p class="note">잘못 골랐으면 오늘 안에 언제든 바꿀 수 있어요. 7시와 8시 외의 시각도 모든 일정이 기상 시각 기준으로 함께 밀립니다.</p>
     <button id="wakeClose" class="btn block" type="button" hidden>닫기</button>
   </div>
 </div>
@@ -541,25 +578,25 @@ function timeline(W,dow){
   const c=o=>clk(W+o);
   return [
     {o:0,e:10,t:"물과 소금",d:"물 0.5~1L + 소금(한 꼬집에서 시작, 최대 약 반 티스푼). 일어난 시각을 메모해 체온 최저점(기상 약 2시간 전)을 파악한다. 폰은 침대 밖에 두고 보지 않기. 염분 제한이 있으면 의사 확인"},
-    {o:10,e:40,t:"아침 햇빛 + 걷기",d:"야외 햇빛 + 앞으로 걷기 10~30분(늦어도 "+c(60)+" 안에 시작). 해 쪽을 보되 직접 쳐다보지 않기(눈부시면 중단, 깜빡임은 자연스럽게). 맑으면 10분 안팎(밝은 날은 최소 2분도 효과), 구름 끼면 15~20분, 아주 흐리거나 비 오면 30분. 선글라스·유리창·차 앞유리 없이(안경·렌즈는 가능). 일출 전에 일어나면 밝은 조명을 켜고, 해가 뜬 뒤 다시 나가기"},
-    {o:40,e:90,t:"공복 운동",d:"1시간 이내. 월·수·금 웨이트, 화·목 Zone 2. 출근이 없거나 여유가 있으면 90분 작업 블록 뒤에 운동해도 된다",tag:exerciseToday(dow)},
+    {o:10,e:40,t:"아침 햇빛 + 걷기",ck:"sun",si:0,d:"야외 햇빛 + 앞으로 걷기 10~30분(늦어도 "+c(60)+" 안에 시작). 해 쪽을 보되 직접 쳐다보지 않기(눈부시면 중단, 깜빡임은 자연스럽게). 맑으면 10분 안팎(밝은 날은 최소 2분도 효과), 구름 끼면 15~20분, 아주 흐리거나 비 오면 30분. 선글라스·유리창·차 앞유리 없이(안경·렌즈는 가능). 일출 전에 일어나면 밝은 조명을 켜고, 해가 뜬 뒤 다시 나가기"},
+    {o:40,e:90,t:"공복 운동",ck:"move",d:"1시간 이내. 월·수·금 웨이트, 화·목 Zone 2. 출근이 없거나 여유가 있으면 90분 작업 블록 뒤에 운동해도 된다",tag:exerciseToday(dow)},
     {o:90,e:120,t:"샤워 · 스트레칭 · 호흡",d:"샤워 후 스트레칭 + 호흡 5~10분. Zone 2 날은 샤워 마지막에 찬물 1~3분, 웨이트 날은 30초~1분"},
     {o:120,e:180,t:"출근 준비",d:"출근 준비, 출근길 걷기"},
     {o:180,e:270,t:"딥워크 1",d:"업무 시작. 90분, 알림 끄기, 폰은 비행기 모드가 아니라 완전히 끄기, 낮은 화이트노이즈, 화면은 눈높이~약간 위. 작업 블록은 체온 최저점 4~6시간 뒤(기상 2~4시간 뒤)가 가장 좋다. 첫 카페인은 "+c(90)+"~"+c(120)+"에서 "+c(180)+"~"+c(240)+" 사이"},
     {o:270,e:300,t:"불편한 일 하나",d:"딥워크 직후 불편한 일 하나"},
     {o:300,e:340,t:"식사 ① 첫 식사",d:(W===480?"정오 전후 ±1시간 기준을 따라 한 시간 뒤로 민 시각. ":"정오 전후 ±1시간. ")+"단백질 40g 이상, 채소 위주, 탄수화물은 적게~보통(운동한 날 전분 소량, 안 한 날은 생략 가능)"},
-    {o:340,e:370,t:"점심 후 햇빛 걷기",d:"점심 후 야외 걷기 5~30분 + 햇빛"},
+    {o:340,e:370,t:"점심 후 햇빛 걷기",ck:"sun",si:1,d:"점심 후 야외 걷기 5~30분 + 햇빛"},
     {o:370,e:480,t:"일반 업무",d:"일반 업무"},
     {o:480,mark:true,t:"카페인 마감"},
     {o:480,e:500,t:"NSDR",d:"NSDR 10~20분"},
     {o:500,e:590,t:"딥워크 2",d:"두 번째 우선순위, 90분. 딥워크 1과 합쳐 하루 총 약 3시간 집중"},
     {o:590,e:660,t:"가벼운 업무 · 퇴근",d:"가벼운 업무·학습·복습, 퇴근"},
-    {o:660,e:690,t:"퇴근길 햇빛",d:"퇴근길 늦은 오후 햇빛 10~30분(선글라스 없이)"},
+    {o:660,e:690,t:"퇴근길 햇빛",ck:"sun",si:2,d:"퇴근길 늦은 오후 햇빛 10~30분(선글라스 없이)"},
     {o:690,e:750,t:"귀가 · 저녁 준비",d:"귀가, 저녁 준비"},
-    {o:750,e:840,t:"식사 ② 저녁 식사",d:c(750)+" 시작, 늦어도 "+c(840)+"까지 끝내기(취침 3시간 전). 전분 탄수화물 + 단백질 중심(비가공 식품 70~80% 안에서 밥, 감자 등). 사람과 대화"},
+    {o:750,e:840,t:"식사 ② 저녁 식사",ck:"bond",d:c(750)+" 시작, 늦어도 "+c(840)+"까지 끝내기(취침 3시간 전). 전분 탄수화물 + 단백질 중심(비가공 식품 70~80% 안에서 밥, 감자 등). 사람과 대화"},
     {o:840,e:900,t:"독서 · 되돌아보기",d:"독서 20~30분, 스킬 쌓기 또는 일기, 되돌아보기 4~10분"},
     {o:900,e:930,t:"내일 계획",d:"우선순위 3개 + 개선점 1개, 작업 공간 정리"},
-    {o:930,e:960,t:"체온 · 조명 낮추기",d:"따뜻한 물 샤워 또는 욕조·사우나(10분 이내)로 체온 하락을 앞당긴다. 천장등 끄고 간접등, 화면 밝기 낮추기. 선택: 취침 30~60분 전 마그네슘(트레오네이트·글리시네이트) 300~400mg, 아피제닌 50mg, 테아닌(영양제는 의사 확인)"},
+    {o:930,e:960,t:"체온 · 조명 낮추기",ck:"dark",d:"따뜻한 물 샤워 또는 욕조·사우나(10분 이내)로 체온 하락을 앞당긴다. 천장등 끄고 간접등, 화면 밝기 낮추기. 선택: 취침 30~60분 전 마그네슘(트레오네이트·글리시네이트) 300~400mg, 아피제닌 50mg, 테아닌(영양제는 의사 확인)"},
     {o:960,e:1020,t:"화면 끄기",d:"화면 끄기. 밤 10시~새벽 4시에는 밝은 빛 피하기. 방은 어둡고 시원하게 18~19°C"},
     {o:1020,e:99999,t:"취침",d:"폰은 침대 밖에. 새벽에 깨면 조명을 어둡게 켰다가 바로 끄기. 저녁에 졸린데 늦게까지 버티면 새벽에 깨기 쉬우니 일찍 자기"}
   ];
@@ -760,13 +797,25 @@ function openWake(first){
   $("#wakeDate").textContent=dateLabel(S.today);
   $("#wakeTitle").textContent=first?"오늘 기상 시각을 골라 주세요":"오늘 기상 시각 바꾸기";
   $$("#wakeSheet [data-pick]").forEach(b=>b.setAttribute("aria-pressed",String(+b.dataset.pick===w)));
+  const other=!!w&&w!==7&&w!==8;
+  $(".wakeother").classList.toggle("on",other);
+  $("#wakeTime").value=other?clk(Math.round(w*60)):"";
   $("#wakeClose").hidden=!w;
   $("#wakeSheet").hidden=false;
 }
-$$("#wakeSheet [data-pick]").forEach(b=>b.addEventListener("click",()=>{
-  const w=+b.dataset.pick;patch(S.today,d=>{d.wake=w});
-  $("#wakeSheet").hidden=true;renderAll();toast(w+"시 기상 타임라인으로 보여 드려요.");
-}));
+/* wake is stored in hours (7, 8, or e.g. 6.75 for 6:45) so every offset stays W = wake*60 */
+const fmtW=w=>{if(w==null||!isFinite(w))return "–";const m=Math.round(w*60);return m%60?Math.floor(m/60)+":"+pad(m%60):(m/60)+"시"};
+function pickWake(w){
+  patch(S.today,d=>{d.wake=w});
+  $("#wakeSheet").hidden=true;renderAll();toast(fmtW(w)+" 기상 타임라인으로 보여 드려요.");
+}
+$$("#wakeSheet [data-pick]").forEach(b=>b.addEventListener("click",()=>pickWake(+b.dataset.pick)));
+$("#wakeApply").addEventListener("click",()=>{
+  const v=$("#wakeTime").value;if(!/^\d{2}:\d{2}$/.test(v)){toast("시각을 먼저 골라 주세요.");return}
+  let m=+v.slice(0,2)*60+ +v.slice(3);m=Math.round(m/15)*15;
+  if(m<300||m>630){toast("5:00에서 10:30 사이로 골라 주세요.");return}
+  pickWake(m/60);
+});
 $("#wakeClose").addEventListener("click",()=>$("#wakeSheet").hidden=true);
 $("#wakeChip").addEventListener("click",()=>openWake(false));
 
@@ -784,7 +833,7 @@ $$(".tabbar [data-tab]").forEach(b=>b.addEventListener("click",()=>{if(b.dataset
 function renderToday(){
   const d=day(S.today),w=d.wake;
   $("#todayDate").textContent=dateLabel(S.today);
-  $("#wakeChip").innerHTML=w?(w+"시 기상 <small>바꾸기</small>"):"기상 시각 고르기";
+  $("#wakeChip").innerHTML=w?(fmtW(w)+" 기상 <small>바꾸기</small>"):"기상 시각 고르기";
   if(!w){
     $("#nowBox").innerHTML='<div class="empty"><p>'+(S.loaded?"오늘 기상 시각을 고르면 그 타입의 타임라인과 지금 할 일을 보여 드려요.":"기록을 불러오는 중이에요…")+'</p></div>';
     $("#glance").innerHTML="";$("#tl").innerHTML="";S.tlKey="";return;
@@ -794,13 +843,18 @@ function renderToday(){
     S.tlKey=k;
     $("#tl").innerHTML=items.map((it,i)=>it.mark
       ?'<li class="markrow" data-i="'+i+'"><span class="t">'+clk(W+it.o)+'</span><span>'+it.t+'</span></li>'
-      :'<li data-i="'+i+'"><details><summary><span class="t">'+clk(W+it.o)+'</span><span class="tt">'+it.t+'</span></summary><p>'+it.d+'</p>'+(it.tag?'<p class="tag">'+it.tag+'</p>':'')+'</details></li>').join("");
+      :'<li data-i="'+i+'"><details><summary'+(it.ck?' class="has-done"':'')+'><span class="t">'+clk(W+it.o)+'</span><span class="tt">'+it.t+'</span>'
+        +(it.ck?'<button class="tdone" type="button" data-done="'+i+'" aria-pressed="false" aria-label="'+it.t+' 완료"><i><svg aria-hidden="true"><use href="#ic-check"/></svg></i></button>':'')
+        +'</summary><p>'+it.d+(it.ck?' <b>· 완료 표시하면 체크 탭 ‘'+CHECKS.find(c=>c.id===it.ck).t+'’에 반영돼요.</b>':'')+'</p>'+(it.tag?'<p class="tag">'+it.tag+'</p>':'')+'</details></li>').join("");
   }
+  S.items=items;
   const rel=nowMin()-W;
   let cur=-1;items.forEach((it,i)=>{if(!it.mark&&rel>=it.o&&rel<it.e)cur=i});
-  $$("#tl li").forEach(li=>{const i=+li.dataset.i,it=items[i];
+  $$("#tl li").forEach(li=>{const i=+li.dataset.i,it=items[i],dn=!!it.ck&&isDone(d,it);
     li.classList.toggle("cur",i===cur);
     li.classList.toggle("past",cur>=0?(it.mark?rel>=it.o:i<cur):false);
+    li.classList.toggle("done",dn);
+    const b=li.querySelector("[data-done]");if(b)b.setAttribute("aria-pressed",String(dn));
   });
   const nextOf=i=>{for(let j=i+1;j<items.length;j++)if(!items[j].mark)return items[j];return null};
   let html;
@@ -813,6 +867,7 @@ function renderToday(){
     const left=end?Math.max(1,Math.ceil(end-rel)):0;
     html='<div class="now"><span class="k">지금 · '+clk(W+it.o)+(end?'–'+clk(W+end):'')+'</span><h3>'+it.t+'</h3><p class="d">'+it.d+'</p>'
       +(it.tag?'<span class="tag">'+it.tag+'</span>':'')
+      +(it.ck?'<button class="done-btn" type="button" data-done="'+cur+'" aria-pressed="'+isDone(d,it)+'"><i><svg aria-hidden="true"><use href="#ic-check"/></svg></i>'+(isDone(d,it)?"완료했어요":"완료로 표시")+'</button>':'')
       +(end?'<div class="bar"><i style="width:'+prog.toFixed(1)+'%"></i></div><span class="left">'+left+'분 남음</span>':'')
       +(nx?'<div class="next">다음 <b>'+clk(W+nx.o)+'</b> '+nx.t+'</div>':'<div class="next">오늘 하루 끝. 내일 기상 시각을 지켜 주세요.</div>')+'</div>';
   }
@@ -829,6 +884,24 @@ function renderToday(){
   $("#glance").innerHTML='<div class="card"><span class="lbl">수분</span><span class="v">'+wv+'</span><span class="s">'+ws+'</span></div><div class="card"><span class="lbl">카페인</span><span class="v">'+cv+'</span><span class="s">'+cs+'</span></div>';
 }
 
+/* ---------- timeline items that count toward a check (sun = 3 separate walks) ---------- */
+const sunOf=d=>[0,1,2].map(i=>!!(d.sunN&&d.sunN[i]));
+const isDone=(d,it)=>it.ck==="sun"?sunOf(d)[it.si]:!!(d.checks&&d.checks[it.ck]);
+function toggleDone(it){
+  patch(S.today,d=>{
+    if(it.ck==="sun"){const s=sunOf(d);s[it.si]=!s[it.si];d.sunN=s;d.checks.sun=s.every(Boolean)}
+    else d.checks[it.ck]=!d.checks[it.ck];
+  });
+  renderAll();
+}
+function onDone(e){
+  const b=e.target.closest("[data-done]");if(!b||!S.items)return;
+  e.preventDefault();e.stopPropagation();
+  const it=S.items[+b.dataset.done];if(it&&it.ck)toggleDone(it);
+}
+$("#tl").addEventListener("click",onDone);
+$("#nowBox").addEventListener("click",onDone);
+
 /* ---------- render: check ---------- */
 function buildCheck(){
   $("#checks").innerHTML=CHECKS.map(c=>'<li><button class="ck" type="button" role="checkbox" aria-checked="false" data-ck="'+c.id+'"><span class="box"><svg aria-hidden="true"><use href="#ic-check"/></svg></span><span class="tx"><b>'+c.t+'</b>'+(c.s?'<small>'+c.s+'</small>':'')+'</span></button></li>').join("");
@@ -837,20 +910,33 @@ function buildCheck(){
 buildCheck();
 $("#checks").addEventListener("click",e=>{
   const b=e.target.closest("[data-ck]");if(!b)return;const id=b.dataset.ck;
-  patch(S.view,d=>{d.checks[id]=!d.checks[id]});renderCheck();
+  patch(S.view,d=>{d.checks[id]=!d.checks[id];if(id==="sun")d.sunN=[0,1,2].map(()=>d.checks.sun)});renderCheck();
 });
 $$(".rate").forEach(r=>r.addEventListener("click",e=>{const b=e.target.closest("[data-v]");if(!b)return;const f=r.dataset.r,v=+b.dataset.v;patch(S.view,d=>{d[f]=d[f]===v?null:v});renderCheck()}));
 $$(".yn").forEach(r=>r.addEventListener("click",e=>{const b=e.target.closest("[data-v]");if(!b)return;const f=r.dataset.y,v=b.dataset.v==="1";patch(S.view,d=>{d[f]=d[f]===v?null:v});renderCheck()}));
 $$("#memo [data-f]").forEach(inp=>inp.addEventListener("input",()=>{const f=inp.dataset.f;patch(S.view,d=>{d[f]=inp.value})}));
-$$("#wakeSeg [data-wake]").forEach(b=>b.addEventListener("click",()=>{if(S.view!==S.today)return;patch(S.today,d=>{d.wake=+b.dataset.wake});renderAll()}));
+$$("#wakeSeg [data-wake]").forEach(b=>b.addEventListener("click",()=>{
+  if(S.view!==S.today)return;
+  if(b.dataset.wake==="other"){openWake(false);return}
+  patch(S.today,d=>{d.wake=+b.dataset.wake});renderAll();
+}));
 $("#goToday").addEventListener("click",()=>{S.view=S.today;renderCheck()});
 
 function renderCheck(){
   const d=day(S.view),isToday=S.view===S.today;
   $("#checkDate").textContent=dateLabel(S.view)+(isToday?" · 오늘":"");
   $("#backToday").hidden=isToday;
-  $$("#wakeSeg [data-wake]").forEach(b=>{b.setAttribute("aria-pressed",String(+b.dataset.wake===d.wake));b.disabled=!isToday});
+  const otherW=!!d.wake&&d.wake!==7&&d.wake!==8;
+  $$("#wakeSeg [data-wake]").forEach(b=>{
+    const o=b.dataset.wake==="other";
+    b.setAttribute("aria-pressed",String(o?otherW:+b.dataset.wake===d.wake));b.disabled=!isToday;
+    if(o)b.textContent=otherW?fmtW(d.wake)+" 기상":"다른 시각";
+  });
   $$("#checks [data-ck]").forEach(b=>b.setAttribute("aria-checked",String(!!(d.checks&&d.checks[b.dataset.ck]))));
+  const sm=(id,txt)=>{const el=$('#checks [data-ck="'+id+'"] small');if(el)el.textContent=txt};
+  const sn=sunOf(d).filter(Boolean).length;
+  sm("sun",(sn&&!(d.checks&&d.checks.sun)?"오늘 "+sn+" / 3 · ":"")+CHECKS.find(c=>c.id==="sun").s);
+  sm("caff",d.wake?"이날 마감 "+clk(Math.round(d.wake*60)+480)+" (기상 8시간 뒤)":"기상 8시간 뒤 (7시 기상 15:00, 8시 기상 16:00)");
   const n=CHECKS.filter(c=>d.checks&&d.checks[c.id]).length,p=Math.round(n/CHECKS.length*100);
   $("#scorePct").textContent=p+"%";$("#scoreN").textContent=n+" / "+CHECKS.length+" 항목";$("#scoreBar").style.width=p+"%";
   $$(".rate").forEach(r=>$$("button",r).forEach(b=>b.setAttribute("aria-pressed",String(d[r.dataset.r]===+b.dataset.v))));
@@ -878,7 +964,7 @@ function streakOf(){
 function renderLog(){
   const all=Object.values(S.days).filter(x=>x&&x.wake).sort((a,b)=>b.date.localeCompare(a.date));
   if(!all.length){$("#logBody").innerHTML='<div class="empty"><p>'+(S.loaded?"아직 기록이 없어요. 체크 탭에서 오늘 항목을 체크하면 날짜별로 여기에 쌓입니다.":"기록을 불러오는 중이에요…")+'</p>'+(S.loaded?'<button class="btn" type="button" data-go="check">체크하러 가기</button>':'')+'</div>';return}
-  const g={7:all.filter(x=>+x.wake===7),8:all.filter(x=>+x.wake===8)};
+  const cnt={};all.forEach(x=>{const k=+x.wake;cnt[k]=(cnt[k]||0)+1});const ks=Object.keys(cnt).map(Number).sort((a,b)=>cnt[b]-cnt[a]||a-b);const kA=ks.includes(7)&&ks.includes(8)&&cnt[7]+cnt[8]>=(cnt[ks[0]]||0)?7:ks[0],kB=kA===7&&ks.includes(8)?8:(ks.find(k=>k!==kA)??(kA===8?7:8));const [A,B]=[kA,kB].sort((a,b)=>a-b),L7=fmtW(A),L8=fmtW(B),other=all.length-(cnt[A]||0)-(cnt[B]||0);const g={7:all.filter(x=>+x.wake===A),8:all.filter(x=>+x.wake===B)};
   const avg=a=>a.length?Math.round(a.reduce((s,x)=>s+pctOf(x),0)/a.length*100):null;
   const rate=(a,id)=>a.length?Math.round(a.filter(x=>x.checks&&x.checks[id]).length/a.length*100):null;
   const pair=(cls,lbl,v)=>'<div class="pair '+cls+'"><span>'+lbl+'</span><div class="bar"><i style="width:'+(v||0)+'%"></i></div><span class="pv">'+(v==null?"–":v+"%")+'</span></div>';
@@ -895,19 +981,19 @@ function renderLog(){
   h+='<div class="stat"><div class="card"><span class="eyebrow">전체 평균</span><span class="big">'+avg(all)+'%</span><span class="note">'+all.length+'일 기록</span></div>'
     +'<div class="card"><span class="eyebrow">최근 7일</span><span class="big">'+avg(all.slice(0,7))+'%</span><span class="note">기록한 날 기준</span></div></div>';
   h+='<div class="card cmp"><div class="head"><span class="eyebrow">기상 타입별 달성률</span></div>'
-    +pair("w7","7시",avg(g[7]))+pair("w8","8시",avg(g[8]))
-    +'<p class="note">7시 '+g[7].length+'일 · 8시 '+g[8].length+'일 (오늘 포함)</p></div>';
+    +pair("w7",L7,avg(g[7]))+pair("w8",L8,avg(g[8]))
+    +'<p class="note">'+L7+' '+g[7].length+'일 · '+L8+' '+g[8].length+'일 (오늘 포함)'+(other?' · 그 외 시각 '+other+'일':'')+'</p></div>';
   const cond=[["아침 개운함","fresh"],["낮 집중과 에너지","focus"]].map(([t,f])=>{const a=mean(g[7],f),b=mean(g[8],f);
-      return '<div class="r"><div class="lb">'+t+'<span>5점 만점</span></div>'+bar("w7","7시",a==null?null:a/5*100,a==null?null:a.toFixed(1))+bar("w8","8시",b==null?null:b/5*100,b==null?null:b.toFixed(1))+'</div>'}).join("")
-    +(()=>{const a=yes(g[7],"slump"),b=yes(g[8],"slump");return '<div class="r"><div class="lb">오후 졸림 있었던 날<span>낮을수록 좋음</span></div>'+pair("w7","7시",a)+pair("w8","8시",b)+'</div>'})()
-    +(()=>{const a=mean(g[7],"sleepH"),b=mean(g[8],"sleepH");return '<div class="r"><div class="lb">평균 수면<span>9시간 기준 막대</span></div>'+bar("w7","7시",a==null?null:a/9*100,a==null?null:a.toFixed(1)+"h")+bar("w8","8시",b==null?null:b/9*100,b==null?null:b.toFixed(1)+"h")+'</div>'})();
+      return '<div class="r"><div class="lb">'+t+'<span>5점 만점</span></div>'+bar("w7",L7,a==null?null:a/5*100,a==null?null:a.toFixed(1))+bar("w8",L8,b==null?null:b/5*100,b==null?null:b.toFixed(1))+'</div>'}).join("")
+    +(()=>{const a=yes(g[7],"slump"),b=yes(g[8],"slump");return '<div class="r"><div class="lb">오후 졸림 있었던 날<span>낮을수록 좋음</span></div>'+pair("w7",L7,a)+pair("w8",L8,b)+'</div>'})()
+    +(()=>{const a=mean(g[7],"sleepH"),b=mean(g[8],"sleepH");return '<div class="r"><div class="lb">평균 수면<span>9시간 기준 막대</span></div>'+bar("w7",L7,a==null?null:a/9*100,a==null?null:a.toFixed(1)+"h")+bar("w8",L8,b==null?null:b/9*100,b==null?null:b.toFixed(1)+"h")+'</div>'})();
   const rated=all.filter(x=>num(x.fresh)||num(x.focus)||typeof x.slump==="boolean"||num(x.sleepH)).length;
-  h+='<div class="card cmp"><div class="head"><span class="eyebrow">기상 타입별 컨디션</span><div class="legend"><span><i></i>7시</span><span><i class="w8"></i>8시</span></div></div>'
-    +(rated?cond+'<p class="note">체크 탭 ‘기록해 볼 것’을 입력한 '+rated+'일 기준</p>':'<p class="note">체크 탭의 ‘기록해 볼 것’에 개운함·집중·졸림·수면을 남기면 7시와 8시 기상을 컨디션으로 비교해 보여 드려요.</p>')+'</div>';
-  h+='<div class="card cmp"><div class="head"><span class="eyebrow">항목별 비교</span><div class="legend"><span><i></i>7시</span><span><i class="w8"></i>8시</span></div></div>'
-    +CHECKS.map(c=>'<div class="r"><div class="lb">'+c.t+'</div>'+pair("w7","7시",rate(g[7],c.id))+pair("w8","8시",rate(g[8],c.id))+'</div>').join("")+'</div>';
+  h+='<div class="card cmp"><div class="head"><span class="eyebrow">기상 타입별 컨디션</span><div class="legend"><span><i></i>'+L7+'</span><span><i class="w8"></i>'+L8+'</span></div></div>'
+    +(rated?cond+'<p class="note">체크 탭 ‘기록해 볼 것’을 입력한 '+rated+'일 기준</p>':'<p class="note">체크 탭의 ‘기록해 볼 것’에 개운함·집중·졸림·수면을 남기면 두 기상 시각을 컨디션으로 비교해 보여 드려요.</p>')+'</div>';
+  h+='<div class="card cmp"><div class="head"><span class="eyebrow">항목별 비교</span><div class="legend"><span><i></i>'+L7+'</span><span><i class="w8"></i>'+L8+'</span></div></div>'
+    +CHECKS.map(c=>'<div class="r"><div class="lb">'+c.t+'</div>'+pair("w7",L7,rate(g[7],c.id))+pair("w8",L8,rate(g[8],c.id))+'</div>').join("")+'</div>';
   h+='<div class="head"><span class="eyebrow">날짜별 · 누르면 고칠 수 있어요</span></div><ul class="days">'
-    +all.slice(0,90).map(x=>{const p=Math.round(pctOf(x)*100);return '<li><button type="button" data-date="'+esc(x.date)+'"><span>'+esc(dateLabel(x.date))+(x.date===S.today?' · 오늘':'')+'</span><span class="wk">'+(+x.wake)+'시</span><span class="pc">'+p+'%</span></button></li>'}).join("")+'</ul>';
+    +all.slice(0,90).map(x=>{const p=Math.round(pctOf(x)*100);return '<li><button type="button" data-date="'+esc(x.date)+'"><span>'+esc(dateLabel(x.date))+(x.date===S.today?' · 오늘':'')+'</span><span class="wk">'+fmtW(+x.wake)+'</span><span class="pc">'+p+'%</span></button></li>'}).join("")+'</ul>';
   $("#logBody").innerHTML=h;
 }
 $("#logBody").addEventListener("click",e=>{
@@ -921,6 +1007,32 @@ function renderAll(){
   else if(S.tab==="check")renderCheck();
   else if(S.tab==="log")renderLog();
 }
+
+/* ---------- export ---------- */
+function exportRows(){
+  const rows=Object.values(S.days).filter(x=>x&&x.date).sort((a,b)=>a.date.localeCompare(b.date));
+  const head=["날짜","기상","달성률(%)"].concat(CHECKS.map(c=>c.t),["햇빛 아침","햇빛 점심","햇빛 퇴근길","실제 기상","취침","수면(시간)","아침 개운함","낮 집중","오후 졸림","카페인","메모"]);
+  const yn=v=>v===true?"1":v===false?"0":"";
+  const body=rows.map(x=>{const s=sunOf(x);return [x.date,x.wake?fmtW(+x.wake):"",x.wake?Math.round(pctOf(x)*100):""]
+    .concat(CHECKS.map(c=>x.checks&&x.checks[c.id]?"1":"0"),s.map(v=>v?"1":"0"),[x.wakeAt||"",x.bedAt||"",x.sleepH??"",x.fresh??"",x.focus??"",yn(x.slump),x.caffeine||"",x.note||""])});
+  return {rows,head,body};
+}
+function exportFile(kind){
+  const {rows,head,body}=exportRows();
+  if(!rows.length)return null;
+  const stamp=ymd(new Date()).replace(/-/g,"");
+  if(kind==="json")return {name:"AXIS-"+stamp+".json",type:"application/json",text:JSON.stringify({app:"AXIS",exported:new Date().toISOString(),nick:S.nick,days:rows},null,2)};
+  const cell=v=>{v=String(v);return /[",\n\r]/.test(v)?'"'+v.replace(/"/g,'""')+'"':v};
+  return {name:"AXIS-"+stamp+".csv",type:"text/csv",text:"﻿"+[head].concat(body).map(r=>r.map(cell).join(",")).join("\r\n")+"\r\n"};
+}
+$$("[data-export]").forEach(b=>b.addEventListener("click",()=>{
+  const f=exportFile(b.dataset.export);
+  if(!f){$("#exportMsg").textContent="아직 내보낼 기록이 없어요.";return}
+  const url=URL.createObjectURL(new Blob([f.text],{type:f.type+";charset=utf-8"}));
+  const a=document.createElement("a");a.href=url;a.download=f.name;document.body.appendChild(a);a.click();a.remove();
+  setTimeout(()=>URL.revokeObjectURL(url),4000);
+  $("#exportMsg").textContent=f.name+" 파일을 만들었어요. 아이폰은 ‘파일’ 앱의 다운로드 폴더에서 찾을 수 있어요.";
+}));
 
 /* ---------- alerts ---------- */
 let alertsOn=LS.get("axis.alerts")!=="0";

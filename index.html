@@ -522,8 +522,8 @@ details.more>summary{cursor:pointer;color:var(--muted);font-size:.88rem;padding:
     <div class="who"><b id="whoName"></b><button id="guestReg" class="link strong" type="button" hidden>등록하기</button><button id="logout" class="link" type="button">나가기</button></div>
   </header>
   <div class="modesw seg" role="group" aria-label="화면 전환">
-    <button type="button" data-mode="routine" aria-pressed="true">루틴</button>
-    <button type="button" data-mode="workout" aria-pressed="false">워크아웃</button>
+    <button type="button" data-mode="routine" aria-pressed="true">Routine</button>
+    <button type="button" data-mode="workout" aria-pressed="false">Workout</button>
   </div>
 
   <section id="tab-today" class="tab" role="tabpanel" aria-label="오늘">
@@ -1357,7 +1357,7 @@ function renderToday(){
       ?'<li class="markrow" data-i="'+i+'"><span class="t">'+clk(W+it.o)+'</span><span>'+it.t+'</span></li>'
       :'<li data-i="'+i+'"><details><summary'+(it.ck?' class="has-done"':'')+'><span class="t">'+clk(W+it.o)+'</span><span class="tt">'+it.t+'</span>'
         +(it.ck?'<button class="tdone" type="button" data-done="'+i+'" aria-pressed="false" aria-label="'+it.t+' 완료"><i><svg aria-hidden="true"><use href="#ic-check"/></svg></i></button>':'')
-        +'</summary><p>'+it.d+(it.id==="move"?' <button class="link strong" type="button" data-gowo>워크아웃에서 오늘 운동 보기 →</button>':'')+(it.ck?' <b>· 완료 표시하면 체크 탭 ‘'+CHECKS.find(c=>c.id===it.ck).t+'’에 반영돼요.</b>':'')+'</p>'+(it.tag?'<p class="tag">'+it.tag+'</p>':'')+'</details></li>').join("");
+        +'</summary><p>'+it.d+(it.id==="move"?' <button class="link strong" type="button" data-gowo>Workout에서 오늘 운동 보기 →</button>':'')+(it.ck?' <b>· 완료 표시하면 체크 탭 ‘'+CHECKS.find(c=>c.id===it.ck).t+'’에 반영돼요.</b>':'')+'</p>'+(it.tag?'<p class="tag">'+it.tag+'</p>':'')+'</details></li>').join("");
   }
   S.items=items;
   const rel=nowMin()-W;
@@ -1380,7 +1380,7 @@ function renderToday(){
     html='<div class="now"><span class="k">지금 · '+clk(W+it.o)+(end?'–'+clk(W+end):'')+'</span><h3>'+it.t+'</h3><p class="d">'+it.d+'</p>'
       +(it.tag?'<span class="tag">'+it.tag+'</span>':'')
       +(it.ck?'<button class="done-btn" type="button" data-done="'+cur+'" aria-pressed="'+isDone(d,it)+'"><i><svg aria-hidden="true"><use href="#ic-check"/></svg></i>'+(isDone(d,it)?"완료했어요":"완료로 표시")+'</button>':'')
-      +(it.id==="move"?'<button class="btn primary wo-go" type="button" data-gowo>워크아웃 열기 · '+esc(woDef(planFor(S.today)).t)+'</button>':'')
+      +(it.id==="move"?'<button class="btn primary wo-go" type="button" data-gowo>Workout 열기 · '+esc(woDef(planFor(S.today)).t)+'</button>':'')
       +(end?'<div class="bar"><i style="width:'+prog.toFixed(1)+'%"></i></div><span class="left">'+left+'분 남음</span>':'')
       +(nx?'<div class="next">다음 <b>'+clk(W+nx.o)+'</b> '+nx.t+'</div>':'<div class="next">오늘 하루 끝. 내일 기상 시각을 지켜 주세요.</div>')+'</div>';
   }
@@ -1746,7 +1746,7 @@ function isNewUser(){
   return !Object.values(S.days).some(x=>x&&x.wo&&x.wo.s&&Object.keys(x.wo.s).length);
 }
 function renderStart(){
-  $("#woDate").textContent="워크아웃";$("#woTitle").textContent="어떻게 시작할까요?";$("#woSub").textContent="나중에 주간 탭에서 언제든 바꿀 수 있어요.";$("#woSwap").innerHTML="";
+  $("#woDate").textContent="Workout";$("#woTitle").textContent="어떻게 시작할까요?";$("#woSub").textContent="나중에 주간 탭에서 언제든 바꿀 수 있어요.";$("#woSwap").innerHTML="";
   $("#woBody").innerHTML='<div class="startgrid">'
     +[["prog","프로그램 고르기",PROGRAMS.map(P=>P.who.split(",")[0].split(" ").pop()).join(" · ")+" 중 하나를 따라 해요"],["make","직접 만들기","부위를 골라 종목을 담아 하루 루틴을 만들어요"],["rec","부위로 추천받기","부위·시간·장비를 고르면 루틴을 짜 드려요"]]
       .map(([k,t,d])=>'<button type="button" class="startbtn" data-start="'+k+'"><b>'+t+'</b><span>'+esc(d)+'</span></button>').join("")

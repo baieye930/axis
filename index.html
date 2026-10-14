@@ -463,6 +463,29 @@ details.more>summary{cursor:pointer;color:var(--muted);font-size:.88rem;padding:
 .glcard{display:grid;gap:.6rem}
 .glcard h2{font-size:1.15rem}
 .gacct{display:grid;gap:.5rem}
+
+/* routine run mode: one step at a time, full screen */
+.runcard{display:grid;grid-template-columns:1fr auto;gap:.6rem;align-items:center;padding:.85rem 1rem;border-radius:var(--r);background:var(--soft);box-shadow:var(--shadow)}
+.runcard b{display:block;font-size:1.02rem}.runcard small{display:block;color:var(--muted);font-size:.82rem;margin-top:.1rem}
+.runcard .btn{min-height:3.2rem;padding:.3rem 1rem}
+.runner{position:fixed;inset:0;z-index:45;background:var(--bg2);overflow-y:auto}
+.runner[hidden]{display:none}
+.runner .in{max-width:34rem;min-height:100%;margin:0 auto;padding:calc(1rem + env(safe-area-inset-top,0px)) 16px calc(1.2rem + env(safe-area-inset-bottom,0px));display:grid;grid-template-rows:auto 1fr;gap:1rem}
+.runtop{display:grid;grid-template-columns:auto 1fr auto;gap:.6rem;align-items:center}
+.rundots{display:flex;gap:.3rem;justify-content:center;flex-wrap:wrap}
+.rundots i{width:.6rem;height:.6rem;border-radius:50%;background:var(--line)}
+.rundots i.ok{background:var(--accent)}.rundots i.skip{background:var(--muted);opacity:.5}.rundots i.cur{outline:2px solid var(--accent);outline-offset:2px;background:var(--surface)}
+.runbody{display:grid;align-content:center;gap:1rem;text-align:center}
+.runbody h2{font-size:1.6rem;line-height:1.3}
+.runbody .line{color:var(--muted);font-size:1rem}
+.runbody .tag{justify-self:center}
+.runclock{font-family:var(--f-num);font-size:clamp(3.4rem,18vw,5rem);line-height:1}
+.runclock.over{color:var(--accent)}
+.runadj{display:grid;grid-template-columns:repeat(3,1fr);gap:.5rem}
+.runadj .btn,.runbody .btn{min-height:3.2rem}
+.runsum{display:grid;gap:.4rem;text-align:left;list-style:none;margin:0;padding:0}
+.runsum li{display:grid;grid-template-columns:1.6rem 1fr auto;gap:.5rem;align-items:center;padding:.5rem .7rem;border-radius:10px;background:var(--surface)}
+.runsum li span:last-child{color:var(--muted);font-size:.82rem}
 </style>
 </head>
 <body>
@@ -572,6 +595,7 @@ details.more>summary{cursor:pointer;color:var(--muted);font-size:.88rem;padding:
       <span id="todayDate" class="eyebrow"></span>
       <button id="wakeChip" class="chip" type="button"></button>
     </div>
+    <div id="runCard"></div>
     <div id="nowBox"></div>
     <div id="glance" class="glance"></div>
     <div class="head"><h2>오늘 타임라인</h2><p class="note">항목을 누르면 자세한 내용이 열립니다.</p></div>
@@ -892,6 +916,12 @@ details.more>summary{cursor:pointer;color:var(--muted);font-size:.88rem;padding:
     </details>
     <p class="note">근거: 루틴설계서 1(Huberman)·7(Galpin)의 운동 장을 중심으로, 3(Patrick)의 4×4·운동 스낵, 4(Panda)의 운동 시각, 5(Walker)의 수면과 운동, 6(Newport)·2(Yousef)의 휴식 원칙을 반영했습니다. 질환·부상이 있으면 시작 전에 의사와 상의하세요.</p>
   </section>
+</div>
+<div id="runner" class="runner" role="dialog" aria-modal="true" aria-labelledby="runTitle" hidden>
+  <div class="in">
+    <div class="runtop"><span id="runSeg" class="eyebrow"></span><span id="runDots" class="rundots" aria-hidden="true"></span><button id="runClose" class="link" type="button">잠시 닫기</button></div>
+    <div id="runBody" class="runbody"></div>
+  </div>
 </div>
 <div id="restBar" class="restbar" hidden>
   <div class="in"><span class="lbl">휴식</span><b id="restLeft" class="num">0:00</b><span id="restNext" class="s"></span><button id="restPlus" class="btn" type="button">+30초</button><button id="restSkip" class="btn" type="button">건너뛰기</button></div>
@@ -1481,6 +1511,7 @@ function renderToday(){
       +(nx?'<div class="next">다음 <b>'+clk(W+nx.o)+'</b> '+nx.t+'</div>':'<div class="next">오늘 하루 끝. 내일 기상 시각을 지켜 주세요.</div>')+'</div>';
   }
   $("#nowBox").innerHTML=html;
+  $("#runCard").innerHTML=runCardHtml();
   /* water: hourly until an hour before bed (17 rounds on a usual day, fewer on a late one); caffeine: cutoff from the timeline */
   const slp=items.find(it=>it.id==="sleep"),cut=items.find(it=>it.id==="caffmark");
   const nW=Math.max(1,Math.round(((slp?slp.o:1020)-60)/60)),cutO=cut?cut.o:480;
@@ -1514,6 +1545,99 @@ function onDone(e){
 $("#tl").addEventListener("click",onDone);
 document.addEventListener("click",e=>{if(e.target.closest("[data-gowo]")){e.preventDefault();setTab("wtoday")}});
 $("#nowBox").addEventListener("click",onDone);
+
+/* ---------- routine run mode: today's morning / evening steps one at a time ----------
+   Steps come from today's timeline (so late-wake reflow and the person's edits apply). Progress lives in the day record:
+   d.run.am|pm = {i, start, end?, done:[ids], skip:[ids], add:{id:min}, acc, at}  — acc = seconds counted on this step
+   before the last resume, at = resume time (null while paused). Finishing a step ticks its check like the ✓ on the timeline. */
+const RUN_IDS={am:["water","sun1","move","shower","commute"],pm:["read","plan","dim","screen","sleep"]};
+const RUN_NAME={am:"아침 루틴",pm:"저녁 루틴"};
+const RUN_SHORT={water:"물",sun1:"햇빛",move:"운동",shower:"샤워",commute:"준비",read:"독서",plan:"내일 계획",dim:"조명 낮추기",screen:"화면 끄기",sleep:"취침"};
+let runSeg=null,runRang=-1,wakeLock=null;
+function runSteps(seg){
+  const d=day(S.today);if(!d.wake)return [];
+  const W=d.wake*60,items=timeline(W,parseYmd(S.today).getDay()),m1=items.find(x=>x.id==="meal1");
+  return items.filter(it=>RUN_IDS[seg].includes(it.id)&&!it.mark&&(seg!=="am"||!m1||it.o<m1.o))
+    .map(it=>Object.assign({},it,{min:it.id==="sleep"?0:Math.max(1,(it.e>2000?it.o+30:it.e)-it.o)}));
+}
+const runOf=seg=>((day(S.today).run||{})[seg])||null;
+function runLeft(st,step){if(!step.min)return null;const add=((st.add||{})[step.id])||0,used=(st.acc||0)+(st.at?(Date.now()-st.at)/1000:0);return (step.min+add)*60-used}
+const firstLine=t=>{let s=String(t||"");const i=s.search(/\.\s/);if(i>0)s=s.slice(0,i+1);return s.length>60?s.slice(0,58)+"…":s};
+/* the card above "지금": shown from shortly before a routine until a while after it, or while one is unfinished */
+function runCardHtml(){
+  const d=day(S.today);if(!d.wake)return "";
+  const rel=nowMin()-d.wake*60;
+  for(const seg of ["am","pm"]){
+    const st=runOf(seg),steps=runSteps(seg);if(!steps.length)continue;
+    const a=steps[0].o,b=steps[steps.length-1].o+(steps[steps.length-1].min||30);
+    if(st&&st.end){if(rel>=a-30&&rel<b+60)return '<div class="runcard"><div><b>'+RUN_NAME[seg]+' 마침</b><small>'+steps.length+'단계 중 '+(st.done||[]).length+'개 완료</small></div><button class="btn" type="button" data-run="'+seg+'">다시 보기</button></div>';continue}
+    if(st&&!st.end)return '<div class="runcard"><div><b>'+RUN_NAME[seg]+' 진행 중</b><small>'+Math.min(st.i+1,steps.length)+' / '+steps.length+' · '+esc(steps[Math.min(st.i,steps.length-1)].t)+'</small></div><button class="btn primary" type="button" data-run="'+seg+'">이어 하기</button></div>';
+    if(rel>=a-30&&rel<b+60)return '<div class="runcard"><div><b>'+RUN_NAME[seg]+' 시작</b><small>'+steps.map(s=>RUN_SHORT[s.id]||s.t).join(" → ")+'</small></div><button class="btn primary" type="button" data-run="'+seg+'">시작</button></div>';
+  }
+  return "";
+}
+function runPatch(seg,fn){patch(S.today,d=>{d.run=d.run||{};d.run[seg]=d.run[seg]||{i:0,start:Date.now(),done:[],skip:[],add:{},acc:0,at:Date.now()};fn(d.run[seg],d)})}
+async function holdScreen(on){try{if(on&&"wakeLock" in navigator&&!wakeLock){wakeLock=await navigator.wakeLock.request("screen");wakeLock.addEventListener("release",()=>{wakeLock=null})}else if(!on&&wakeLock){await wakeLock.release();wakeLock=null}}catch(e){}}
+function openRun(seg){
+  if(!runSteps(seg).length){toast("오늘 기상 시각을 먼저 골라 주세요.");return}
+  if(!runOf(seg))runPatch(seg,()=>{});
+  const st0=runOf(seg),s0=st0&&runSteps(seg)[st0.i],l0=s0&&runLeft(st0,s0);
+  runSeg=seg;runRang=l0!=null&&l0<=0?st0.i:-1;$("#runner").hidden=false;document.body.style.overflow="hidden";holdScreen(true);renderRun();
+  setTimeout(()=>{const b=$("#runBody .btn.primary");b&&b.focus()},50);
+}
+function closeRun(){runSeg=null;$("#runner").hidden=true;document.body.style.overflow="";holdScreen(false);renderAll()}
+function renderRun(){
+  if(!runSeg)return;
+  const seg=runSeg,st=runOf(seg),steps=runSteps(seg);if(!st||!steps.length)return closeRun();
+  $("#runSeg").textContent=RUN_NAME[seg]+(st.end?" · 마침":" · "+Math.min(st.i+1,steps.length)+" / "+steps.length);
+  $("#runDots").innerHTML=steps.map((s,i)=>'<i class="'+((st.done||[]).includes(s.id)?"ok":(st.skip||[]).includes(s.id)?"skip":"")+(!st.end&&i===st.i?" cur":"")+'"></i>').join("");
+  if(st.end||st.i>=steps.length){
+    const took=Math.round(((st.end||Date.now())-st.start)/60000);
+    $("#runBody").innerHTML='<h2 id="runTitle">'+RUN_NAME[seg]+' 마침</h2><p class="line">'+steps.length+'단계 중 '+(st.done||[]).length+'개 완료 · '+(took>=60?Math.floor(took/60)+'시간 '+(took%60)+'분':took+'분')+'</p>'
+      +'<ul class="runsum">'+steps.map(s=>{const ok=(st.done||[]).includes(s.id),sk=(st.skip||[]).includes(s.id);return '<li><span>'+(ok?"✓":sk?"–":"·")+'</span><span>'+esc(s.t)+'</span><span>'+(ok?"완료":sk?"건너뜀":"")+'</span></li>'}).join("")+'</ul>'
+      +'<button class="btn primary block" type="button" data-rq="close">닫기</button>'+(seg==="am"?'':'<p class="line">폰은 침대 밖에 두고, 방은 어둡고 시원하게.</p>');
+    return;
+  }
+  const step=steps[st.i],left=runLeft(st,step),d=day(S.today),W=d.wake*60,note=wxNote(W,step);
+  $("#runBody").innerHTML='<h2 id="runTitle" aria-live="polite">'+esc(step.t)+'</h2><p class="line">'+esc(firstLine(step.d))+'</p>'+(note?'<p class="tag">'+esc(note)+'</p>':'')
+    +(left==null?'':'<b class="runclock'+(left<0?' over':'')+'" data-runclock>'+(left<0?"+":"")+mmss(Math.abs(left))+'</b>'
+      +'<div class="runadj"><button class="btn" type="button" data-rq="minus">−5분</button><button class="btn" type="button" data-rq="pause">'+(st.at?"일시정지":"계속")+'</button><button class="btn" type="button" data-rq="plus">+5분</button></div>')
+    +(step.id==="move"?'<button class="btn block" type="button" data-rq="wo">Workout 열기 · '+esc(woDef(planFor(S.today)).t)+'</button>':'')
+    +'<button class="btn primary block" type="button" data-rq="done">'+(st.i===steps.length-1?"완료하고 마치기":"완료 → 다음")+'</button>'
+    +'<button class="link" type="button" data-rq="skip">건너뛰기</button>';
+}
+/* finishing a step ticks its check (never unticks) */
+function runCheck(d,step){if(!step.ck)return;d.checks=d.checks||{};if(step.ck==="sun"){const s=sunOf(d);s[step.si]=true;d.sunN=s;d.checks.sun=s.every(Boolean)}else d.checks[step.ck]=true}
+function runStep(kind){
+  const seg=runSeg,steps=runSteps(seg),st=runOf(seg);if(!st)return;const step=steps[st.i];if(!step)return;
+  runPatch(seg,(r,d)=>{
+    if(kind==="done"){r.done=(r.done||[]).filter(x=>x!==step.id).concat(step.id);r.skip=(r.skip||[]).filter(x=>x!==step.id);runCheck(d,step)}
+    else{r.skip=(r.skip||[]).filter(x=>x!==step.id).concat(step.id)}
+    r.i=st.i+1;r.acc=0;r.at=Date.now();if(r.i>=steps.length)r.end=Date.now();
+  });
+  runRang=-1;renderRun();
+}
+$("#runner").addEventListener("click",e=>{
+  const b=e.target.closest("[data-rq]");if(!b)return;const q=b.dataset.rq,seg=runSeg;
+  if(q==="close"){closeRun();return}
+  if(q==="done"||q==="skip"){runStep(q);return}
+  if(q==="wo"){closeRun();setTab("wtoday");return}
+  const step=runSteps(seg)[runOf(seg).i];
+  if(q==="plus"||q==="minus")runPatch(seg,r=>{r.add=r.add||{};const v=(r.add[step.id]||0)+(q==="plus"?5:-5);r.add[step.id]=Math.max(1-step.min,v)});
+  if(q==="pause")runPatch(seg,r=>{if(r.at){r.acc=(r.acc||0)+(Date.now()-r.at)/1000;r.at=null}else r.at=Date.now()});
+  renderRun();
+});
+$("#runClose").addEventListener("click",closeRun);
+$("#runCard").addEventListener("click",e=>{const b=e.target.closest("[data-run]");if(b)openRun(b.dataset.run)});
+document.addEventListener("keydown",e=>{if(e.key==="Escape"&&runSeg)closeRun()});
+document.addEventListener("visibilitychange",()=>{if(!document.hidden&&runSeg)holdScreen(true)});
+/* 1-second tick: countdown; at zero one beep + vibration, then it keeps counting over time */
+setInterval(()=>{
+  if(!runSeg)return;const st=runOf(runSeg),step=st&&runSteps(runSeg)[st.i];if(!step||st.end)return;
+  const left=runLeft(st,step),c=$("[data-runclock]");if(left==null||!c)return;
+  c.textContent=(left<0?"+":"")+mmss(Math.abs(left));c.classList.toggle("over",left<0);
+  if(left<=0&&runRang!==st.i){runRang=st.i;beep();try{if(navigator.vibrate&&(!navigator.userActivation||navigator.userActivation.hasBeenActive))navigator.vibrate([200,100,200])}catch(e){}toast(step.t+" 시간이 다 됐어요. 끝났으면 ‘완료’를 눌러 주세요.")}
+},1000);
 
 /* ---------- render: check ---------- */
 function buildCheck(){

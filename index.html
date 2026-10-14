@@ -486,6 +486,24 @@ details.more>summary{cursor:pointer;color:var(--muted);font-size:.88rem;padding:
 .runsum{display:grid;gap:.4rem;text-align:left;list-style:none;margin:0;padding:0}
 .runsum li{display:grid;grid-template-columns:1.6rem 1fr auto;gap:.5rem;align-items:center;padding:.5rem .7rem;border-radius:10px;background:var(--surface)}
 .runsum li span:last-child{color:var(--muted);font-size:.82rem}
+
+.ecard{display:grid;gap:.15rem;text-align:left;border:0;cursor:pointer;color:inherit;font:inherit;width:100%}
+.ecard .spark{width:100%;height:1.9rem;margin-top:.25rem}
+.spark polyline{fill:none;stroke:var(--accent);stroke-width:2;stroke-linejoin:round}
+.spark circle{fill:var(--accent)}
+.chart .eline{fill:none;stroke:var(--accent);stroke-width:2.5;stroke-linejoin:round}
+.chart .eband{fill:var(--soft)}
+.chart .emark{stroke:var(--line);stroke-width:1;stroke-dasharray:3 3}
+.chart .enow{stroke:var(--fg);stroke-width:1;opacity:.5}
+.chart .edot{fill:var(--accent);stroke:var(--surface);stroke-width:2}
+.sleepask{display:grid;gap:.5rem}
+.sleepask .hrs{display:grid;grid-template-columns:repeat(4,1fr);gap:.35rem}
+.sleepask .chip{width:auto;min-height:3.2rem;justify-content:center;font-family:var(--f-num);font-size:1rem;background:var(--surface);border:1.5px solid var(--line);color:var(--fg)}
+.nights{position:relative;display:grid;grid-template-columns:repeat(7,1fr);gap:.35rem;height:7rem;align-items:end}
+.nights .nt{display:grid;grid-template-rows:1fr auto auto;height:100%;justify-items:center;font-size:.72rem;color:var(--muted)}
+.nights .nt i{align-self:end;width:70%;background:var(--accent);border-radius:6px 6px 0 0;min-height:2px}
+.nights .nt i.short{background:var(--muted)}
+.nights small{font-family:var(--f-num)}
 </style>
 </head>
 <body>
@@ -595,6 +613,7 @@ details.more>summary{cursor:pointer;color:var(--muted);font-size:.88rem;padding:
       <span id="todayDate" class="eyebrow"></span>
       <button id="wakeChip" class="chip" type="button"></button>
     </div>
+    <div id="sleepAsk"></div>
     <div id="runCard"></div>
     <div id="nowBox"></div>
     <div id="glance" class="glance"></div>
@@ -790,8 +809,9 @@ details.more>summary{cursor:pointer;color:var(--muted);font-size:.88rem;padding:
       <summary>내 루틴 편집</summary>
       <div class="in">
         <p class="note">끈 항목은 타임라인·알림·체크에서 빠져요. 시간은 기상 시각 기준으로 앞뒤 2시간까지 옮길 수 있어요.</p>
-        <h4>평소 기상 시각</h4>
-        <ul class="edlist"><li><span></span><span class="nm">평소 기상</span><select id="edBase" aria-label="평소 기상 시각"></select></li></ul>
+        <h4>평소 기상 · 목표 수면</h4>
+        <ul class="edlist"><li><span></span><span class="nm">평소 기상</span><select id="edBase" aria-label="평소 기상 시각"></select></li>
+          <li><span></span><span class="nm">목표 수면</span><select id="edSleep" aria-label="목표 수면 시간"></select></li></ul>
         <p class="note">이 시각보다 1시간 넘게 늦게 일어난 날은 하루를 통째로 밀지 않아요. 식사·저녁·취침은 평소 시각 그대로 두고, 오전은 일어난 시각부터 물·햇빛을 먼저 넣은 뒤 남는 시간만큼 운동과 딥워크를 넣어요. 오전에 못 한 운동과 딥워크는 오후로 옮겨요.</p>
         <h4>타임라인</h4>
         <ul id="edTl" class="edlist"></ul>
@@ -963,8 +983,8 @@ details.more>summary{cursor:pointer;color:var(--muted);font-size:.88rem;padding:
   <div class="pane" role="dialog" aria-modal="true" aria-labelledby="wakeTitle">
     <span id="wakeDate" class="eyebrow"></span>
     <h2 id="wakeTitle">오늘 기상 시각을 골라 주세요</h2>
-    <button class="wakebtn" type="button" data-pick="7" aria-pressed="false"><b>7:00</b><span>업무 10:00 · 첫 식사 12:00 · 취침 24:00</span></button>
-    <button class="wakebtn" type="button" data-pick="8" aria-pressed="false"><b>8:00</b><span>업무 11:00 · 첫 식사 13:00 · 취침 01:00</span></button>
+    <button class="wakebtn" type="button" data-pick="7" aria-pressed="false"><b>7:00</b><span data-wakeinfo="7">업무 10:00 · 첫 식사 12:00 · 취침 23:00</span></button>
+    <button class="wakebtn" type="button" data-pick="8" aria-pressed="false"><b>8:00</b><span data-wakeinfo="8">업무 11:00 · 첫 식사 13:00 · 취침 24:00</span></button>
     <div class="wakeother">
       <label for="wakeTime">다른 시각 <small>5:00~10:30, 15분 단위</small></label>
       <div class="row"><input id="wakeTime" type="time" step="900" min="05:00" max="10:30"><button id="wakeApply" class="btn primary" type="button">이 시각으로</button></div>
@@ -1154,8 +1174,24 @@ function reflow(W,B,dow){
   }
   return am.concat(fixed,out).map(x=>{const it=Object.assign({},x,{o:x.a-W,e:x.b===Infinity?99999:x.b-W,late:true});delete it.a;delete it.b;return it}).sort((a,b)=>a.o-b.o||(b.mark?1:0)-(a.mark?1:0));
 }
+/* sleep target (prefs.sleep, hours, 7~9; default 8) sets bedtime = wake + (24 − target). The layout below is written for
+   7 hours (bed at +17h); each extra hour is taken from the flexible blocks in this order — 가벼운 업무(keeps 15분),
+   귀가·저녁 준비(keeps 15분), 일반 업무(keeps 60분) — and everything after a shortened block moves earlier with it. */
+const sleepTarget=()=>{const v=+prefs().sleep;return v>=7&&v<=9?v:8};
+function sleepMap(){
+  let left=Math.round((sleepTarget()-7)*60);const cuts=[];
+  for(const [s0,e0,keep] of [[590,660,15],[690,750,15],[370,480,60]]){const c=Math.max(0,Math.min(left,e0-s0-keep));if(c){cuts.push([e0,c]);left-=c}}
+  /* base offset → offset after the cuts (a time inside a cut-off tail lands on the block's new end) */
+  return o=>{let d=0;for(const [e0,c] of cuts){if(o>=e0)d+=c;else if(o>e0-c)d+=o-(e0-c)}return o-d};
+}
 function baseTimeline(W,dow){
-  const c=o=>clk(W+o);
+  const T=sleepMap(),c=o=>clk(W+T(o));
+  const items=baseItems(W,dow,c);
+  items.forEach(it=>{it.o=T(it.o);if(it.e!=null&&it.e<2000)it.e=T(it.e)});
+  const cut=items.find(it=>it.mark),bed=T(1020);if(cut)cut.o=bed-540;   // 카페인 마감 = 취침 9시간 전
+  return items;
+}
+function baseItems(W,dow,c){
   return [
     {o:0,e:10,t:"물과 소금",d:"물 0.5~1L + 소금(한 꼬집에서 시작, 최대 약 반 티스푼). 일어난 시각을 메모해 체온 최저점(기상 약 2시간 전)을 파악한다. 폰은 침대 밖에 두고 보지 않기. 염분 제한이 있으면 의사 확인"},
     {o:10,e:40,t:"아침 햇빛 + 걷기",ck:"sun",si:0,d:"야외 햇빛 + 앞으로 걷기 10~30분(늦어도 "+c(60)+" 안에 시작). 해 쪽을 보되 직접 쳐다보지 않기(눈부시면 중단, 깜빡임은 자연스럽게). 맑으면 10분 안팎(밝은 날은 최소 2분도 효과), 구름 끼면 15~20분, 아주 흐리거나 비 오면 30분. 선글라스·유리창·차 앞유리 없이(안경·렌즈는 가능). 일출 전에 일어나면 밝은 조명을 켜고, 해가 뜬 뒤 다시 나가기"},
@@ -1203,14 +1239,14 @@ const BASE_CHECKS=[
   {id:"food",t:"비가공 식품 70~80%",s:"단백질도 비가공으로 먼저"},
   {id:"bond",t:"깊은 관계",s:"하루 한 번 20~30분 대화나 통화"},
   {id:"water",t:"충분한 수분",s:"시간당 일정을 따르되 갈증에 맞춰 조절"},
-  {id:"caff",t:"카페인 마감 지키기",s:"7시 기상 15:00, 8시 기상 16:00"},
+  {id:"caff",t:"카페인 마감 지키기",s:"취침 9시간 전까지"},
   {id:"dark",t:"저녁 조명 낮추기",s:"화면 끄기, 폰은 침대 밖"}
 ];
 /* checks in use = base minus hidden, plus up to 3 of the person's own; a day passes with half of them */
 let CHECKS=BASE_CHECKS,GOAL=4;
 function applyChecks(){
   const P=prefs(),off=(P.ck&&P.ck.off)||[];
-  CHECKS=BASE_CHECKS.filter(c=>!off.includes(c.id))
+  CHECKS=BASE_CHECKS.filter(c=>!off.includes(c.id)).map(c=>c.id==="sleep"?Object.assign({},c,{t:"숙면 "+sleepTarget()+"시간 이상"}):c)
     .concat((P.custom||[]).filter(c=>c&&c.id&&c.t).slice(0,3).map(c=>({id:c.id,t:String(c.t).slice(0,24),s:"",custom:true})));
   if(!CHECKS.length)CHECKS=BASE_CHECKS;
   GOAL=Math.max(1,Math.ceil(CHECKS.length/2));
@@ -1423,6 +1459,8 @@ function openWake(first){
   const w=day(S.today).wake;
   $("#wakeDate").textContent=dateLabel(S.today);
   $("#wakeTitle").textContent=first?"오늘 기상 시각을 골라 주세요":"오늘 기상 시각 바꾸기";
+  $$("[data-wakeinfo]").forEach(el=>{const W=+el.dataset.wakeinfo*60,it=timeline(W,parseYmd(S.today).getDay()),at=id=>{const x=it.find(y=>y.id===id);return x?clk(W+x.o):"–"};
+    el.textContent="업무 "+at("deep1")+" · 첫 식사 "+at("meal1")+" · 취침 "+at("sleep")});
   $$("#wakeSheet [data-pick]").forEach(b=>b.setAttribute("aria-pressed",String(+b.dataset.pick===w)));
   const other=!!w&&w!==7&&w!==8;
   $(".wakeother").classList.toggle("on",other);
@@ -1512,6 +1550,7 @@ function renderToday(){
   }
   $("#nowBox").innerHTML=html;
   $("#runCard").innerHTML=runCardHtml();
+  $("#sleepAsk").innerHTML=sleepAskHtml();
   /* water: hourly until an hour before bed (17 rounds on a usual day, fewer on a late one); caffeine: cutoff from the timeline */
   const slp=items.find(it=>it.id==="sleep"),cut=items.find(it=>it.id==="caffmark");
   const nW=Math.max(1,Math.round(((slp?slp.o:1020)-60)/60)),cutO=cut?cut.o:480;
@@ -1524,7 +1563,7 @@ function renderToday(){
   if(rel<90){cv="첫 잔은 "+clk(W+90)+" 이후";cs="기상 후 90~120분 뒤"}
   else if(rel<cutO){cv="마셔도 되는 시간";cs="마감 "+clk(W+cutO)+" · 4시간 간격"}
   else{cv="카페인 마감";cs=clk(W+cutO)+"에 끝났어요"}
-  $("#glance").innerHTML='<div class="card"><span class="lbl">수분</span><span class="v">'+wv+'</span><span class="s">'+ws+'</span></div><div class="card"><span class="lbl">카페인</span><span class="v">'+cv+'</span><span class="s">'+cs+'</span></div>'+wxCard(W,items);
+  $("#glance").innerHTML='<div class="card"><span class="lbl">수분</span><span class="v">'+wv+'</span><span class="s">'+ws+'</span></div><div class="card"><span class="lbl">카페인</span><span class="v">'+cv+'</span><span class="s">'+cs+'</span></div>'+energyCardHtml()+wxCard(W,items);
 }
 
 /* ---------- timeline items that count toward a check (sun = 3 separate walks) ---------- */
@@ -1545,6 +1584,72 @@ function onDone(e){
 $("#tl").addEventListener("click",onDone);
 document.addEventListener("click",e=>{if(e.target.closest("[data-gowo]")){e.preventDefault();setTab("wtoday")}});
 $("#nowBox").addEventListener("click",onDone);
+
+/* ---------- sleep debt & energy rhythm ----------
+   Debt: the last 14 nights (d.sleepH, entered the morning after), hours short of the sleep target; the latest 7 count fully,
+   the 7 before half. Energy: a simple two-process sketch (sleep pressure builds while awake, a daily rhythm with an
+   afternoon dip, grogginess right after waking, winding down before bed) — a general model, not a measurement. */
+function sleepDebt(){
+  const need=sleepTarget();let debt=0,n=0;const nights=[];
+  for(let i=0;i<14;i++){const k=shift(S.today,-i),x=S.days[k],h=x&&num(x.sleepH)?+x.sleepH:null;if(i<7)nights.unshift([k,h]);if(h==null)continue;n++;debt+=(i<7?1:.5)*Math.max(0,need-h)}
+  return {debt:Math.round(debt*10)/10,n,need,nights};
+}
+function energyRaw(t,awake,debt){
+  const S_=1-Math.exp(-t/18.2),C=.18*Math.cos(2*Math.PI*(t-11)/24)+.22*Math.cos(4*Math.PI*(t-2.2)/24);
+  return C-.35*S_-.6*Math.exp(-t/.7)-.03*Math.min(debt,10)*(.6+S_)-.25*Math.max(0,t-(awake-2));
+}
+function energyCurve(awake,debt){
+  const pts=[];let lo=1e9,hi=-1e9;
+  for(let t=.25;t<=awake;t+=.25){const b=energyRaw(t,awake,0);lo=Math.min(lo,b);hi=Math.max(hi,b)}
+  lo-=.03*10*1.2;   // room below for the largest sleep-debt effect, so a tired day sits lower instead of being cut off
+  for(let t=0;t<=awake+1e-9;t+=.25)pts.push([t,Math.max(0,Math.min(100,Math.round((energyRaw(t,awake,debt)-lo)/(hi-lo)*100)))]);
+  return pts;
+}
+const energyWord=v=>v>=70?"높음":v>=45?"보통":"낮음";
+function energyNow(){
+  const d=day(S.today);if(!d.wake)return null;
+  const W=d.wake*60,it=timeline(W,parseYmd(S.today).getDay()),bed=(it.find(x=>x.id==="sleep")||{o:960}).o,awake=bed/60,{debt}=sleepDebt();
+  const pts=energyCurve(awake,debt),rel=(nowMin()-W)/60,cur=rel<0||rel>awake?null:pts[Math.min(pts.length-1,Math.max(0,Math.round(rel*4)))][1];
+  /* focus windows: today's best stretches — within 15 points of today's peak (so they exist even with sleep debt) */
+  const top=Math.max(...pts.map(p=>p[1])),cut=Math.max(35,top-15);
+  const wins=[];let st=null;pts.forEach(([t,v],i)=>{if(v>=cut&&st==null)st=t;if((v<cut||i===pts.length-1)&&st!=null){wins.push([st,t]);st=null}});
+  return {W,awake,debt,pts,rel,cur,wins,items:it};
+}
+function energyCardHtml(){
+  const e=energyNow();if(!e)return "";
+  const next=e.wins.find(([a,b])=>b>e.rel),win=next?(next[0]<=e.rel?"지금 집중 구간 · "+clk(e.W+Math.round(next[1]*60))+"까지":"다음 집중 "+clk(e.W+Math.round(next[0]*60))+"–"+clk(e.W+Math.round(next[1]*60))):e.wins.length?"오늘 집중 구간은 지났어요":"";
+  return '<button class="card wide ecard" type="button" data-energy><span class="lbl">에너지 · 수면</span><span class="v">'+(e.cur==null?"수면 시간":"지금 "+energyWord(e.cur))+'</span><span class="s">'+esc(win?win+" · ":"")+'수면 부채 '+e.debt+'시간</span>'+sparkSvg(e)+'</button>';
+}
+function sparkSvg(e){const w=120,h=28,X=t=>t/e.awake*w,Y=v=>h-2-(v/100)*(h-4);
+  return '<svg class="spark" viewBox="0 0 '+w+' '+h+'" aria-hidden="true"><polyline points="'+e.pts.map(([t,v])=>X(t).toFixed(1)+","+Y(v).toFixed(1)).join(" ")+'"/>'+(e.cur!=null?'<circle cx="'+X(e.rel).toFixed(1)+'" cy="'+Y(e.cur).toFixed(1)+'" r="2.6"/>':'')+'</svg>'}
+function openEnergy(){
+  const e=energyNow();if(!e){toast("오늘 기상 시각을 먼저 골라 주세요.");return}
+  const sd=sleepDebt(),W=320,H=170,l=8,r=8,t=14,b=26,X=x=>l+(W-l-r)*x/e.awake,Y=v=>t+(H-t-b)*(1-v/100);
+  let svg='<svg viewBox="0 0 '+W+' '+H+'" role="img" aria-label="오늘 예상 에너지 리듬">';
+  e.wins.forEach(([a,z])=>svg+='<rect class="eband" x="'+X(a).toFixed(1)+'" y="'+t+'" width="'+(X(z)-X(a)).toFixed(1)+'" height="'+(H-t-b)+'"/>');
+  [["deep1","딥워크"],["nsdr","NSDR"],["sleep","취침"]].forEach(([id,lb])=>{const x=e.items.find(y=>y.id===id);if(!x)return;const px=X(x.o/60);svg+='<line class="emark" x1="'+px.toFixed(1)+'" x2="'+px.toFixed(1)+'" y1="'+t+'" y2="'+(H-b)+'"/><text class="ax" x="'+Math.min(W-r,Math.max(l,px)).toFixed(1)+'" y="'+(t-3)+'" text-anchor="middle">'+lb+'</text>'});
+  svg+='<polyline class="eline" points="'+e.pts.map(([x,v])=>X(x).toFixed(1)+","+Y(v).toFixed(1)).join(" ")+'"/>';
+  if(e.cur!=null)svg+='<line class="enow" x1="'+X(e.rel).toFixed(1)+'" x2="'+X(e.rel).toFixed(1)+'" y1="'+t+'" y2="'+(H-b)+'"/><circle class="edot" cx="'+X(e.rel).toFixed(1)+'" cy="'+Y(e.cur).toFixed(1)+'" r="4"/>';
+  for(let h=0;h<=e.awake;h+=4)svg+='<text class="ax" x="'+X(h).toFixed(1)+'" y="'+(H-8)+'" text-anchor="'+(h===0?"start":"middle")+'">'+clk(e.W+h*60)+'</text>';
+  svg+='</svg>';
+  const msg=sd.n===0?"아직 수면 기록이 없어요. 아침마다 잔 시간을 넣으면 계산해요.":sd.debt<2?"괜찮아요. 지금처럼 기상·취침 시각을 지켜 주세요.":sd.debt<5?"조금 쌓였어요. 며칠 동안 취침을 조금 당겨 보세요.":"많이 쌓였어요. 고강도 운동은 빼고, NSDR을 늘리고, 카페인 마감을 앞당겨 보세요.";
+  const bars='<div class="nights">'+sd.nights.map(([k,h])=>'<div class="nt"><i style="height:'+(h==null?0:Math.min(100,h/10*100))+'%"'+(h!=null&&h<sd.need?' class="short"':'')+'></i><span>'+DOW[parseYmd(k).getDay()]+'</span><small>'+(h==null?"–":h)+'</small></div>').join("")+'</div>';
+  sheet(sheetHd("에너지 리듬")+'<p class="s">오늘 '+fmtW(e.W/60)+' 기상 · 취침 '+clk(e.W+Math.round(e.awake*60))+' 기준. 일반적인 수면·생체리듬 모델로 그린 예상치라 실제 컨디션과 다를 수 있어요.</p>'
+    +'<div class="chart">'+svg+'</div><p class="s">색칠한 곳이 집중하기 좋은 구간이에요. 오후에 처지는 구간에 NSDR을 두었어요.</p>'
+    +'<span class="lbl">수면 부채 · 최근 14일</span><p><b class="big2">'+sd.debt+'시간</b> <span class="s">(목표 '+sd.need+'시간, 기록 '+sd.n+'일)</span></p><p class="s">'+msg+'</p>'
+    +'<span class="lbl">최근 7일 잔 시간</span>'+bars
+    +'<p class="s">목표 수면은 기준 탭 › 내 루틴 편집에서 바꿀 수 있어요.</p>');
+}
+/* morning: one tap for last night's sleep (the same value as 체크 › 수면(시간)) */
+function sleepAskHtml(){
+  const d=day(S.today);if(!d.wake||num(d.sleepH))return "";
+  const rel=nowMin()-d.wake*60;if(rel<-60||rel>360)return "";
+  return '<div class="card sleepask"><span class="lbl">어젯밤 몇 시간 잤어요?</span><div class="hrs">'+[5,6,6.5,7,7.5,8,8.5,9].map(h=>'<button type="button" class="chip" data-sleeph="'+h+'">'+h+'</button>').join("")+'</div><p class="s">수면 부채와 오늘 에너지 리듬 계산에 써요.</p></div>';
+}
+document.addEventListener("click",e=>{
+  const h=e.target.closest("[data-sleeph]");if(h){const v=+h.dataset.sleeph;patch(S.today,d=>{d.sleepH=v});toast("어젯밤 "+v+"시간으로 기록했어요.");renderAll();return}
+  if(e.target.closest("[data-energy]"))openEnergy();
+});
 
 /* ---------- routine run mode: today's morning / evening steps one at a time ----------
    Steps come from today's timeline (so late-wake reflow and the person's edits apply). Progress lives in the day record:
@@ -1673,7 +1778,8 @@ function renderCheck(){
   const sm=(id,txt)=>{const el=$('#checks [data-ck="'+id+'"] small');if(el)el.textContent=txt};
   const sn=sunOf(d).filter(Boolean).length;
   sm("sun",(sn&&!(d.checks&&d.checks.sun)?"오늘 "+sn+" / 3 · ":"")+BASE_CHECKS.find(c=>c.id==="sun").s);
-  sm("caff",d.wake?"이날 마감 "+clk(Math.round(d.wake*60)+480)+" (기상 8시간 뒤)":"기상 8시간 뒤 (7시 기상 15:00, 8시 기상 16:00)");
+  {const W=d.wake?Math.round(d.wake*60):null,cm=W!=null&&timeline(W,parseYmd(S.view).getDay()).find(x=>x.mark);
+   sm("caff",cm?"이날 마감 "+clk(W+cm.o)+" (취침 9시간 전)":"취침 9시간 전까지");}
   const n=CHECKS.filter(c=>d.checks&&d.checks[c.id]).length,p=Math.round(n/CHECKS.length*100);
   $("#scorePct").textContent=p+"%";$("#scoreN").textContent=n+" / "+CHECKS.length+" 항목";$("#scoreBar").style.width=p+"%";
   $$(".rate").forEach(r=>$$("button",r).forEach(b=>b.setAttribute("aria-pressed",String(d[r.dataset.r]===+b.dataset.v))));
@@ -2847,6 +2953,8 @@ function edOpen(){ed=JSON.parse(JSON.stringify(prefs()));ed.tl=ed.tl||{};ed.ck=e
 function edRender(){
   if(!ed)return;
   const bw=+ed.base>=5&&+ed.base<=10.5?+ed.base:7,opts=[];for(let m=300;m<=630;m+=30)opts.push(m/60);
+  const sv=+ed.sleep>=7&&+ed.sleep<=9?+ed.sleep:8;
+  $("#edSleep").innerHTML=[7,7.5,8,8.5,9].map(v=>'<option value="'+v+'"'+(v===sv?" selected":"")+'>'+v+'시간 · 취침 기상 '+(24-v)+'시간 뒤</option>').join("");
   $("#edBase").innerHTML=opts.map(v=>'<option value="'+v+'"'+(v===bw?" selected":"")+'>'+clk(Math.round(v*60))+'</option>').join("");
   const base=baseTimeline(420,1);
   $("#edTl").innerHTML=base.map((it,i)=>{const id=TL_IDS[i];if(it.mark)return "";const p=ed.tl[id]||{},on=!p.off,dt=clampDt(p.dt);
@@ -2870,6 +2978,7 @@ $("#edTl").addEventListener("input",e=>{
   if(v&&v!==base)p.t=v;else delete p.t;
 });
 $("#edBase").addEventListener("change",e=>{if(!ed)return;const v=+e.target.value;if(v===7)delete ed.base;else ed.base=v});
+$("#edSleep").addEventListener("change",e=>{if(!ed)return;const v=+e.target.value;if(v===8)delete ed.sleep;else ed.sleep=v});
 $("#edCk").addEventListener("change",e=>{
   const t=e.target;if(!ed||!t.dataset.edCk)return;const id=t.dataset.edCk;
   ed.ck.off=ed.ck.off.filter(x=>x!==id);if(!t.checked)ed.ck.off.push(id);
@@ -2974,6 +3083,9 @@ function dueItems(){
     const p=P[CORE_IDS[o0]]||{},it=items.find(x=>x.id===CORE_IDS[o0]);if(p.off||!it)continue;
     out.push({at:W+it.o,id:d.wake+"@"+it.o,t:it.id==="move"&&it.late&&/\(오후\)$/.test(it.t)?it.t:p.t||t0,line});
   }
+  /* a sleep target over 7h moves the caffeine cutoff (bed − 9h) before NSDR: then they are two alerts */
+  const cm=items.find(x=>x.mark),ns=out.find(x=>x.id===d.wake+"@"+(items.find(y=>y.id==="nsdr")||{}).o);
+  if(cm&&ns&&W+cm.o!==ns.at){if(!(P.nsdr&&P.nsdr.t))ns.t="NSDR";ns.line="NSDR 10~20분.";out.push({at:W+cm.o,id:d.wake+"@"+cm.o,t:"카페인 마감",line:"오늘 카페인은 여기까지."});out.sort((a,b)=>a.at-b.at)}
   return out;
 }
 function checkAlerts(){

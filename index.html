@@ -504,6 +504,13 @@ details.more>summary{cursor:pointer;color:var(--muted);font-size:.88rem;padding:
 .nights .nt i{align-self:end;width:70%;background:var(--accent);border-radius:6px 6px 0 0;min-height:2px}
 .nights .nt i.short{background:var(--muted)}
 .nights small{font-family:var(--f-num)}
+
+.ecard .oura{color:var(--fg);font-size:.82rem}
+.ouradl{display:grid;grid-template-columns:repeat(3,1fr);gap:.4rem;margin:0}
+.ouradl div{background:var(--surface2);border-radius:10px;padding:.4rem .5rem;min-width:0}
+.ouradl dt{font-size:.7rem;color:var(--muted)}.ouradl dd{margin:0;font-weight:600;font-family:var(--f-num);font-size:.9rem;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.ourabtns{grid-template-columns:1fr 1fr}
+.ourabtns #ouraConnect{grid-column:1/-1}
 </style>
 </head>
 <body>
@@ -820,6 +827,18 @@ details.more>summary{cursor:pointer;color:var(--muted);font-size:.88rem;padding:
         <div class="addck"><input id="edNew" maxlength="24" placeholder="나만의 체크 추가 (최대 3개)"><button id="edAdd" class="btn" type="button">추가</button></div>
         <div class="datarow"><button id="edSave" class="btn primary block" type="button">저장</button><button id="edReset" class="btn block" type="button">처음 상태로</button></div>
         <p id="edMsg" class="note" role="status"></p>
+      </div>
+    </details>
+    <details class="acc" id="ouraAcc">
+      <summary>Oura 링 연결</summary>
+      <div class="in">
+        <p id="ouraNote" class="note"></p>
+        <div class="datarow ourabtns">
+          <button id="ouraConnect" class="btn primary block" type="button">Oura 계정 연결</button>
+          <button id="ouraSync" class="btn block" type="button" hidden>지금 동기화</button>
+          <button id="ouraOff" class="btn block" type="button" hidden>연결 끊기</button>
+        </div>
+        <p id="ouraMsg" class="note" role="status"></p>
       </div>
     </details>
     <details class="acc" id="dataAcc">
@@ -1355,7 +1374,7 @@ function enter(key,nick,proof,guest,auth){
   $("#guestReg").hidden=!guest;
   $$(".acct").forEach(el=>el.hidden=!!guest);
   $("#splash").hidden=true;$("#intro").hidden=true;$("#glink").hidden=true;$("#main").hidden=false;$("#tabbar").hidden=false;
-  acctView();
+  acctView();setTimeout(ouraStatus,800);
   S.today=ymd(logical());S.view=S.today;
   restoreLocal();
   setTimeout(catchUpAlerts,1200);
@@ -1618,7 +1637,8 @@ function energyNow(){
 function energyCardHtml(){
   const e=energyNow();if(!e)return "";
   const next=e.wins.find(([a,b])=>b>e.rel),win=next?(next[0]<=e.rel?"지금 집중 구간 · "+clk(e.W+Math.round(next[1]*60))+"까지":"다음 집중 "+clk(e.W+Math.round(next[0]*60))+"–"+clk(e.W+Math.round(next[1]*60))):e.wins.length?"오늘 집중 구간은 지났어요":"";
-  return '<button class="card wide ecard" type="button" data-energy><span class="lbl">에너지 · 수면</span><span class="v">'+(e.cur==null?"수면 시간":"지금 "+energyWord(e.cur))+'</span><span class="s">'+esc(win?win+" · ":"")+'수면 부채 '+e.debt+'시간</span>'+sparkSvg(e)+'</button>';
+  const o=day(S.today).oura,ol=o&&(o.ready!=null||o.sleep!=null)?'<span class="s oura">Oura · 레디니스 '+(o.ready??"–")+' · 수면 '+(o.sleep??"–")+(o.hrv!=null?' · HRV '+Math.round(o.hrv):"")+'</span>':'';
+  return '<button class="card wide ecard" type="button" data-energy><span class="lbl">에너지 · 수면</span>'+ol+'<span class="v">'+(e.cur==null?"수면 시간":"지금 "+energyWord(e.cur))+'</span><span class="s">'+esc(win?win+" · ":"")+'수면 부채 '+e.debt+'시간</span>'+sparkSvg(e)+'</button>';
 }
 function sparkSvg(e){const w=120,h=28,X=t=>t/e.awake*w,Y=v=>h-2-(v/100)*(h-4);
   return '<svg class="spark" viewBox="0 0 '+w+' '+h+'" aria-hidden="true"><polyline points="'+e.pts.map(([t,v])=>X(t).toFixed(1)+","+Y(v).toFixed(1)).join(" ")+'"/>'+(e.cur!=null?'<circle cx="'+X(e.rel).toFixed(1)+'" cy="'+Y(e.cur).toFixed(1)+'" r="2.6"/>':'')+'</svg>'}
@@ -1636,9 +1656,17 @@ function openEnergy(){
   const bars='<div class="nights">'+sd.nights.map(([k,h])=>'<div class="nt"><i style="height:'+(h==null?0:Math.min(100,h/10*100))+'%"'+(h!=null&&h<sd.need?' class="short"':'')+'></i><span>'+DOW[parseYmd(k).getDay()]+'</span><small>'+(h==null?"–":h)+'</small></div>').join("")+'</div>';
   sheet(sheetHd("에너지 리듬")+'<p class="s">오늘 '+fmtW(e.W/60)+' 기상 · 취침 '+clk(e.W+Math.round(e.awake*60))+' 기준. 일반적인 수면·생체리듬 모델로 그린 예상치라 실제 컨디션과 다를 수 있어요.</p>'
     +'<div class="chart">'+svg+'</div><p class="s">색칠한 곳이 집중하기 좋은 구간이에요. 오후에 처지는 구간에 NSDR을 두었어요.</p>'
+    +ouraBlock()
     +'<span class="lbl">수면 부채 · 최근 14일</span><p><b class="big2">'+sd.debt+'시간</b> <span class="s">(목표 '+sd.need+'시간, 기록 '+sd.n+'일)</span></p><p class="s">'+msg+'</p>'
     +'<span class="lbl">최근 7일 잔 시간</span>'+bars
     +'<p class="s">목표 수면은 기준 탭 › 내 루틴 편집에서 바꿀 수 있어요.</p>');
+}
+/* last night from Oura (when connected) */
+function ouraBlock(){
+  const d=day(S.today),o=d.oura;if(!o)return "";
+  const cell=(t,v,u)=>'<div><dt>'+t+'</dt><dd>'+(v==null?"–":v+(u||""))+'</dd></div>';
+  return '<span class="lbl">어젯밤 · Oura</span><dl class="ouradl">'+cell("잔 시간",o.h,"시간")+cell("잠든·깬 시각",d.bedAt&&d.wakeAt?d.bedAt+"–"+d.wakeAt:null)
+    +cell("수면 점수",o.sleep)+cell("레디니스",o.ready)+cell("HRV",o.hrv==null?null:Math.round(o.hrv),"ms")+cell("안정시 심박",o.rhr,"bpm")+'</dl>';
 }
 /* morning: one tap for last night's sleep (the same value as 체크 › 수면(시간)) */
 function sleepAskHtml(){
@@ -2053,11 +2081,11 @@ function recoCard(type,P,d,w){
   const R=recovery(),C=catRecovery(R),tired=CATS.filter(g=>C[g]&&C[g].pct<100).sort((a,b)=>C[a].pct-C[b].pct);
   let h='<div class="card reco"><span class="lbl">회복 상태</span>'
     +(tired.length?'<div class="mus">'+tired.map(g=>'<span class="mu'+(C[g].pct<60?" low":"")+'">'+g+' '+C[g].pct+'%'+(C[g].left?'<small>'+C[g].left+'시간 뒤</small>':'')+'</span>').join("")+'</div>':'<p class="s">최근 4일 안에 웨이트 기록이 없거나 모든 부위가 회복됐어요.</p>');
-  const sleepLow=num(d.sleepH)&&+d.sleepH<=6,bad=(d.wo||{}).cond==="bad";let rec=null,why="";
+  const sleepLow=num(d.sleepH)&&+d.sleepH<=6,bad=(d.wo||{}).cond==="bad",lowReady=!!(d.oura&&num(d.oura.ready)&&+d.oura.ready<70);let rec=null,why="";
   if(P.kind==="lift"){
     const me=readiness(P,R),e=estimate(P,w);
     h+='<p class="s">'+esc(P.t)+' · 회복 '+me+'% · 약 '+e.min+'분 · '+e.n+'세트 · 약 '+e.kcal+'kcal'+(bw()?'':' (체중 70kg 기준)')+'</p>';
-    if(sleepLow||bad){rec="Z2";why=(sleepLow?"수면 "+d.sleepH+"시간":"컨디션 나쁨")+"이라 고강도 대신"}
+    if(sleepLow||bad||lowReady){rec="Z2";why=sleepLow?"수면 "+d.sleepH+"시간이라 고강도 대신":lowReady?"Oura 레디니스가 "+d.oura.ready+"점으로 낮아 고강도 대신":"컨디션 나쁨이라 고강도 대신"}
     else if(me<70){const alt=woKeys().filter(k=>k!==type&&woDef(k).kind==="lift").map(k=>[k,readiness(woDef(k),R)]).sort((a,b)=>b[1]-a[1])[0];
       if(alt&&alt[1]>=85){rec=alt[0];why="오늘 계획 부위가 덜 회복돼서 (회복 "+alt[1]+"%)"}}
   }
@@ -3214,6 +3242,58 @@ function acctView(){
   $("#delNote").textContent=g?"Google 로그인과 모든 날짜 기록, 알림 등록을 지웁니다. 되돌릴 수 없으니 먼저 파일로 받아 두세요."
     :"이 닉네임과 모든 날짜 기록, 알림 등록을 지웁니다. 되돌릴 수 없으니 먼저 파일로 받아 두세요. 위 ‘지금 비밀번호’ 칸에 비밀번호를 넣고 누르세요.";
 }
+
+/* ---------- Oura (axis-oura Edge Function holds the Oura sign-in; the app only asks it to start, sync or forget) ----------
+   Synced fields land in the day record: sleepH, bedAt, wakeAt (Oura wins over a typed value) and d.oura = {h, sleep, ready, hrv, rhr, at}. */
+const OURA_URL=configured?CFG.supabaseUrl.replace(/\/+$/,"")+"/functions/v1/axis-oura":"";
+let ouraSt=null,ouraBusy=false;
+async function oura(action){
+  const h={"Content-Type":"application/json",apikey:CFG.supabaseKey},b={action};
+  if(isG()){if(!S.gtoken)await gSession();h.Authorization="Bearer "+(S.gtoken||"")}else{b.key=S.key;b.proof=S.proof}
+  const r=await fetch(OURA_URL,{method:"POST",headers:h,body:JSON.stringify(b)});
+  return r.json().catch(()=>({ok:false,error:"http_"+r.status}));
+}
+const OURA_ERR={setup:"서버에 Oura 앱 정보가 아직 없어요.",not_connected:"Oura 연결이 끊겼어요. 다시 연결해 주세요.",oura:"Oura에서 가져오지 못했어요. 잠시 후 다시 시도해 주세요.",save:"저장하지 못했어요. 잠시 후 다시 시도해 주세요.",
+  denied:"Oura 연결을 취소했어요.",expired:"연결 시간이 지났어요. 다시 눌러 주세요.",token:"Oura 로그인을 마치지 못했어요. 다시 시도해 주세요.",bad_pin:"다시 로그인해 주세요.",locked:ERR.locked,no_auth:"다시 로그인해 주세요.",not_linked:"다시 로그인해 주세요."};
+const shortTime=iso=>{const d=new Date(iso);return (d.getMonth()+1)+"/"+d.getDate()+" "+pad(d.getHours())+":"+pad(d.getMinutes())};
+function ouraView(){
+  const n=$("#ouraNote"),c=$("#ouraConnect"),sy=$("#ouraSync"),off=$("#ouraOff");if(!n)return;
+  $("#ouraAcc").hidden=false;
+  if(S.guest||!S.key){n.textContent="닉네임이나 Google로 로그인하면 Oura 링을 연결할 수 있어요.";c.hidden=true;sy.hidden=true;off.hidden=true;return}
+  const on=!!(ouraSt&&ouraSt.connected);c.hidden=on;sy.hidden=!on;off.hidden=!on;
+  n.textContent=on?("연결됨"+(ouraSt.last_sync?" · 마지막 동기화 "+shortTime(ouraSt.last_sync):"")+(ouraSt.last_error&&/refresh/.test(ouraSt.last_error)?" · Oura 로그인이 만료됐어요. 연결을 끊고 다시 연결해 주세요.":""))
+    :"Oura에서 잔 시간, 잠든·깨어난 시각, 수면·레디니스 점수, HRV, 안정시 심박을 가져와요. 앱을 열 때 1시간에 한 번씩 최근 14일을 다시 받아요.";
+}
+async function ouraStatus(){
+  if(!S.key||S.guest||!OURA_URL){ouraView();return}
+  try{ouraSt=await oura("status")}catch(e){ouraSt=null}
+  ouraView();
+  if(ouraSt&&ouraSt.connected&&Date.now()-(ouraSt.last_sync?Date.parse(ouraSt.last_sync):0)>3600e3)ouraSync(true);
+}
+async function ouraSync(quiet){
+  if(ouraBusy)return;ouraBusy=true;const m=$("#ouraMsg");if(!quiet)m.textContent="가져오는 중…";
+  try{const r=await oura("sync");
+    if(r.ok){S.lastLoad=0;load();if(!quiet)m.textContent="최근 14일 중 "+r.days+"일을 가져왔어요."}
+    else if(!quiet)m.textContent=OURA_ERR[r.error]||"가져오지 못했어요.";
+  }catch(e){if(!quiet)m.textContent=G_ERR.net}
+  finally{ouraBusy=false;try{ouraSt=await oura("status")}catch(e){}ouraView()}
+}
+$("#ouraConnect").addEventListener("click",async()=>{
+  const m=$("#ouraMsg");if(ouraBusy)return;ouraBusy=true;m.textContent="Oura로 이동하는 중…";
+  try{const r=await oura("start");if(!r.ok||!r.url){m.textContent=OURA_ERR[r.error]||"연결을 시작하지 못했어요.";return}flushPending();location.href=r.url}
+  catch(e){m.textContent=G_ERR.net}finally{ouraBusy=false}
+});
+$("#ouraSync").addEventListener("click",()=>ouraSync(false));
+$("#ouraOff").addEventListener("click",async()=>{
+  if(!confirm("Oura 연결을 끊을까요? 이미 가져온 기록은 그대로 남아요."))return;
+  try{const r=await oura("disconnect");if(r.ok){ouraSt={connected:false};$("#ouraMsg").textContent="연결을 끊었어요. Oura 앱 설정에서도 AXIS 권한을 지울 수 있어요."}}catch(e){$("#ouraMsg").textContent=G_ERR.net}
+  ouraView();
+});
+/* back from Oura: ?oura=ok&n=… / ?oura=fail&why=… */
+const OURA_BACK=(()=>{const q=new URLSearchParams(location.search),v=q.get("oura");if(!v)return null;
+  try{history.replaceState(null,"",location.pathname+location.hash)}catch(e){}
+  return v==="ok"?"Oura를 연결했어요. 최근 "+(q.get("n")||0)+"일을 가져왔어요.":(OURA_ERR[q.get("why")]||"Oura 연결에 실패했어요.")})();
+if(OURA_BACK)setTimeout(()=>toast(OURA_BACK),1500);
 
 /* ---------- boot ---------- */
 if("serviceWorker" in navigator&&location.protocol==="https:")navigator.serviceWorker.register("sw.js").catch(()=>{});

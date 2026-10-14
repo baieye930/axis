@@ -647,8 +647,8 @@ details.more>summary{cursor:pointer;color:var(--muted);font-size:.88rem;padding:
       <summary>기록해 볼 것 (선택)</summary>
       <div class="grid">
         <div class="row2">
-          <div class="field"><label for="f-wakeAt">실제 기상</label><input id="f-wakeAt" data-f="wakeAt" type="time"></div>
-          <div class="field"><label for="f-bedAt">취침</label><input id="f-bedAt" data-f="bedAt" type="time"></div>
+          <div class="field"><label for="f-wakeAt">실제 기상</label><input id="f-wakeAt" data-f="wakeAt" type="time" step="60"></div>
+          <div class="field"><label for="f-bedAt">취침</label><input id="f-bedAt" data-f="bedAt" type="time" step="60"></div>
           <div class="field"><label for="f-sleepH">수면(시간)</label><input id="f-sleepH" data-f="sleepH" type="number" inputmode="decimal" min="0" max="14" step="0.5"></div>
         </div>
         <div class="field"><label>아침 개운함</label><div class="rate" data-r="fresh"></div></div>
@@ -1005,8 +1005,8 @@ details.more>summary{cursor:pointer;color:var(--muted);font-size:.88rem;padding:
     <button class="wakebtn" type="button" data-pick="7" aria-pressed="false"><b>7:00</b><span data-wakeinfo="7">업무 10:00 · 첫 식사 12:00 · 취침 23:00</span></button>
     <button class="wakebtn" type="button" data-pick="8" aria-pressed="false"><b>8:00</b><span data-wakeinfo="8">업무 11:00 · 첫 식사 13:00 · 취침 24:00</span></button>
     <div class="wakeother">
-      <label for="wakeTime">다른 시각 <small>5:00~10:30, 15분 단위</small></label>
-      <div class="row"><input id="wakeTime" type="time" step="900" min="05:00" max="10:30"><button id="wakeApply" class="btn primary" type="button">이 시각으로</button></div>
+      <label for="wakeTime">다른 시각 <small>5:00~10:30, 1분 단위</small></label>
+      <div class="row"><input id="wakeTime" type="time" step="60" min="05:00" max="10:30"><button id="wakeApply" class="btn primary" type="button">이 시각으로</button></div>
     </div>
     <p class="note">잘못 골랐으면 오늘 안에 언제든 바꿀 수 있어요. 7시와 8시 외의 시각도 모든 일정이 기상 시각 기준으로 함께 밀립니다.</p>
     <button id="wakeClose" class="btn block" type="button" hidden>닫기</button>
@@ -1487,18 +1487,18 @@ function openWake(first){
   $("#wakeClose").hidden=!w;
   $("#wakeSheet").hidden=false;
 }
-/* wake is stored in hours (7, 8, or e.g. 6.75 for 6:45) so every offset stays W = wake*60 */
+/* wake is stored in hours (7, 8, 6.75 for 6:45, 7.15 for 7:09); minutes are always Math.round(wake*60) so 1-minute wakes stay whole */
 const fmtW=w=>{if(w==null||!isFinite(w))return "–";const m=Math.round(w*60);return m%60?Math.floor(m/60)+":"+pad(m%60):(m/60)+"시"};
 function pickWake(w){
   patch(S.today,d=>{d.wake=w});
-  const late=w*60-baseWake()*60>LATE_MIN&&timeline(w*60,parseYmd(S.today).getDay())[0].late;
+  const late=Math.round(w*60)-baseWake()*60>LATE_MIN&&timeline(Math.round(w*60),parseYmd(S.today).getDay())[0].late;
   $("#wakeSheet").hidden=true;renderAll();
   toast(late?"평소보다 늦게 일어났어요. 식사·저녁·취침 시각은 그대로 두고, 오전은 지금부터 다시 짰어요.":fmtW(w)+" 기상 타임라인으로 보여 드려요.");
 }
 $$("#wakeSheet [data-pick]").forEach(b=>b.addEventListener("click",()=>pickWake(+b.dataset.pick)));
 $("#wakeApply").addEventListener("click",()=>{
   const v=$("#wakeTime").value;if(!/^\d{2}:\d{2}$/.test(v)){toast("시각을 먼저 골라 주세요.");return}
-  let m=+v.slice(0,2)*60+ +v.slice(3);m=Math.round(m/15)*15;
+  const m=+v.slice(0,2)*60+ +v.slice(3);
   if(m<300||m>630){toast("5:00에서 10:30 사이로 골라 주세요.");return}
   pickWake(m/60);
 });
@@ -1531,7 +1531,7 @@ function renderToday(){
     $("#nowBox").innerHTML='<div class="empty"><p>'+(S.loaded?"오늘 기상 시각을 고르면 그 타입의 타임라인과 지금 할 일을 보여 드려요.":"기록을 불러오는 중이에요…")+'</p></div>';
     $("#glance").innerHTML="";$("#tl").innerHTML="";S.tlKey="";return;
   }
-  const W=w*60,items=timeline(W,parseYmd(S.today).getDay()),k=S.today+":"+w+":"+JSON.stringify(prefs())+":"+(wx?wx.at:0);
+  const W=Math.round(w*60),items=timeline(W,parseYmd(S.today).getDay()),k=S.today+":"+w+":"+JSON.stringify(prefs())+":"+(wx?wx.at:0);
   items.forEach(it=>{const n=wxNote(W,it);if(n)it.tag=(it.tag?it.tag+" · ":"")+n});
   if(items.length&&items[0].late)$("#wakeChip").innerHTML=fmtW(w)+" 기상 · 늦은 날 <small>바꾸기</small>";
   if(S.tlKey!==k){
@@ -1627,7 +1627,7 @@ function energyCurve(awake,debt){
 const energyWord=v=>v>=70?"높음":v>=45?"보통":"낮음";
 function energyNow(){
   const d=day(S.today);if(!d.wake)return null;
-  const W=d.wake*60,it=timeline(W,parseYmd(S.today).getDay()),bed=(it.find(x=>x.id==="sleep")||{o:960}).o,awake=bed/60,{debt}=sleepDebt();
+  const W=Math.round(d.wake*60),it=timeline(W,parseYmd(S.today).getDay()),bed=(it.find(x=>x.id==="sleep")||{o:960}).o,awake=bed/60,{debt}=sleepDebt();
   const pts=energyCurve(awake,debt),rel=(nowMin()-W)/60,cur=rel<0||rel>awake?null:pts[Math.min(pts.length-1,Math.max(0,Math.round(rel*4)))][1];
   /* focus windows: today's best stretches — within 15 points of today's peak (so they exist even with sleep debt) */
   const top=Math.max(...pts.map(p=>p[1])),cut=Math.max(35,top-15);
@@ -1671,7 +1671,7 @@ function ouraBlock(){
 /* morning: one tap for last night's sleep (the same value as 체크 › 수면(시간)) */
 function sleepAskHtml(){
   const d=day(S.today);if(!d.wake||num(d.sleepH))return "";
-  const rel=nowMin()-d.wake*60;if(rel<-60||rel>360)return "";
+  const rel=nowMin()-Math.round(d.wake*60);if(rel<-60||rel>360)return "";
   return '<div class="card sleepask"><span class="lbl">어젯밤 몇 시간 잤어요?</span><div class="hrs">'+[5,6,6.5,7,7.5,8,8.5,9].map(h=>'<button type="button" class="chip" data-sleeph="'+h+'">'+h+'</button>').join("")+'</div><p class="s">수면 부채와 오늘 에너지 리듬 계산에 써요.</p></div>';
 }
 document.addEventListener("click",e=>{
@@ -1689,7 +1689,7 @@ const RUN_SHORT={water:"물",sun1:"햇빛",move:"운동",shower:"샤워",commute
 let runSeg=null,runRang=-1,wakeLock=null;
 function runSteps(seg){
   const d=day(S.today);if(!d.wake)return [];
-  const W=d.wake*60,items=timeline(W,parseYmd(S.today).getDay()),m1=items.find(x=>x.id==="meal1");
+  const W=Math.round(d.wake*60),items=timeline(W,parseYmd(S.today).getDay()),m1=items.find(x=>x.id==="meal1");
   return items.filter(it=>RUN_IDS[seg].includes(it.id)&&!it.mark&&(seg!=="am"||!m1||it.o<m1.o))
     .map(it=>Object.assign({},it,{min:it.id==="sleep"?0:Math.max(1,(it.e>2000?it.o+30:it.e)-it.o)}));
 }
@@ -1699,7 +1699,7 @@ const firstLine=t=>{let s=String(t||"");const i=s.search(/\.\s/);if(i>0)s=s.slic
 /* the card above "지금": shown from shortly before a routine until a while after it, or while one is unfinished */
 function runCardHtml(){
   const d=day(S.today);if(!d.wake)return "";
-  const rel=nowMin()-d.wake*60;
+  const rel=nowMin()-Math.round(d.wake*60);
   for(const seg of ["am","pm"]){
     const st=runOf(seg),steps=runSteps(seg);if(!steps.length)continue;
     const a=steps[0].o,b=steps[steps.length-1].o+(steps[steps.length-1].min||30);
@@ -1731,7 +1731,7 @@ function renderRun(){
       +'<button class="btn primary block" type="button" data-rq="close">닫기</button>'+(seg==="am"?'':'<p class="line">폰은 침대 밖에 두고, 방은 어둡고 시원하게.</p>');
     return;
   }
-  const step=steps[st.i],left=runLeft(st,step),d=day(S.today),W=d.wake*60,note=wxNote(W,step);
+  const step=steps[st.i],left=runLeft(st,step),d=day(S.today),W=Math.round(d.wake*60),note=wxNote(W,step);
   $("#runBody").innerHTML='<h2 id="runTitle" aria-live="polite">'+esc(step.t)+'</h2><p class="line">'+esc(firstLine(step.d))+'</p>'+(note?'<p class="tag">'+esc(note)+'</p>':'')
     +(left==null?'':'<b class="runclock'+(left<0?' over':'')+'" data-runclock>'+(left<0?"+":"")+mmss(Math.abs(left))+'</b>'
       +'<div class="runadj"><button class="btn" type="button" data-rq="minus">−5분</button><button class="btn" type="button" data-rq="pause">'+(st.at?"일시정지":"계속")+'</button><button class="btn" type="button" data-rq="plus">+5분</button></div>')
@@ -2750,7 +2750,7 @@ const dietDay=()=>dDay||S.today;
 const FOODS=[["닭가슴살 100g",165,31,0,4],["계란 1개",75,6,1,5],["밥 1공기",310,6,68,1],["현미밥 1공기",300,6,64,2],["고구마 1개",195,2,45,0],["바나나 1개",105,1,27,0],["그릭요거트 150g",130,15,6,5],["두부 반 모",120,13,3,7],["프로틴 1스쿱",120,24,3,2],["소고기 우둔 100g",150,22,0,6],["연어 100g",210,22,0,13],["우유 200ml",130,6,10,7],["샐러드 한 접시",80,3,10,3],["아메리카노",10,0,2,0]];
 const nowHM=()=>{const d=new Date();return pad(d.getHours())+":"+pad(d.getMinutes())};
 const hmMin=s=>{const m=/^(\d{1,2}):(\d{2})/.exec(s||"");return m?+m[1]*60+ +m[2]:null};
-function mealTimes(D){const x=S.days[D];if(!x||!x.wake)return null;const W=x.wake*60,it=timeline(W,parseYmd(D).getDay()),f=id=>{const r=it.find(y=>y.id===id);return r?W+r.o:null};return {m1:f("meal1"),m2:f("meal2")}}
+function mealTimes(D){const x=S.days[D];if(!x||!x.wake)return null;const W=Math.round(x.wake*60),it=timeline(W,parseYmd(D).getDay()),f=id=>{const r=it.find(y=>y.id===id);return r?W+r.o:null};return {m1:f("meal1"),m2:f("meal2")}}
 function renderWoDiet(){
   const D=dietDay(),isT=D===S.today,x=day(D),meals=(x.meals||[]).slice().sort((a,b)=>(hmMin(a.at)||0)-(hmMin(b.at)||0));
   $("#dietDate").innerHTML='<button class="chip" type="button" data-dday="-1" aria-label="전날">‹</button> '+esc(dateLabel(D))+(isT?" · 오늘":"")+' <button class="chip" type="button" data-dday="1" aria-label="다음 날"'+(isT?" disabled":"")+'>›</button>';
@@ -3106,7 +3106,7 @@ function fired(){try{return JSON.parse(LS.get("axis.fired")||"{}")}catch(e){retu
 /* today's core reminders after the person's edits and the late-wake rules: [{at, id, t, line}] */
 function dueItems(){
   const d=day(S.today);if(!d.wake)return [];
-  const W=d.wake*60,P=prefs().tl||{},items=timeline(W,parseYmd(S.today).getDay()),out=[];
+  const W=Math.round(d.wake*60),P=prefs().tl||{},items=timeline(W,parseYmd(S.today).getDay()),out=[];
   for(const [o0,t0,line] of CORE){
     const p=P[CORE_IDS[o0]]||{},it=items.find(x=>x.id===CORE_IDS[o0]);if(p.off||!it)continue;
     out.push({at:W+it.o,id:d.wake+"@"+it.o,t:it.id==="move"&&it.late&&/\(오후\)$/.test(it.t)?it.t:p.t||t0,line});
@@ -3244,7 +3244,8 @@ function acctView(){
 }
 
 /* ---------- Oura (axis-oura Edge Function holds the Oura sign-in; the app only asks it to start, sync or forget) ----------
-   Synced fields land in the day record: sleepH, bedAt, wakeAt (Oura wins over a typed value) and d.oura = {h, sleep, ready, hrv, rhr, at}. */
+   Synced fields land in the day record: sleepH, bedAt, wakeAt, wake (the day's schedule, when Oura's wake is 5:00~10:30; Oura wins
+   over a typed or picked value) and d.oura = {h, sleep, ready, hrv, rhr, at}. */
 const OURA_URL=configured?CFG.supabaseUrl.replace(/\/+$/,"")+"/functions/v1/axis-oura":"";
 let ouraSt=null,ouraBusy=false;
 async function oura(action){
@@ -3273,7 +3274,8 @@ async function ouraStatus(){
 async function ouraSync(quiet){
   if(ouraBusy)return;ouraBusy=true;const m=$("#ouraMsg");if(!quiet)m.textContent="가져오는 중…";
   try{const r=await oura("sync");
-    if(r.ok){S.lastLoad=0;load();if(!quiet)m.textContent="최근 14일 중 "+r.days+"일을 가져왔어요."}
+    if(r.ok){const w0=day(S.today).wake;S.lastLoad=0;await load();if(!quiet)m.textContent="최근 14일 중 "+r.days+"일을 가져왔어요.";
+      const d=day(S.today);if(d.oura&&d.wake&&d.wake!==w0){$("#wakeSheet").hidden=true;renderAll();toast("Oura 기상 "+fmtW(d.wake)+" 기준으로 오늘 일정을 맞췄어요.")}}
     else if(!quiet)m.textContent=OURA_ERR[r.error]||"가져오지 못했어요.";
   }catch(e){if(!quiet)m.textContent=G_ERR.net}
   finally{ouraBusy=false;try{ouraSt=await oura("status")}catch(e){}ouraView()}

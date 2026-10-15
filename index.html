@@ -8,14 +8,14 @@
 <meta name="mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-title" content="AXIS">
 <meta name="apple-mobile-web-app-status-bar-style" content="default">
-<meta name="theme-color" content="#FFF1DA">
+<meta name="theme-color" content="#EDE0D4">
 <title>AXIS</title>
 <link rel="manifest" href="manifest.webmanifest?v=2">
 <link rel="apple-touch-icon" href="icon-180.png?v=2">
 <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Ccircle cx='32' cy='32' r='22' fill='none' stroke='%2333250E' stroke-width='4'/%3E%3Cline x1='32' y1='3' x2='32' y2='61' stroke='%2333250E' stroke-width='4' stroke-linecap='round'/%3E%3Ccircle cx='32' cy='19' r='6' fill='%23C9741E'/%3E%3C/svg%3E">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Gowun+Batang:wght@400;700&family=IBM+Plex+Sans+KR:wght@400;500;600&family=IBM+Plex+Mono:wght@500&display=swap">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;500;700&family=Urbanist:wght@300;400;500;600&display=swap">
 <script src="config.js"></script>
 <style>
 /* Layout: one narrow column, phone first; a sky that follows the clock (morning sun → day sky → dusk → night navy); fixed 4-tab bar at the bottom. */
@@ -531,6 +531,151 @@ details.more>summary{cursor:pointer;color:var(--muted);font-size:.88rem;padding:
 .ouradl dt{font-size:.7rem;color:var(--muted)}.ouradl dd{margin:0;font-weight:600;font-family:var(--f-num);font-size:.9rem;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
 .ourabtns{grid-template-columns:1fr 1fr}
 .ourabtns #ouraConnect{grid-column:1/-1}
+
+/* ===================== Warm beige theme (2026-10-15) =====================
+   One look for the whole app, layered over the rules above so every screen and control keeps working:
+   a warm beige light that glows from the top, white rounded tiles, thin large headings, black pill buttons and a
+   floating white tab bar. Dark (data-theme="dark": chosen, or 자동 at night / with the device) keeps the same shapes in a warm dark. */
+:root,:root[data-phase]{
+  --bg1:#F3E7DC; --bg2:#DCCABD; --surface:#FFFFFF; --surface2:#EFE6DE;
+  --fg:#1E1B19; --muted:#5E554E; --line:#E7DDD4; --accent:#1E1B19; --accent-fg:#FFFFFF;
+  --soft:#EFE6DE; --good:#2F7D4F; --shadow:0 10px 30px rgba(60,40,25,.08);
+  --glass:rgba(255,255,255,.5);
+  --f-display:"Noto Sans KR","Apple SD Gothic Neo","Malgun Gothic",sans-serif;
+  --f-body:"Noto Sans KR","Apple SD Gothic Neo","Malgun Gothic",system-ui,sans-serif;
+  --f-num:"Urbanist","Noto Sans KR",system-ui,sans-serif;
+  --r:26px;
+  color-scheme:light;
+}
+:root[data-theme="dark"]{
+  --bg1:#3A322C; --bg2:#1E1B19; --surface:#2C2622; --surface2:#3A322C;
+  --fg:#F3E7DC; --muted:#C2B4A7; --line:#463C34; --accent:#F3E7DC; --accent-fg:#1E1B19;
+  --soft:#3A322C; --good:#9FDDB2; --shadow:0 10px 30px rgba(0,0,0,.3);
+  --glass:rgba(255,255,255,.08);
+  color-scheme:dark;
+}
+body{background:var(--bg2) radial-gradient(130% 75% at 50% 0%,var(--bg1) 0%,color-mix(in srgb,var(--bg1) 45%,var(--bg2)) 50%,var(--bg2) 100%) fixed;font-weight:400}
+h1,h2,h3{font-weight:300;letter-spacing:-.02em;line-height:1.2}
+.num{letter-spacing:0}
+#main{padding-block:1rem 7.5rem}
+.head h2{font-size:2.1rem}
+.eyebrow{letter-spacing:.02em;font-weight:500}
+.top .mark{font-weight:600}
+.brand h1{font-weight:300}
+
+/* tiles */
+.card,.acc,.days,.startbtn,.empty{border-radius:var(--r);box-shadow:none}
+.empty{border:0;background:var(--glass)}
+.card .lbl,.glance .lbl,.plancard .lbl,.wk4 .lbl{letter-spacing:0;font-weight:500}
+.acc>summary{font-weight:500;font-size:1rem;min-height:3.4rem;padding:.5rem 1.2rem}
+.acc .in{padding:0 1.2rem 1.2rem}
+
+/* buttons, chips, segmented switches */
+.btn{border-radius:999px;border:0;background:var(--soft);font-weight:500}
+.btn.primary{background:var(--accent);color:var(--accent-fg)}
+.btn.danger{background:var(--soft);color:#B3261E}
+.chip{background:var(--glass);font-weight:500}
+.card .chip,.sheet .chip,.acc .chip{background:var(--soft)}
+.seg{border-radius:999px;background:var(--glass);padding:.25rem;gap:.25rem}
+.seg button{border-radius:999px;font-weight:500;min-height:2.6rem}
+.seg button[aria-pressed="true"]{background:var(--accent);color:var(--accent-fg);box-shadow:none}
+.modesw{justify-self:end;width:12rem;margin:-.4rem 0 .8rem auto}
+.modesw button{min-height:2.5rem}
+
+/* 오늘: "지금" sits on the background as a large heading, not in a box */
+.now{background:transparent;box-shadow:none;border:0;border-radius:0;padding:.2rem .15rem;gap:.55rem}
+.now .k{color:var(--muted);font-family:var(--f-num);font-weight:500;letter-spacing:0}
+.now h3{font-size:2.6rem;line-height:1.12}
+.now .bar{height:6px;background:color-mix(in srgb,var(--fg) 14%,transparent)}
+.now .next{border-top:0;padding-top:.1rem;color:var(--fg)}
+.now .done-btn{border:0;background:var(--accent);color:var(--accent-fg);min-height:2.9rem;padding:.3rem 1.1rem .3rem .5rem}
+.now .done-btn i{border-color:var(--accent-fg)}
+.now .done-btn[aria-pressed="true"]{color:var(--accent-fg)}
+.now .done-btn[aria-pressed="true"] i{background:var(--accent-fg);border-color:var(--accent-fg)}
+.now .done-btn[aria-pressed="true"] svg{color:var(--accent)}
+.glance{gap:.4rem}
+.glance .card{padding:1rem 1.1rem;gap:.3rem}
+.glance .v{font-size:1.2rem;font-weight:500}
+.glance .cups .num{font-size:1.15rem}
+.glance .cups .chip{border:0;background:var(--soft)}
+.glance .cups [data-cup="1"]{background:var(--accent);color:var(--accent-fg)}
+.tl{background:var(--glass);border-radius:var(--r);padding:.35rem}
+.tl li{border-radius:18px}
+.tl summary{border-radius:18px}
+.tl .tt{font-weight:500}
+.tl li.cur{background:var(--surface);box-shadow:none}
+.tl li.cur .t,.tl li.cur .tt{color:var(--fg);font-weight:700}
+.tl li.markrow,.tl li.markrow .t{color:var(--muted)}
+.tdone i,.ck .box{border-radius:50%;border-color:var(--fg)}
+.runcard{background:var(--surface);box-shadow:none}
+
+/* 체크 */
+.score b{font-size:3.2rem;font-weight:400}
+.ck{border:0;border-radius:22px;min-height:3.4rem;padding:.55rem 1rem}
+.ck[aria-checked="true"]{background:var(--accent);color:var(--accent-fg)}
+.ck[aria-checked="true"] .box{background:var(--accent-fg);border-color:var(--accent-fg)}
+.ck[aria-checked="true"] .box svg{color:var(--accent)}
+.ck[aria-checked="true"] .tx small{color:inherit;opacity:.78}
+.ck .tx b{font-weight:500}
+.memo{background:var(--surface)}
+.rate button,.yn button,.yn3 button{border-radius:999px;border:0;background:var(--soft)}
+.back{border-radius:999px;background:var(--glass)}
+.daynav .chip{min-height:2.75rem;padding:.25rem 1rem}
+
+/* 기록 */
+.stat .big,.strk .big,.wohead .big{font-size:2rem;font-weight:500}
+.wk4 b{font-size:1.6rem;font-weight:500}
+.days .wk{background:var(--soft)}
+.dots i{border-radius:7px}
+
+/* inputs */
+.field input,.memo .field input,.memo .field textarea,.wakeother input,.addck input,.edlist .nm,.edlist select,.plannote textarea,
+.search,.share,.exsel,.planed select,.field select,.rtc input,.dietf input,.sets input,.sets select,.wpmain select,.acct .field input{border-radius:14px;border-color:var(--line)}
+.sdone{border-radius:999px;border-color:var(--line)}
+
+/* sheets, programs, workout */
+.sheet .pane{border-radius:30px 30px 0 0}
+.wakebtn{border-radius:22px;border-color:var(--line)}
+.prog,.rtlist li,.asbtn,.picklist button[data-pid],.picklist button[data-rtpick]{border-radius:20px}
+.prog dl div,.ouradl div{border-radius:14px}
+.startbtn{border:0}
+.chips .chip{border:0;background:var(--surface)}
+.parts .chip{border:0;background:var(--surface)}
+.wpday{border-radius:18px}
+.weekplan li.today .wpday{background:var(--accent);color:var(--accent-fg)}
+.weekplan li.today .wpday small{color:inherit;opacity:.8}
+.exh .idx{background:var(--soft);color:var(--fg);font-family:var(--f-num);font-weight:600;width:2rem;height:2rem}
+.timer.hard{border:0;background:var(--accent);color:var(--accent-fg)}
+.timer.hard .clock{color:inherit}
+
+/* floating tab bar: icons only, the open tab is a black pill with its name */
+.tabbar{left:10px;right:10px;bottom:calc(10px + env(safe-area-inset-bottom,0px));padding:.4rem;border:0;border-radius:999px;background:var(--surface);box-shadow:0 10px 30px rgba(60,40,25,.14);max-width:33rem;margin:0 auto}
+.tabbar .in{display:flex;gap:.2rem}
+.tabbar button{flex:1;display:flex;align-items:center;justify-content:center;gap:.4rem;min-height:3.1rem;border-radius:999px;font-size:0;font-weight:500}
+.tabbar button[aria-selected="true"]{flex:1.7;background:var(--accent);color:var(--accent-fg);font-size:.82rem}
+.tabbar svg{width:1.45rem;height:1.45rem}
+.restbar{bottom:calc(5.6rem + env(safe-area-inset-bottom,0px))}
+.restbar .in{border-radius:999px;padding:.45rem .5rem .45rem 1.2rem}
+.restbar .btn{border-radius:999px;border:1px solid rgba(255,255,255,.3)}
+.toast{border-radius:20px;bottom:calc(6.6rem + env(safe-area-inset-bottom,0px))}
+.ck.mini{border-radius:16px}
+.ck.mini .box{border-radius:50%}
+.alert .box{border-radius:26px}
+.alert button{border-radius:999px;background:var(--bg1);color:var(--fg)}
+.gbtn{border-radius:999px}
+/* 화면 모드: two phone thumbnails like iPhone's Display settings */
+.appear{display:grid;grid-template-columns:1fr 1fr;gap:.6rem}
+.appear button{display:grid;justify-items:center;gap:.5rem;padding:.4rem 0;border:0;background:transparent;color:inherit;font:inherit;font-weight:500;cursor:pointer}
+.appear .thumb{width:4.6rem;height:8.4rem;border-radius:1rem;border:2px solid var(--line);padding:.6rem .45rem;display:grid;align-content:start;gap:.35rem}
+.appear .thumb.light{background:linear-gradient(180deg,#F3E7DC,#DCCABD)}
+.appear .thumb.dark{background:linear-gradient(180deg,#3A322C,#1E1B19)}
+.appear .thumb i{display:block;height:.45rem;width:60%;border-radius:.3rem;background:#1E1B19}
+.appear .thumb b{display:block;height:1.6rem;border-radius:.5rem;background:#FFFFFF}
+.appear .thumb.dark i{background:#F3E7DC}.appear .thumb.dark b{background:#2C2622}
+.appear .radio{width:1.4rem;height:1.4rem;border-radius:50%;border:2px solid var(--muted)}
+.appear button[aria-checked="true"] .thumb{border-color:var(--accent)}
+.appear button[aria-checked="true"] .radio{background:var(--accent);border-color:var(--accent);box-shadow:inset 0 0 0 3px var(--surface)}
+#themeOpt select{min-height:2.9rem;padding:.3rem .8rem;border-radius:14px;border:1.5px solid var(--line);background:var(--surface);color:var(--fg);font-size:16px;width:100%}
 </style>
 </head>
 <body>
@@ -690,6 +835,18 @@ details.more>summary{cursor:pointer;color:var(--muted);font-size:.88rem;padding:
 
   <section id="tab-guide" class="tab" role="tabpanel" aria-label="기준" hidden>
     <div class="head"><span class="eyebrow">문서1 기준</span><h2>기준</h2></div>
+    <details class="acc" id="themeAcc">
+      <summary>화면 모드</summary>
+      <div class="in">
+        <div class="appear" role="radiogroup" aria-label="화면 모드">
+          <button type="button" role="radio" data-look="light" aria-checked="true"><span class="thumb light" aria-hidden="true"><i></i><b></b><b></b></span>라이트<span class="radio" aria-hidden="true"></span></button>
+          <button type="button" role="radio" data-look="dark" aria-checked="false"><span class="thumb dark" aria-hidden="true"><i></i><b></b><b></b></span>다크<span class="radio" aria-hidden="true"></span></button>
+        </div>
+        <div class="toggle"><span>자동</span><button id="themeAuto" class="sw" type="button" role="switch" aria-checked="true" aria-label="자동으로 라이트·다크 바꾸기"></button></div>
+        <div id="themeOpt" class="field"><label for="themeBy">옵션</label><select id="themeBy"><option value="time">밤 시간대 (저녁 7시~새벽 4시)</option><option value="system">기기 설정 따르기</option></select></div>
+        <p id="themeNote" class="note"></p>
+      </div>
+    </details>
 
     <details class="acc">
       <summary>알림 · 캘린더</summary>
@@ -1311,9 +1468,31 @@ function randHex(n){const a=new Uint8Array(n);crypto.getRandomValues(a);return h
 const normNick=s=>s.normalize("NFC").trim().replace(/\s+/g," ").toLowerCase();
 async function keyOf(nick){return (await sha("axis-nick:"+normNick(nick))).slice(0,40)}
 
-/* ---------- theme ---------- */
-function applyPhase(){document.documentElement.setAttribute("data-phase",phase())}
+/* ---------- theme ----------
+   data-phase = time of day; data-theme = light/dark. 화면 모드 works like iPhone and is kept on this device only:
+   라이트 or 다크, or 자동 — dark from 7 pm to 4 am (the default, as before) or whenever the device is in dark mode. */
+const THEME_K="axis.theme",darkMQ=window.matchMedia?matchMedia("(prefers-color-scheme: dark)"):null;
+function themePref(){try{const t=JSON.parse(LS.get(THEME_K)||"null");if(t&&typeof t==="object")return {mode:t.mode==="dark"?"dark":"light",auto:t.auto!==false,by:t.by==="system"?"system":"time"}}catch(e){}return {mode:"light",auto:true,by:"time"}}
+const isDark=()=>{const t=themePref();return !t.auto?t.mode==="dark":t.by==="system"?!!(darkMQ&&darkMQ.matches):phase()==="night"};
+function applyPhase(){
+  const r=document.documentElement,d=isDark();r.setAttribute("data-phase",phase());r.setAttribute("data-theme",d?"dark":"light");
+  const m=document.querySelector('meta[name="theme-color"]');if(m)m.content=d?"#1E1B19":"#EDE0D4";
+  themeView(); // the clock (tick) or the device can flip 자동, keep the switch in step
+}
 applyPhase();
+function themeView(){
+  const t=themePref(),d=isDark();
+  document.querySelectorAll("[data-look]").forEach(b=>b.setAttribute("aria-checked",String((b.dataset.look==="dark")===d)));
+  const sw=document.getElementById("themeAuto");if(!sw)return;
+  sw.setAttribute("aria-checked",String(t.auto));document.getElementById("themeOpt").hidden=!t.auto;document.getElementById("themeBy").value=t.by;
+  document.getElementById("themeNote").textContent=!t.auto?(t.mode==="dark"?"항상 다크로 보여요.":"항상 라이트로 보여요.")
+    :t.by==="system"?"아이폰 설정의 라이트·다크를 그대로 따라가요.":"저녁 7시부터 새벽 4시까지 다크로, 나머지 시간은 라이트로 보여요.";
+}
+function setTheme(p){LS.set(THEME_K,JSON.stringify(Object.assign(themePref(),p)));applyPhase()}
+document.querySelectorAll("[data-look]").forEach(b=>b.addEventListener("click",()=>setTheme({mode:b.dataset.look,auto:false})));
+document.getElementById("themeAuto").addEventListener("click",()=>{const t=themePref();setTheme(t.auto?{auto:false,mode:isDark()?"dark":"light"}:{auto:true})});
+document.getElementById("themeBy").addEventListener("change",e=>setTheme({by:e.target.value}));
+if(darkMQ&&darkMQ.addEventListener)darkMQ.addEventListener("change",applyPhase);
 
 /* ---------- toast & alert ---------- */
 let toastT;

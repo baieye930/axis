@@ -1,7 +1,8 @@
 /* AXIS service worker: the app shell opens offline, and lock-screen reminders arrive by push.
-   Pages and config: network first (new deploys show up right away), cache when offline.
+   Pages and config: network first, always asking GitHub Pages whether the file changed (its 10-minute browser cache would
+   otherwise hold an old index.html after a deploy), cache when offline.
    Fonts: cache first. Supabase calls are POST and are never touched. */
-const VERSION = "axis-v2";
+const VERSION = "axis-v3";
 const SHELL = ["./", "./index.html", "./config.js", "./manifest.webmanifest", "./icon-180.png", "./icon-192.png", "./icon-512.png"];
 
 self.addEventListener("install", e => {
@@ -20,7 +21,7 @@ self.addEventListener("fetch", e => {
   const url = new URL(req.url);
 
   if (url.origin === location.origin) {
-    e.respondWith(fetch(req).then(res => {
+    e.respondWith(fetch(req, { cache: "no-cache" }).then(res => {
       if (res.ok) { const copy = res.clone(); caches.open(VERSION).then(c => c.put(req, copy)); }
       return res;
     }).catch(() => caches.match(req, { ignoreSearch: true })

@@ -664,6 +664,7 @@ h1,h2,h3{font-weight:300;letter-spacing:-.02em;line-height:1.2}
 .alert button{border-radius:999px;background:var(--bg1);color:var(--fg)}
 .gbtn{border-radius:999px}
 /* 워크아웃 빠른 입력 */
+.sets.cardio,.wo-lite .sets.cardio{grid-template-columns:2.4rem 1fr 1fr 3.6rem 2.6rem}
 .sets input.cur{border-color:var(--accent);border-width:2px}
 .qadj{display:flex;flex-wrap:wrap;gap:.3rem;align-items:center;margin-top:.15rem}
 .qadj .s{font-size:.78rem;color:var(--muted);margin-right:.2rem}
@@ -2332,9 +2333,107 @@ for(const id in EQ0)EX[id].eq=EQ0[id];
   ["scalf","시티드 카프 레이즈","고립","종아리",3,"10~15",60,"무릎을 굽힌 채 아래에서 1초 늘리기","카프 레이즈","머신"],
   ["crunch","크런치","코어","코어",3,"20~25",45,"허리는 바닥에, 갈비뼈를 골반 쪽으로 말기","케이블 크런치","맨몸"],
   ["dcrunch","디클라인 크런치","코어","코어",3,"10~12",60,"디클라인 벤치에서 끝까지 말아 올리기","크런치","맨몸"],
-  ["lsit","L싯 홀드","코어","코어",3,"20~30초",60,"팔로 몸을 들고 다리를 앞으로 곧게","행잉 레그 레이즈","맨몸"]
-].forEach(([id,n,p,m,s,r,rest,c,alt,eq])=>{EX[id]={n,p,m:m.split(","),s,r,rest,c,alt,eq}});
-const EQS=["바벨","덤벨","머신","케이블","맨몸","케틀벨","밴드","기타"];
+  ["lsit","L싯 홀드","코어","코어",3,"20~30초",60,"팔로 몸을 들고 다리를 앞으로 곧게","행잉 레그 레이즈","맨몸"],
+  /* common gym moves (번핏 comparison, step 1) */
+  ["sumo","스모 데드리프트","힌지","둔근,다리,햄스트링",3,"3~6",180,"발을 넓게, 무릎을 바깥으로 밀며 바를 몸에 붙여 일어서기","컨벤셔널 데드리프트","바벨"],
+  ["smsq","스미스머신 스쿼트","스쿼트","다리,둔근",3,"6~10",150,"발을 바보다 살짝 앞에 두고 허리 중립으로 깊게","바벨 백 스쿼트","스미스"],
+  ["smbss","스미스머신 불가리안 스플릿 스쿼트","스쿼트","다리,둔근",3,"8~10/쪽",90,"뒷발을 벤치에, 앞발에 체중을 싣고 수직으로 내려가기","불가리안 스플릿 스쿼트","스미스"],
+  ["smhip","스미스머신 힙 쓰러스트","힌지","둔근,햄스트링",3,"8~12",90,"등을 벤치에 걸고 정점에서 1초 쥐기","힙 쓰러스트","스미스"],
+  ["blunge","바벨 런지","스쿼트","다리,둔근",3,"8~10/쪽",120,"상체를 세우고 뒷무릎을 바닥 가까이","덤벨 런지","바벨"],
+  ["dlunge","덤벨 런지","스쿼트","다리,둔근",3,"10~12/쪽",90,"덤벨을 양손에, 보폭을 넉넉히","워킹 런지","덤벨"],
+  ["dsumo","덤벨 스모 스쿼트","스쿼트","다리,둔근",3,"10~15",90,"발을 넓게, 덤벨 하나를 다리 사이로 내리기","고블릿 스쿼트","덤벨"],
+  ["drdl","덤벨 루마니안 데드리프트","힌지","햄스트링,둔근",3,"8~12",120,"덤벨을 허벅지 앞으로 미끄러지듯, 엉덩이를 뒤로","루마니안 데드리프트","덤벨"],
+  ["hipm","힙 쓰러스트 머신","힌지","둔근,햄스트링",3,"10~12",90,"정점에서 1초 쥐고 갈비뼈 내리기","힙 쓰러스트","머신"],
+  ["pend","펜듈럼 스쿼트 머신","스쿼트","다리,둔근",3,"8~12",120,"등을 패드에 붙이고 깊게, 무릎은 발끝 방향","핵 스쿼트","머신"],
+  ["lhack","리니어 핵 스쿼트 머신","스쿼트","다리",3,"8~12",120,"발 위치로 자극 조절, 깊게 앉았다 밀기","핵 스쿼트","머신"],
+  ["vsq","브이 스쿼트","스쿼트","다리,둔근",3,"8~12",120,"어깨 패드 아래 몸을 고정하고 깊게 앉기","핵 스쿼트","머신"],
+  ["gkick","글루트 킥백 머신","고립","둔근",3,"12~15/쪽",60,"허리를 꺾지 말고 엉덩이로 뒤로 밀기","케이블 킥백","머신"],
+  ["ckick","케이블 킥백","고립","둔근",3,"12~15/쪽",60,"발목 스트랩, 골반을 고정한 채 다리를 뒤로","글루트 킥백 머신","케이블"],
+  ["sissy","시시 스쿼트","고립","다리",3,"10~15",60,"뒤꿈치를 들고 무릎을 앞으로 내밀며 상체를 뒤로","레그 익스텐션","맨몸"],
+  ["jsq","점프 스쿼트","스쿼트","다리,둔근",3,"6~10",90,"빠르게 뛰고 부드럽게 착지","맨몸 스쿼트","맨몸"],
+  ["dlcurl","덤벨 레그 컬","고립","햄스트링",3,"10~15",60,"엎드려 발 사이에 덤벨을 끼우고 천천히","레그 컬","덤벨"],
+  ["olext","원레그 익스텐션","고립","다리",3,"12~15/쪽",60,"한 다리씩, 끝에서 1초 멈춤","레그 익스텐션","머신"],
+  ["olcurl","원레그 컬","고립","햄스트링",3,"12~15/쪽",60,"한 다리씩, 엉덩이가 뜨지 않게","레그 컬","머신"],
+  ["smcalf","스미스머신 카프 레이즈","고립","종아리",3,"10~15",60,"발판 위 앞꿈치, 아래에서 늘리고 위에서 멈춤","카프 레이즈","스미스"],
+  ["dfr","덤벨 프론트 레이즈","고립","어깨",3,"10~15",60,"팔꿈치를 살짝 굽히고 어깨 높이까지만","케이블 프론트 레이즈","덤벨"],
+  ["cfr","케이블 프론트 레이즈","고립","어깨",3,"12~15",60,"아래 도르래를 앞으로, 어깨 높이까지","덤벨 프론트 레이즈","케이블"],
+  ["burow","바벨 업라이트 로우","당기기","어깨,등",3,"10~12",90,"넓게 잡고 팔꿈치가 손보다 높게, 가슴 아래까지만","덤벨 업라이트 로우","바벨"],
+  ["durow","덤벨 업라이트 로우","당기기","어깨,등",3,"10~12",90,"덤벨을 몸 가까이 끌어올리고 팔꿈치를 옆으로","바벨 업라이트 로우","덤벨"],
+  ["clr","케이블 레터럴 레이즈","고립","어깨",3,"12~15",60,"몸 앞쪽 케이블을 옆으로, 어깨 높이까지","사이드 레터럴 레이즈","케이블"],
+  ["lrm","레터럴 레이즈 머신","고립","어깨",3,"12~15",60,"패드를 팔꿈치로 밀어 올리기","사이드 레터럴 레이즈","머신"],
+  ["rdfm","리어 델트 플라이 머신","고립","어깨,등",3,"12~15",60,"펙덱을 거꾸로 앉아 팔을 뒤로 벌리기","리어 델트 플라이","머신"],
+  ["crf","케이블 리버스 플라이","고립","어깨,등",3,"12~15",60,"케이블을 교차해 잡고 양옆 뒤로 벌리기","리어 델트 플라이","케이블"],
+  ["bshrug","바벨 슈러그","고립","등,악력",3,"10~12",60,"어깨를 귀 쪽으로 곧게, 돌리지 않기","덤벨 슈러그","바벨"],
+  ["sdsp","시티드 덤벨 숄더 프레스","밀기","어깨,삼두",3,"8~12",90,"등받이 80° 안팎, 귀 옆까지 내리기","덤벨 숄더 프레스","덤벨"],
+  ["smohp","스미스머신 오버헤드 프레스","밀기","어깨,삼두",3,"8~10",120,"벤치에 앉아 턱 높이까지 내리기","오버헤드 프레스","스미스"],
+  ["ppress","푸시 프레스","밀기","어깨,삼두,다리",3,"5~8",150,"무릎을 살짝 굽혔다 튕기며 머리 위로","오버헤드 프레스","바벨"],
+  ["lmp","랜드마인 프레스","밀기","어깨,가슴",3,"8~12/쪽",90,"바 끝을 어깨에서 대각선 위로 밀기","덤벨 숄더 프레스","바벨"],
+  ["smbp","스미스머신 벤치프레스","밀기","가슴,삼두",3,"6~10",120,"바가 가슴 중앙에 오게 벤치 위치 맞추기","바벨 벤치프레스","스미스"],
+  ["smibp","스미스머신 인클라인 벤치프레스","밀기","가슴,어깨,삼두",3,"8~10",120,"벤치 30° 안팎, 쇄골 아래로","인클라인 바벨 벤치프레스","스미스"],
+  ["declbp","디클라인 벤치프레스","밀기","가슴,삼두",3,"6~10",120,"다리를 걸고 명치 아래로 내리기","딥스","바벨"],
+  ["ibpm","인클라인 벤치프레스 머신","밀기","가슴,어깨",3,"8~12",90,"손잡이를 쇄골 높이에 맞추고 끝까지 밀기","인클라인 덤벨 프레스","머신"],
+  ["idfly","인클라인 덤벨 플라이","고립","가슴",3,"10~12",60,"벤치 30°, 가슴 위쪽이 늘어나게","인클라인 케이블 플라이","덤벨"],
+  ["icfly","인클라인 케이블 플라이","고립","가슴",3,"12~15",60,"인클라인 벤치에서 케이블을 위로 모으기","인클라인 덤벨 플라이","케이블"],
+  ["lowfly","로우 풀리 케이블 플라이","고립","가슴",3,"12~15",60,"아래 도르래에서 위 가운데로 퍼 올리기","케이블 플라이","케이블"],
+  ["wdip","중량 딥스","밀기","가슴,삼두",3,"5~8",150,"벨트에 원판을 달고 어깨가 편한 깊이까지","딥스","맨몸"],
+  ["adip","어시스트 딥스 머신","밀기","가슴,삼두",3,"8~12",90,"무게가 클수록 쉬워져요. 몸을 살짝 앞으로","딥스","머신"],
+  ["kpu","무릎 푸시업","밀기","가슴,삼두",3,"10~20",60,"무릎부터 머리까지 일직선","푸시업","맨몸"],
+  ["ipu","인클라인 푸시업","밀기","가슴,삼두",3,"10~20",60,"손을 벤치에, 몸은 일직선","무릎 푸시업","맨몸"],
+  ["declpu","디클라인 푸시업","밀기","가슴,어깨,삼두",3,"8~15",60,"발을 벤치에, 가슴 위쪽 자극","푸시업","맨몸"],
+  ["bprc","바벨 프리쳐 컬","고립","이두",3,"8~12",60,"팔 뒤를 패드에 붙이고 끝까지 펴기","EZ바 프리쳐 컬","바벨"],
+  ["ezprc","EZ바 프리쳐 컬","고립","이두",3,"8~12",60,"손목이 편한 굽은 바로, 반동 없이","덤벨 프리쳐 컬","바벨"],
+  ["dprc","덤벨 프리쳐 컬","고립","이두",3,"10~12/쪽",60,"한 팔씩, 아래에서 완전히 펴기","EZ바 프리쳐 컬","덤벨"],
+  ["prcm","프리쳐 컬 머신","고립","이두",3,"10~12",60,"팔꿈치를 패드에 고정하고 천천히 내리기","EZ바 프리쳐 컬","머신"],
+  ["bcm","바이셉 컬 머신","고립","이두",3,"10~12",60,"팔꿈치 축을 기계 축에 맞추기","케이블 컬","머신"],
+  ["cham","케이블 해머 컬","고립","이두,악력",3,"10~15",60,"로프를 엄지가 위로 오게 잡고 당기기","해머 컬","케이블"],
+  ["dspider","덤벨 스파이더 컬","고립","이두",3,"10~12",60,"인클라인 벤치에 엎드려 팔을 수직으로","컨센트레이션 컬","덤벨"],
+  ["rbcurl","리버스 바벨 컬","고립","이두,악력",3,"10~12",60,"손등이 위로 오게 잡고 컬","해머 컬","바벨"],
+  ["dkb","덤벨 킥백","고립","삼두",3,"12~15/쪽",60,"상체를 숙이고 팔꿈치를 고정한 채 뒤로 펴기","케이블 트라이셉스 킥백","덤벨"],
+  ["tem","트라이셉 익스텐션 머신","고립","삼두",3,"10~15",60,"팔꿈치를 패드에 두고 끝까지 펴기","트라이셉스 푸시다운","머신"],
+  ["bdip","벤치 딥스","밀기","삼두",3,"10~15",60,"손을 벤치에, 팔꿈치를 뒤로 굽히기","딥스","맨몸"],
+  ["dwcurl","덤벨 리스트 컬","고립","악력",3,"12~15",45,"전완을 벤치에 두고 손목만 굽히기","바벨 리스트 컬","덤벨"],
+  ["pendlay","펜들레이 로우","당기기","등,이두",3,"5~8",150,"매번 바닥에서 시작해 폭발적으로 당기기","바벨 로우","바벨"],
+  ["srm","시티드 로우 머신","당기기","등,이두",3,"8~12",90,"가슴을 패드에 붙이고 팔꿈치를 뒤로","시티드 케이블 로우","머신"],
+  ["hrow","하이 로우 머신","당기기","등",3,"8~12",90,"위에서 아래 뒤로 당겨 광배 쥐기","랫 풀다운","머신"],
+  ["lrowm","로우 로우 머신","당기기","등,이두",3,"8~12",90,"아래에서 몸 쪽으로 당기기","시티드 케이블 로우","머신"],
+  ["nglat","패러럴그립 랫풀다운","당기기","등,이두",3,"8~12",90,"손바닥이 마주 보게 잡고 가슴 쪽으로","랫 풀다운","케이블"],
+  ["cglat","클로즈그립 랫풀다운","당기기","등,이두",3,"8~12",90,"좁게 잡고 팔꿈치를 옆구리로","랫 풀다운","케이블"],
+  ["maglat","맥그립 랫풀다운","당기기","등,이두",3,"8~12",90,"맥그립 손잡이로 손바닥 전체를 걸고 당기기","패러럴그립 랫풀다운","케이블"],
+  ["oacrow","원암 시티드 케이블 로우","당기기","등",3,"10~12/쪽",60,"한 팔씩, 몸통이 돌지 않게","시티드 케이블 로우","케이블"],
+  ["apull","어시스트 풀업 머신","당기기","등,이두",3,"6~10",90,"무게가 클수록 쉬워져요. 가슴을 바 쪽으로","랫 풀다운","머신"],
+  ["invrow","인버티드 로우","당기기","등,이두",3,"8~12",60,"바 아래 매달려 가슴을 바에 붙이기","밴드 로우","맨몸"],
+  ["smrow","스미스머신 로우","당기기","등,이두",3,"8~12",90,"상체 45°, 배꼽 쪽으로","바벨 로우","스미스"],
+  ["pom","풀오버 머신","고립","등",3,"10~12",60,"팔을 머리 위에서 몸 쪽으로 크게 당기기","케이블 풀오버","머신"],
+  ["wchin","중량 친업","당기기","등,이두",3,"5~8",150,"벨트나 덤벨로 무게를 더하고 턱을 바 위로","친업","맨몸"],
+  ["situp","싯업","코어","코어",3,"15~20",45,"발을 고정하고 상체를 끝까지 일으키기","크런치","맨몸"],
+  ["legr","레그 레이즈","코어","코어",3,"12~15",45,"허리를 바닥에 붙인 채 다리를 천천히","행잉 레그 레이즈","맨몸"],
+  ["hkr","행잉 니 레이즈","코어","코어",3,"10~15",60,"매달려 무릎을 가슴 쪽으로, 반동 없이","레그 레이즈","맨몸"],
+  ["rtwist","러시안 트위스트","회전","코어",3,"20",45,"상체를 뒤로 기울이고 좌우로 돌리기","케이블 로테이션","맨몸"],
+  ["rcrunch","리버스 크런치","코어","코어",3,"12~15",45,"골반을 말아 엉덩이를 바닥에서 들기","레그 레이즈","맨몸"],
+  ["acm","복근 크런치 머신","코어","코어",3,"12~15",60,"가슴을 골반 쪽으로 말기","케이블 크런치","머신"],
+  ["csb","케이블 사이드 벤드","코어","코어",3,"12~15/쪽",45,"옆으로만 굽혔다 펴기, 앞뒤로 숙이지 않기","덤벨 사이드 벤드","케이블"],
+  ["hollow","할로우 홀드","코어","코어",3,"20~40초",45,"허리를 바닥에 붙이고 팔다리를 들어 버티기","플랭크","맨몸"],
+  ["boxj","박스 점프","전신","다리,둔근",3,"5~8",90,"양발로 뛰어 부드럽게 착지, 내려올 땐 걸어서","점프 스쿼트","기타"],
+  ["thr","쓰러스터","전신","다리,어깨",3,"8~12",90,"프론트 스쿼트에서 일어서는 힘으로 머리 위로","덤벨 쓰러스터","바벨"],
+  ["mclimb","마운틴 클라이머","코어","코어,다리",3,"30초",45,"엉덩이를 낮게, 무릎을 번갈아 빠르게","플랭크","맨몸"],
+  ["brope","배틀링 로프","전신","어깨,코어",3,"30초",60,"무릎을 굽히고 팔로 물결을 크게","버피","기타"],
+  ["wball","월볼 샷","전신","다리,어깨",3,"10~15",60,"스쿼트 후 일어서며 공을 벽 위로 던지기","쓰러스터","기타"],
+  ["tgu","터키쉬 겟업","전신","어깨,코어",3,"3/쪽",90,"팔을 편 채 케틀벨을 보며 천천히 일어서기","플랭크","케틀벨"],
+  /* 유산소: logged as 분 · km · 평균 심박, one row per bout */
+  ["tread","트레드밀","유산소","",1,"20~30",60,"경사 1~3%로 대화할 수 있는 속도면 Zone 2","걷기","머신"],
+  ["cycle","실내 사이클","유산소","",1,"20~40",60,"안장 높이는 페달 맨 아래에서 무릎이 살짝 굽게","어썰트 바이크","머신"],
+  ["rower","로잉 머신","유산소","",1,"15~30",60,"다리 → 허리 → 팔 순서로 당기고 거꾸로 돌아오기","실내 사이클","머신"],
+  ["stepm","스텝밀 (천국의 계단)","유산소","",1,"15~30",60,"손잡이에 기대지 말고 상체를 세운 채","계단 오르기","머신"],
+  ["ellip","일립티컬 머신","유산소","",1,"20~40",60,"관절 부담이 적어요. 팔과 다리를 함께","실내 사이클","머신"],
+  ["assault","어썰트 바이크","유산소","",1,"10~20",60,"인터벌에 좋아요. 팔다리를 함께 밀고 당기기","실내 사이클","머신"],
+  ["walk","걷기","유산소","",1,"30~60",60,"빠르게 걸으면 Zone 2, 밖이면 햇빛까지","트레드밀","맨몸"],
+  ["run","달리기","유산소","",1,"20~40",60,"코로 숨 쉴 수 있는 속도면 Zone 2","트레드밀","맨몸"],
+  ["stairs","계단 오르기","유산소","",1,"10~20",60,"한 칸씩, 앞꿈치가 아니라 발 전체로","스텝밀","맨몸"],
+  ["rope","줄넘기","유산소","",1,"10~15",60,"손목으로 돌리고 낮게 뛰기","점핑 잭","기타"],
+  ["swim","수영","유산소","",1,"20~40",60,"영법과 거리를 메모에 남겨 두면 비교하기 좋아요","걷기","기타"]
+].forEach(([id,n,p,m,s,r,rest,c,alt,eq])=>{EX[id]={n,p,m:m?m.split(","):[],s,r,rest,c,alt,eq}});
+const EQS=["바벨","덤벨","머신","스미스","케이블","맨몸","케틀벨","밴드","기타"];
+const isCardio=id=>exDef(id).p==="유산소";
 const MG=["가슴","등","어깨","이두","삼두","다리","둔근","햄스트링","종아리","코어"];
 /* the 7 big parts people plan by; the 10 muscles above stay for set counts and recovery */
 const CATS=["가슴","등","어깨","하체","이두","삼두","복근"];
@@ -2439,7 +2538,7 @@ function recovery(){
 /* the same, per big part: the least recovered muscle in it */
 function catRecovery(R){R=R||recovery();const c={};for(const g in R){const k=CAT_OF[g];if(!k)continue;const x=R[g],o=c[k];c[k]={pct:o?Math.min(o.pct,x.pct):x.pct,left:Math.max(x.left,o?o.left:0)}}return c}
 function readiness(P,R){R=R||recovery();const gs=[...new Set((P.ex||[]).map(id=>exDef(id).m[0]).filter(g=>MG.includes(g)))];return gs.length?Math.round(gs.reduce((s,g)=>s+(R[g]?R[g].pct:100),0)/gs.length):100}
-function estimate(P,w){let sec=0,n=0;sessList(w,P).forEach(id=>{const k=setN(w,P,id);n+=k;sec+=k*(40+tgt(P,id).rest)});const min=Math.round(sec/60)+7;return {min,n,kcal:Math.round(5*(bw()||70)*min/60)}}
+function estimate(P,w){let sec=0,n=0;sessList(w,P).forEach(id=>{const k=setN(w,P,id);n+=k;sec+=isCardio(id)?k*60*(parseInt(tgt(P,id).r)||20):k*(40+tgt(P,id).rest)});const min=Math.round(sec/60)+7;return {min,n,kcal:Math.round(5*(bw()||70)*min/60)}}
 function recoCard(type,P,d,w){
   const R=recovery(),C=catRecovery(R),tired=CATS.filter(g=>C[g]&&C[g].pct<100).sort((a,b)=>C[a].pct-C[b].pct);
   let h='<div class="card reco"><span class="lbl">회복 상태</span>'
@@ -2512,18 +2611,26 @@ function liftHtml(w,P){
 const wStep=id=>exDef(id).eq==="덤벨"?1:2.5;
 /* what an empty set would be filled with: weight from the set above, else the same set last time; reps from the same set
    last time, else the set above, else the top of the range */
-function setGuess(a,i,id,T){const L=lastSets(id),ls=L&&L.all[i],up=i>0&&a[i-1];return {w:(up&&up.w)||(ls&&ls.w)||"",r:(ls&&ls.r)||(up&&up.r)||(range(T.r)||[])[1]||""}}
+function setGuess(a,i,id,T){const L=lastSets(id),ls=L&&L.all[i],up=i>0&&a[i-1];
+  if(isCardio(id))return {min:(ls&&ls.min)||(up&&up.min)||parseInt(T.r)||"",km:(ls&&ls.km)||"",hr:(ls&&ls.hr)||""}; // 유산소: last time's minutes, else the low end of the range
+  return {w:(up&&up.w)||(ls&&ls.w)||"",r:(ls&&ls.r)||(up&&up.r)||(range(T.r)||[])[1]||""}}
 function exCard(w,P,id,n,len){
   const E=exDef(id),T=tgt(P,id),sets=(w.ex||{})[id]||[],N=setN(w,P,id),hint=nextHint(id),L=lastSets(id),ref=bestE1(id);
+  const cardio=isCardio(id);
   const acts=[["assist","세트 도우미"],["load","지난 기록"],["swap","교체"],["video","영상"],["up","↑"],["down","↓"],["del","빼기"]]
-    .filter(([a])=>!(a==="load"&&!L)&&!(a==="up"&&!n)&&!(a==="down"&&n===len-1));
-  let h='<div class="card exc"><div class="exh"><span class="num idx">'+(n+1)+'</span><div><b>'+esc(E.n)+'</b><small>'+N+'세트 × '+esc(T.r)+' · 휴식 '+mmss(T.rest)+(E.p?' · '+esc(E.p):'')+(E.eq?' · '+esc(E.eq):'')+(ref?'<span class="e1rm"> · 1RM 약 '+Math.round(ref)+'kg</span>':'')+'</small></div></div>'
+    .filter(([a])=>!(a==="load"&&!L)&&!(a==="up"&&!n)&&!(a==="down"&&n===len-1)&&!(a==="assist"&&cardio));
+  let h='<div class="card exc"><div class="exh"><span class="num idx">'+(n+1)+'</span><div><b>'+esc(E.n)+'</b><small>'+(cardio?N+'회 × '+esc(T.r)+'분':N+'세트 × '+esc(T.r)+' · 휴식 '+mmss(T.rest))+(E.p?' · '+esc(E.p):'')+(E.eq?' · '+esc(E.eq):'')+(ref?'<span class="e1rm"> · 1RM 약 '+Math.round(ref)+'kg</span>':'')+'</small></div></div>'
     +(E.c||E.alt?'<p class="cue">'+esc(E.c)+(E.alt?' <span>대체: '+esc(E.alt)+'</span>':'')+'</p>':'')
     +(hint?'<p class="hint">'+esc(hint)+'</p>':'')
     +'<div class="exbar">'+acts.map(([a,t])=>'<button type="button" class="chip" data-exact="'+a+'" data-id="'+id+'">'+t+'</button>').join("")+'</div>'
-    +'<div class="sets"><span class="sh">세트</span><span class="sh">kg</span><span class="sh">회</span><span class="sh rir">RIR</span><span></span>';
+    +(cardio?'<div class="sets cardio"><span class="sh">회</span><span class="sh">분</span><span class="sh">km</span><span class="sh">심박</span><span></span>'
+      :'<div class="sets"><span class="sh">세트</span><span class="sh">kg</span><span class="sh">회</span><span class="sh rir">RIR</span><span></span>');
   let cur=-1;for(let i=0;i<N;i++)if(!(sets[i]&&sets[i].done)){cur=i;break}
   for(let i=0;i<N;i++){
+    if(cardio){const s=sets[i]||{},g=setGuess(sets,i,id,T),c=i===cur?" cur":"",inp=(f,mode,hint,lb)=>'<input class="num'+c+'" type="number" inputmode="'+mode+'" enterkeyhint="'+hint+'" min="0" step="any" data-wset="'+id+'" data-i="'+i+'" data-f="'+f+'" value="'+(s[f]??"")+'" placeholder="'+esc(g[f])+'" aria-label="'+(i+1)+'회 '+lb+'">';
+      h+='<span class="sn">'+(i+1)+'</span>'+inp("min","decimal","next","시간(분)")+inp("km","decimal","next","거리(km)")+inp("hr","numeric","done","평균 심박")
+        +'<button type="button" class="sdone" data-wdone="'+id+'" data-i="'+i+'" aria-pressed="'+!!s.done+'" aria-label="'+(i+1)+'회 완료"><svg aria-hidden="true"><use href="#ic-check"/></svg></button>';
+      continue}
     const s=sets[i]||{},g=setGuess(sets,i,id,T),pw=g.w,pr=g.r;
     const pct=ref&&+s.w?Math.round(+s.w/ref*100)+"%":"";
     h+='<button type="button" class="sn kind'+(s.k?" k"+s.k:"")+'" data-wkind="'+id+'" data-i="'+i+'" aria-label="'+(i+1)+'세트 종류 바꾸기">'+(s.k?KIND[s.k]:(i+1))+(pct?'<small>'+pct+'</small>':'')+'</button>'
@@ -2534,8 +2641,8 @@ function exCard(w,P,id,n,len){
   }
   /* quick adjust for the set you're on: weight by the equipment's usual jump, reps by one */
   if(cur>=0&&!w.end){const st=wStep(id);
-    h+='</div><div class="qadj" role="group" aria-label="'+(cur+1)+'세트 빠르게 고치기"><span class="s">'+(cur+1)+'세트</span>'
-      +[["w",-st,"−"+st+"kg"],["w",st,"+"+st+"kg"],["r",-1,"−1회"],["r",1,"+1회"]].map(([f,d,t])=>'<button type="button" class="chip" data-qadj="'+id+'" data-i="'+cur+'" data-f="'+f+'" data-d="'+d+'">'+t+'</button>').join("");}
+    h+='</div><div class="qadj" role="group" aria-label="'+(cur+1)+(cardio?'회':'세트')+' 빠르게 고치기"><span class="s">'+(cur+1)+(cardio?'회':'세트')+'</span>'
+      +(cardio?[["min",-5,"−5분"],["min",5,"+5분"],["km",-0.5,"−0.5km"],["km",0.5,"+0.5km"]]:[["w",-st,"−"+st+"kg"],["w",st,"+"+st+"kg"],["r",-1,"−1회"],["r",1,"+1회"]]).map(([f,d,t])=>'<button type="button" class="chip" data-qadj="'+id+'" data-i="'+cur+'" data-f="'+f+'" data-d="'+d+'">'+t+'</button>').join("");}
   return h+'</div><div class="setpm"><button type="button" class="chip" data-exact="addset" data-id="'+id+'">+ 세트</button>'+(N>1?'<button type="button" class="chip" data-exact="rmset" data-id="'+id+'">− 세트</button>':'')
     +(n?'':'<span class="s">세트 번호를 누르면 일반 → 워밍업 W → 드롭 D → 실패 F</span>')+'</div></div>';
 }
@@ -2591,10 +2698,10 @@ $("#woBody").addEventListener("click",e=>{
   if(s){
     const id=s.dataset.wdone,i=+s.dataset.i,P=curP(),T=tgt(P,id);let nowDone=false,kind="";
     woPatch(w=>{w.start=w.start||Date.now();w.ex=w.ex||{};const a=w.ex[id]=w.ex[id]||[];const v=a[i]=a[i]||{},g=setGuess(a,i,id,T);
-      if(!num(v.w)&&g.w)v.w=g.w;
-      if(!num(v.r)&&g.r)v.r=g.r;
+      if(isCardio(id)){if(!num(v.min)&&g.min)v.min=+g.min}
+      else{if(!num(v.w)&&g.w)v.w=g.w;if(!num(v.r)&&g.r)v.r=g.r}
       v.done=!v.done;nowDone=v.done;kind=v.k||""});
-    if(nowDone){const w=woOf(day(woDay())),list=sessList(w,P),N=setN(w,P,id),last=i===N-1,ni=list.indexOf(id);
+    if(nowDone&&!isCardio(id)){const w=woOf(day(woDay())),list=sessList(w,P),N=setN(w,P,id),last=i===N-1,ni=list.indexOf(id);
       startRest(kind==="w"?60:T.rest,last?(list[ni+1]?"다음: "+exDef(list[ni+1]).n:"다음: 마무리"):"다음: "+(i+2)+"세트")}
     renderWoToday();return;
   }
@@ -2621,7 +2728,7 @@ function exAction(act,id){
   if(act==="swap")return openPicker({mode:"swap",id});
   if(act==="load"){const L=lastSets(id);if(!L)return;
     if(((w.ex||{})[id]||[]).some(s=>s&&s.done)&&!confirm("이미 완료한 세트가 있어요. 지난 기록으로 덮어쓸까요?"))return;
-    woPatch(x=>{x.ex=x.ex||{};x.ex[id]=L.all.map(s=>{const o={w:s.w,r:s.r};if(s.k)o.k=s.k;return o});x.n=x.n||{};x.n[id]=L.all.length});toast(dateLabel(L.date)+" 기록을 불러왔어요.")}
+    woPatch(x=>{x.ex=x.ex||{};x.ex[id]=L.all.map(s=>{const o={};["w","r","k","min","km","hr"].forEach(f=>{if(s[f]!=null&&s[f]!=="")o[f]=s[f]});return o});x.n=x.n||{};x.n[id]=L.all.length});toast(dateLabel(L.date)+" 기록을 불러왔어요.")}
   if(act==="up"||act==="down")editList(l=>{const i=l.indexOf(id),j=act==="up"?i-1:i+1;if(i<0||j<0||j>=l.length)return;[l[i],l[j]]=[l[j],l[i]]});
   if(act==="del"){if(((w.ex||{})[id]||[]).some(s=>s&&s.done)&&!confirm("‘"+exDef(id).n+"’의 완료한 세트도 함께 지울까요?"))return;
     editList((l,x)=>{const i=l.indexOf(id);if(i>=0)l.splice(i,1);if(x.ex)delete x.ex[id];if(x.n)delete x.n[id]})}
@@ -2639,12 +2746,13 @@ const onSetInput=e=>{
   else if(t.hasAttribute("data-wnote"))woPatch(w=>{w.note=t.value});
 };
 $("#woBody").addEventListener("input",onSetInput);
-/* keyboard flow: Enter in kg moves to 회, Enter in 회 completes the set */
+/* keyboard flow: Enter moves kg → 회 (유산소: 분 → km → 심박) and the last field completes the set */
 $("#woBody").addEventListener("keydown",e=>{
   const t=e.target;if(e.key!=="Enter"||!t.dataset||!t.dataset.wset)return;
-  const id=t.dataset.wset,i=t.dataset.i,sel=f=>$('#woBody [data-wset="'+id+'"][data-i="'+i+'"]'+f);
-  if(t.dataset.f==="w"){e.preventDefault();const r=sel('[data-f="r"]');if(r)r.focus()}
-  else if(t.dataset.f==="r"){e.preventDefault();t.blur();const b=$('#woBody [data-wdone="'+id+'"][data-i="'+i+'"]');if(b&&b.getAttribute("aria-pressed")!=="true")b.click()}
+  const id=t.dataset.wset,i=t.dataset.i,order=isCardio(id)?["min","km","hr"]:["w","r"],k=order.indexOf(t.dataset.f);if(k<0)return;
+  e.preventDefault();
+  if(k<order.length-1){const nx=$('#woBody [data-wset="'+id+'"][data-i="'+i+'"][data-f="'+order[k+1]+'"]');if(nx)nx.focus()}
+  else{t.blur();const b=$('#woBody [data-wdone="'+id+'"][data-i="'+i+'"]');if(b&&b.getAttribute("aria-pressed")!=="true")b.click()}
 });
 $("#woBody").addEventListener("change",e=>{if(e.target.tagName==="SELECT")onSetInput(e)});
 /* 1-second tick: rest bar, stopwatch, 4×4 phase changes */
@@ -2671,7 +2779,7 @@ $("#pickSheet").addEventListener("click",e=>{if(e.target===$("#pickSheet")||e.ta
 /* exercises are reached by part: pick one of the 7 chips (or search); no flat list of everything */
 let pick=null,pickF={q:"",cat:"",eq:""};
 function openPicker(p){
-  pick=p;pickF={q:"",cat:p.cat||(p.mode==="swap"?mainCat(p.id)||"":""),eq:""};$("#pickQ").value="";
+  pick=p;pickF={q:"",cat:p.cat||(p.mode==="swap"?(isCardio(p.id)?"유산소":mainCat(p.id))||"":""),eq:""};$("#pickQ").value="";
   $("#pickTitle").textContent=p.id?"‘"+exDef(p.id).n+"’ 바꾸기":"종목 추가";
   $("#nxMg").innerHTML=CATS.map(g=>'<option'+(g===pickF.cat?" selected":"")+'>'+g+'</option>').join("");$("#nxEq").innerHTML=EQS.map(g=>'<option>'+g+'</option>').join("");
   renderPicker();$("#pickSheet").hidden=false;
@@ -2683,11 +2791,11 @@ function pickTaken(){
 }
 function renderPicker(){
   const chip=(attr,v,on,t)=>'<button type="button" class="chip'+(on?" on":"")+'" '+attr+'="'+esc(v)+'">'+esc(t)+'</button>';
-  $("#pickMg").innerHTML=CATS.map(g=>chip("data-pmg",g,pickF.cat===g,g)).join("");
+  $("#pickMg").innerHTML=CATS.concat("유산소").map(g=>chip("data-pmg",g,pickF.cat===g,g)).join("");
   $("#pickEq").innerHTML=chip("data-peq","",!pickF.eq,"전체 장비")+EQS.map(g=>chip("data-peq",g,pickF.eq===g,g)).join("");
   const q=pickF.q.trim().toLowerCase();
   if(!q&&!pickF.cat){$("#pickList").innerHTML='<li class="s">위에서 부위를 고르거나 이름으로 찾아보세요.</li>';return}
-  $("#pickList").innerHTML=exListHtml(exIds().filter(id=>{const E=exDef(id);return (!q||E.n.toLowerCase().includes(q)||(E.alt||"").toLowerCase().includes(q))&&(q||catsOf(id).includes(pickF.cat))&&(!pickF.eq||E.eq===pickF.eq)}),pickTaken(),pickF.cat,"data-pid");
+  $("#pickList").innerHTML=exListHtml(exIds().filter(id=>{const E=exDef(id);return (!q||E.n.toLowerCase().includes(q)||(E.alt||"").toLowerCase().includes(q))&&(q||(pickF.cat==="유산소"?isCardio(id):catsOf(id).includes(pickF.cat)))&&(!pickF.eq||E.eq===pickF.eq)}),pickTaken(),pickF.cat,"data-pid");
 }
 /* exercise rows for a part: main-part moves first, then compound before isolation; `taken` ones are hidden in the picker or marked in the routine maker */
 const isIso=id=>["고립","코어"].includes(exDef(id).p);
@@ -2695,12 +2803,12 @@ function exListHtml(ids,taken,cat,attr,mark){
   const U=uEx();ids=ids.filter(id=>mark||!taken.includes(id)).sort((a,b)=>((mainCat(a)===cat?0:2)+(isIso(a)?1:0))-((mainCat(b)===cat?0:2)+(isIso(b)?1:0)));
   if(!ids.length)return '<li class="s">맞는 종목이 없어요. 아래에서 직접 추가할 수 있어요.</li>';
   return ids.map(id=>{const E=exDef(id),on=mark&&taken.includes(id);
-    return '<li><button type="button" '+attr+'="'+id+'"'+(mark?' aria-pressed="'+on+'"':'')+'><b>'+(on?'✓ ':'')+esc(E.n)+'</b><small>'+esc(catsOf(id).join("·")||"기타")+' · '+esc(E.eq||"")+(isIso(id)?' · 고립':' · 복합')+(U[id]?' · 내 종목':'')+'</small></button>'
+    return '<li><button type="button" '+attr+'="'+id+'"'+(mark?' aria-pressed="'+on+'"':'')+'><b>'+(on?'✓ ':'')+esc(E.n)+'</b><small>'+esc(isCardio(id)?"유산소":catsOf(id).join("·")||"기타")+' · '+esc(E.eq||"")+(isCardio(id)?' · 분·km·심박 기록':isIso(id)?' · 고립':' · 복합')+(U[id]?' · 내 종목':'')+'</small></button>'
       +(U[id]&&!mark?'<button type="button" class="chip" data-pdel="'+id+'" aria-label="'+esc(E.n)+' 지우기">✕</button>':'')+'</li>'}).join("");
 }
 $("#pickQ").addEventListener("input",e=>{pickF.q=e.target.value;renderPicker()});
 $("#pickSheet").addEventListener("click",e=>{
-  const m=e.target.closest("[data-pmg]");if(m){pickF.cat=pickF.cat===m.dataset.pmg?"":m.dataset.pmg;$("#nxMg").value=pickF.cat||"가슴";renderPicker();return}
+  const m=e.target.closest("[data-pmg]");if(m){pickF.cat=pickF.cat===m.dataset.pmg?"":m.dataset.pmg;$("#nxMg").value=CATS.includes(pickF.cat)?pickF.cat:"가슴";renderPicker();return}
   const q=e.target.closest("[data-peq]");if(q){pickF.eq=q.dataset.peq;renderPicker();return}
   const d=e.target.closest("[data-pdel]");if(d){const id=d.dataset.pdel;if(confirm("‘"+exDef(id).n+"’을(를) 내 종목에서 지울까요? 지난 기록은 남아요."))savWo(o=>{if(o.ex)delete o.ex[id]}).then(renderPicker);return}
   const p=e.target.closest("[data-pid]");if(p)pickDone(p.dataset.pid);

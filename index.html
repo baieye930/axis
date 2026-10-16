@@ -663,6 +663,19 @@ h1,h2,h3{font-weight:300;letter-spacing:-.02em;line-height:1.2}
 .alert .box{border-radius:26px}
 .alert button{border-radius:999px;background:var(--bg1);color:var(--fg)}
 .gbtn{border-radius:999px}
+/* 과부하 비교 · 신기록 */
+.wsum{display:grid;gap:.8rem}
+.wsum .wk4 small{display:block}
+.prbig{margin:0;font-weight:700;font-size:1.05rem}
+.sumlist{list-style:none;margin:0;padding:0;display:grid;gap:.1rem}
+.sumlist li{display:grid;grid-template-columns:1fr auto;gap:.6rem;align-items:center;padding:.55rem 0;border-top:1px solid var(--line)}
+.sumlist b{display:block;font-weight:500}.sumlist small{display:block;color:var(--muted);font-size:.8rem}
+.ovl{display:inline-block;padding:.15rem .65rem;border-radius:999px;background:var(--soft);font-size:.8rem;font-weight:600;white-space:nowrap}
+.ovl.up{background:var(--accent);color:var(--accent-fg)}
+.ovl.down{background:transparent;border:1.5px solid var(--line);color:var(--muted)}
+.prtag{display:inline-block;margin-top:.25rem;padding:.12rem .6rem;border-radius:999px;background:#F2C14E;color:#1E1B19;font-size:.78rem;font-weight:700}
+.ovlline{display:flex;flex-wrap:wrap;gap:.35rem;align-items:center;margin:0}
+.ovlline .prtag{margin-top:0}
 /* 워크아웃 빠른 입력 */
 .sets.cardio,.wo-lite .sets.cardio{grid-template-columns:2.4rem 1fr 1fr 3.6rem 2.6rem}
 .sets input.cur{border-color:var(--accent);border-width:2px}
@@ -2594,7 +2607,7 @@ function checklist(id,items,state){return '<ul class="wochk">'+items.map((t,i)=>
 function liftHtml(w,P){
   const started=!!w.start,ex=w.ex||{},list=sessList(w,P);
   let done=0,total=0,vol=0;list.forEach(id=>{total+=setN(w,P,id);(ex[id]||[]).forEach(s=>{if(s&&s.done)done++;if(work(s))vol+=(+s.w||0)*(+s.r||0)})});
-  let h='<div class="card wohead"><div class="row"><span class="big num">'+done+'<small> / '+total+' 세트'+(vol?' · '+Math.round(vol).toLocaleString()+'kg':'')+'</small></span>'
+  let h=(w.end?summaryHtml(w,P,woDay()):"")+'<div class="card wohead"><div class="row"><span class="big num">'+done+'<small> / '+total+' 세트'+(vol?' · '+Math.round(vol).toLocaleString()+'kg':'')+'</small></span>'
     +(w.end?'<span class="tag">완료 · '+Math.round((w.end-w.start)/60000)+'분</span>':started?'<span class="tag">진행 '+Math.round((Date.now()-w.start)/60000)+'분</span>':'')+'</div>'
     +'<div class="bar"><i style="width:'+(total?done/total*100:0)+'%"></i></div>'
     +(started?'':'<button class="btn primary block" type="button" data-wact="start">운동 시작</button>')+'</div>';
@@ -2614,6 +2627,64 @@ const wStep=id=>exDef(id).eq==="덤벨"?1:2.5;
 function setGuess(a,i,id,T){const L=lastSets(id),ls=L&&L.all[i],up=i>0&&a[i-1];
   if(isCardio(id))return {min:(ls&&ls.min)||(up&&up.min)||parseInt(T.r)||"",km:(ls&&ls.km)||"",hr:(ls&&ls.hr)||""}; // 유산소: last time's minutes, else the low end of the range
   return {w:(up&&up.w)||(ls&&ls.w)||"",r:(ls&&ls.r)||(up&&up.r)||(range(T.r)||[])[1]||""}}
+
+/* ---------- 과부하 비교 · 신기록 ----------
+   Each exercise against the last time it was done (lastSets): heaviest set, reps at that weight, volume (kg × 회).
+   신기록 = beyond every earlier day: heaviest working weight or best estimated 1RM (유산소: longest distance). Nothing is
+   called a record on an exercise's first day, so the first weeks don't flood with records. */
+function exStats(sets,id){
+  const ws=(sets||[]).filter(work);
+  if(isCardio(id))return {n:ws.length,min:ws.reduce((t,s)=>t+(+s.min||0),0),km:Math.round(ws.reduce((t,s)=>t+(+s.km||0),0)*100)/100};
+  let top=0,topR=0,vol=0,e=0;
+  ws.forEach(s=>{const w=+s.w||0,r=+s.r||0;vol+=w*r;if(w>top||(w===top&&r>topR)){top=w;topR=r}const x=e1rm(w,r);if(x>e)e=x});
+  return {n:ws.length,top,topR,vol,e1:e};
+}
+function bestEver(id,before){
+  const b={w:0,e:0,km:0};
+  for(const k in S.days){if(k>=before)continue;const ss=sessions(S.days[k]);
+    for(const ty in ss){const a=(ss[ty].ex||{})[id];if(!a)continue;
+      a.forEach(s=>{if(!work(s))return;if(+s.km>b.km)b.km=+s.km;if(+s.w>b.w)b.w=+s.w;const x=e1rm(+s.w,+s.r);if(x>b.e)b.e=x})}}
+  return b;
+}
+const OVL={weight:["무게 ↑","up"],reps:["횟수 ↑","up"],volume:["볼륨 ↑","up"],up:["기록 ↑","up"],same:["유지",""],down:["감소","down"],first:["첫 기록",""]};
+function compareEx(id,sets,D){
+  const now=exStats(sets,id);if(!now.n)return null;
+  const L=lastSets(id,D),prev=L?exStats(L.all,id):null,best=bestEver(id,D),pr=[];let v="first";
+  if(isCardio(id)){
+    if(prev)v=now.km>prev.km+0.01||now.min>prev.min?"up":now.km<prev.km-0.01&&now.min<=prev.min?"down":"same";
+    if(best.km&&now.km>best.km)pr.push("최장 거리 "+now.km+"km");
+  }else{
+    if(prev)v=now.top>prev.top?"weight":now.top===prev.top&&now.topR>prev.topR?"reps":now.vol>prev.vol*1.001?"volume":now.top<prev.top||now.vol<prev.vol*0.95?"down":"same";
+    if(best.w&&now.top>best.w)pr.push("최고 무게 "+now.top+"kg");
+    if(best.e&&now.e1>best.e+0.05)pr.push("추정 1RM "+Math.round(now.e1)+"kg");
+  }
+  return {now,prev,prevDate:L&&L.date,v,pr,up:OVL[v][1]==="up"};
+}
+const statTxt=(id,x)=>isCardio(id)?x.min+"분"+(x.km?" · "+x.km+"km":""):(x.top?x.top+"kg × "+x.topR+"회":x.topR+"회")+" · "+x.n+"세트";
+/* the session at a glance: time, sets, volume against the same exercises last time, then each exercise with its change */
+function summaryHtml(w,P,D,inSheet){
+  const rows=sessList(w,P).map(id=>[id,compareEx(id,(w.ex||{})[id],D)]).filter(([,c])=>c);
+  if(!rows.length)return "";
+  const vol=rows.reduce((t,[,c])=>t+(c.now.vol||0),0),pv=rows.reduce((t,[,c])=>t+(c.prev&&c.prev.vol||0),0),sets=rows.reduce((t,[,c])=>t+c.now.n,0);
+  const cmp=rows.filter(([,c])=>c.prev),ups=cmp.filter(([,c])=>c.up).length,prs=rows.reduce((t,[,c])=>t+c.pr.length,0);
+  const min=w.start&&w.end?Math.round((w.end-w.start)/60000):null,dv=pv&&vol?Math.round((vol/pv-1)*100):null;
+  return '<div class="card wsum"><span class="lbl">'+(inSheet?"오늘 운동 요약":"운동 요약")+'</span>'
+    +'<div class="wk4"><div><span class="lbl">시간</span><b>'+(min!=null?min+'분':'–')+'</b></div><div><span class="lbl">완료 세트</span><b>'+sets+'</b></div>'
+    +'<div><span class="lbl">총 볼륨</span><b>'+(vol?Math.round(vol).toLocaleString()+'kg':'–')+'</b>'+(dv!=null?'<small>지난번 같은 종목 대비 '+(dv>0?'+':'')+dv+'%</small>':'')+'</div>'
+    +'<div><span class="lbl">과부하</span><b>'+(cmp.length?ups+' / '+cmp.length:'–')+'</b><small>'+(cmp.length?'지난번보다 늘린 종목':'비교할 지난 기록이 없어요')+'</small></div></div>'
+    +(prs?'<p class="prbig">신기록 '+prs+'개</p>':'')
+    +'<ul class="sumlist">'+rows.map(([id,c])=>'<li><div><b>'+esc(exDef(id).n)+'</b><small>오늘 '+esc(statTxt(id,c.now))+(c.prev?' · 지난번 '+esc(statTxt(id,c.prev)):'')+'</small>'
+      +(c.pr.length?'<span class="prtag">신기록 · '+esc(c.pr.join(" · "))+'</span>':'')+'</div><span class="ovl '+OVL[c.v][1]+'">'+OVL[c.v][0]+'</span></li>').join("")+'</ul></div>';
+}
+/* a set that beats every earlier day (and every earlier set today) gets a toast right away */
+function prAlert(id,i){
+  const D=woDay(),a=(woOf(day(D)).ex||{})[id]||[],s=a[i];if(!work(s))return;
+  const best=bestEver(id,D),others=a.filter((x,j)=>j!==i&&work(x)),E=exDef(id).n;
+  if(isCardio(id)){const km=+s.km||0;if(best.km&&km>best.km&&others.every(x=>(+x.km||0)<km))toast("신기록! "+E+" 최장 거리 "+km+"km (이전 "+best.km+"km)");return}
+  const w=+s.w||0,e=e1rm(w,+s.r||0);
+  if(best.w&&w>best.w&&others.every(x=>(+x.w||0)<w)){toast("신기록! "+E+" "+w+"kg (이전 최고 "+best.w+"kg)");return}
+  if(best.e&&e>best.e+0.05&&others.every(x=>e1rm(+x.w||0,+x.r||0)<e))toast("신기록! "+E+" 추정 1RM "+Math.round(e)+"kg (이전 "+Math.round(best.e)+"kg)");
+}
 function exCard(w,P,id,n,len){
   const E=exDef(id),T=tgt(P,id),sets=(w.ex||{})[id]||[],N=setN(w,P,id),hint=nextHint(id),L=lastSets(id),ref=bestE1(id);
   const cardio=isCardio(id);
@@ -2622,6 +2693,8 @@ function exCard(w,P,id,n,len){
   let h='<div class="card exc"><div class="exh"><span class="num idx">'+(n+1)+'</span><div><b>'+esc(E.n)+'</b><small>'+(cardio?N+'회 × '+esc(T.r)+'분':N+'세트 × '+esc(T.r)+' · 휴식 '+mmss(T.rest))+(E.p?' · '+esc(E.p):'')+(E.eq?' · '+esc(E.eq):'')+(ref?'<span class="e1rm"> · 1RM 약 '+Math.round(ref)+'kg</span>':'')+'</small></div></div>'
     +(E.c||E.alt?'<p class="cue">'+esc(E.c)+(E.alt?' <span>대체: '+esc(E.alt)+'</span>':'')+'</p>':'')
     +(hint?'<p class="hint">'+esc(hint)+'</p>':'')
+    +(()=>{const c=compareEx(id,sets,woDay());if(!c||c.v==="first"&&!c.pr.length)return "";
+      return '<p class="ovlline"><span class="ovl '+OVL[c.v][1]+'">지난번보다 '+OVL[c.v][0]+'</span>'+(c.pr.length?'<span class="prtag">신기록 · '+esc(c.pr.join(" · "))+'</span>':'')+'</p>'})()
     +'<div class="exbar">'+acts.map(([a,t])=>'<button type="button" class="chip" data-exact="'+a+'" data-id="'+id+'">'+t+'</button>').join("")+'</div>'
     +(cardio?'<div class="sets cardio"><span class="sh">회</span><span class="sh">분</span><span class="sh">km</span><span class="sh">심박</span><span></span>'
       :'<div class="sets"><span class="sh">세트</span><span class="sh">kg</span><span class="sh">회</span><span class="sh rir">RIR</span><span></span>');
@@ -2701,6 +2774,7 @@ $("#woBody").addEventListener("click",e=>{
       if(isCardio(id)){if(!num(v.min)&&g.min)v.min=+g.min}
       else{if(!num(v.w)&&g.w)v.w=g.w;if(!num(v.r)&&g.r)v.r=g.r}
       v.done=!v.done;nowDone=v.done;kind=v.k||""});
+    if(nowDone)prAlert(id,i);
     if(nowDone&&!isCardio(id)){const w=woOf(day(woDay())),list=sessList(w,P),N=setN(w,P,id),last=i===N-1,ni=list.indexOf(id);
       startRest(kind==="w"?60:T.rest,last?(list[ni+1]?"다음: "+exDef(list[ni+1]).n:"다음: 마무리"):"다음: "+(i+2)+"세트")}
     renderWoToday();return;
@@ -2712,7 +2786,8 @@ $("#woBody").addEventListener("click",e=>{
     const P=curP(),w0=woOf(day(woDay())),n=sessList(w0,P).reduce((t,id)=>t+((w0.ex||{})[id]||[]).filter(s=>s&&s.done).length,0);
     if(!n&&!confirm("완료한 세트가 없어요. 그래도 끝낼까요?"))return;
     woPatch((w,d)=>{w.start=w.start||Date.now();w.end=Date.now();if(n&&CHECKS.some(c=>c.id==="move"))d.checks.move=true});stopRest();
-    toast(n?"수고했어요! 체크 탭 ‘운동’에도 반영했어요.":"운동을 끝냈어요.");
+    if(n){const sm=summaryHtml(woOf(day(woDay())),P,woDay(),true);if(sm)sheet(sheetHd("수고했어요!")+sm+'<p class="s">체크 탭 ‘운동’에도 반영했어요. 요약은 이 날 운동 화면 맨 위에 남아요.</p><button class="btn primary block" type="button" data-close>닫기</button>');else toast("수고했어요! 체크 탭 ‘운동’에도 반영했어요.")}
+    else toast("운동을 끝냈어요.");
   }
   if(act==="reopen")woPatch(w=>{delete w.end});
   if(act==="go")woPatch(w=>{w.start=w.start||Date.now();w.sw=w.sw||{acc:0};w.sw.run=Date.now();delete w.end});

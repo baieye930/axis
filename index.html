@@ -1184,8 +1184,8 @@ h1,h2,h3{font-weight:300;letter-spacing:-.02em;line-height:1.2}
     <button class="wakebtn" type="button" data-pick="7" aria-pressed="false"><b>7:00</b><span data-wakeinfo="7">업무 10:00 · 첫 식사 12:00 · 취침 23:00</span></button>
     <button class="wakebtn" type="button" data-pick="8" aria-pressed="false"><b>8:00</b><span data-wakeinfo="8">업무 11:00 · 첫 식사 13:00 · 취침 24:00</span></button>
     <div class="wakeother">
-      <label for="wakeTime">다른 시각 <small>5:00~10:30, 1분 단위</small></label>
-      <div class="row"><input id="wakeTime" type="time" step="60" min="05:00" max="10:30"><button id="wakeApply" class="btn primary" type="button">이 시각으로</button></div>
+      <label for="wakeTime">다른 시각 <small>몇 시든, 1분 단위</small></label>
+      <div class="row"><input id="wakeTime" type="time" step="60"><button id="wakeApply" class="btn primary" type="button">이 시각으로</button></div>
     </div>
     <p class="note">잘못 골랐으면 오늘 안에 언제든 바꿀 수 있어요. 7시와 8시 외의 시각도 모든 일정이 기상 시각 기준으로 함께 밀립니다.</p>
     <button id="wakeClose" class="btn block" type="button" hidden>닫기</button>
@@ -1579,7 +1579,8 @@ function enter(key,nick,proof,guest,auth){
   S.today=ymd(logical());S.view=S.today;
   restoreLocal();
   setTimeout(catchUpAlerts,1200);
-  setMode(LS.get("axis.mode")||"routine");
+  /* every launch opens 루틴 › 오늘 (a shared routine link still lands on 워크아웃 › 주간 to import it) */
+  if(LS.get("axis.rtin"))setMode("workout");else setTab("today");
   pushState();
   load();
   wxFetch();
@@ -1727,7 +1728,7 @@ function openWake(first,date){
   $("#wakeSheet").hidden=false;
 }
 /* wake is stored in hours (7, 8, 6.75 for 6:45, 7.15 for 7:09); minutes are always Math.round(wake*60) so 1-minute wakes stay whole */
-const fmtW=w=>{if(w==null||!isFinite(w))return "–";const m=Math.round(w*60);return m%60?Math.floor(m/60)+":"+pad(m%60):(m/60)+"시"};
+const fmtW=w=>{if(w==null||!isFinite(w))return "–";const m=Math.round(w*60)%1440;return m%60?Math.floor(m/60)+":"+pad(m%60):(m/60)+"시"};
 function pickWake(w){
   const D=wakeFor||S.today;
   patch(D,d=>{d.wake=w});
@@ -1739,8 +1740,8 @@ function pickWake(w){
 $$("#wakeSheet [data-pick]").forEach(b=>b.addEventListener("click",()=>pickWake(+b.dataset.pick)));
 $("#wakeApply").addEventListener("click",()=>{
   const v=$("#wakeTime").value;if(!/^\d{2}:\d{2}$/.test(v)){toast("시각을 먼저 골라 주세요.");return}
-  const m=+v.slice(0,2)*60+ +v.slice(3);
-  if(m<300||m>630){toast("5:00에서 10:30 사이로 골라 주세요.");return}
+  let m=+v.slice(0,2)*60+ +v.slice(3);
+  if(m<240)m+=1440; // the app's day runs 4:00→4:00, so 0:00~3:59 is the end of this day (a night shift's wake), as nowMin() counts it
   pickWake(m/60);
 });
 $("#wakeClose").addEventListener("click",()=>$("#wakeSheet").hidden=true);
@@ -2093,7 +2094,7 @@ function streakOf(){
 
 /* ---------- render: log ---------- */
 /* wakes are minute-exact now (Oura, 1-minute entry): compare them by the nearest hour, 6:30~7:29 → 7시 */
-const wband=w=>Math.round(+w),bandL=h=>h+"시";
+const wband=w=>Math.round(+w)%24,bandL=h=>h+"시";
 /* this week (Mon~today) next to last week: wake, sleep, rate, days passed, and the check kept least */
 function weekHtml(){
   const back=(parseYmd(S.today).getDay()+6)%7,mon=shift(S.today,-back);
@@ -3636,7 +3637,7 @@ function acctView(){
 }
 
 /* ---------- Oura (axis-oura Edge Function holds the Oura sign-in; the app only asks it to start, sync or forget) ----------
-   Synced fields land in the day record: sleepH, bedAt, wakeAt, wake (the day's schedule, when Oura's wake is 5:00~10:30; Oura wins
+   Synced fields land in the day record: sleepH, bedAt, wakeAt, wake (the day's schedule, when Oura's wake is 4:00 or later; Oura wins
    over a typed or picked value) and d.oura = {h, sleep, ready, hrv, rhr, at}. */
 const OURA_URL=configured?CFG.supabaseUrl.replace(/\/+$/,"")+"/functions/v1/axis-oura":"";
 let ouraSt=null,ouraBusy=false;

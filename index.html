@@ -663,6 +663,22 @@ h1,h2,h3{font-weight:300;letter-spacing:-.02em;line-height:1.2}
 .alert .box{border-radius:26px}
 .alert button{border-radius:999px;background:var(--bg1);color:var(--fg)}
 .gbtn{border-radius:999px}
+/* 체크 › 어젯밤 수면 */
+.sleepbox{display:grid;gap:.9rem}
+.sbhd{display:flex;justify-content:space-between;align-items:baseline;gap:.5rem}
+.sbhd .lbl{margin:0;font-size:.95rem;color:var(--fg)}
+.sbrow{display:grid;grid-template-columns:minmax(0,.9fr) minmax(0,1.4fr) minmax(0,.8fr);gap:.4rem}
+.sbtile input[type="time"]{font-size:1.05rem}
+.sbtile input[type="time"]::-webkit-calendar-picker-indicator{display:none}
+.sbtile{display:grid;gap:.15rem;align-content:start;padding:.6rem .7rem;border-radius:18px;background:var(--soft);border:0;text-align:left;color:inherit;font:inherit;cursor:pointer;min-width:0}
+.sbtile small{font-size:.75rem;color:var(--muted);font-weight:500}
+.sbtile b{font-size:1.35rem;font-weight:500;line-height:1.2}
+.sbtile span{font-size:.72rem;color:var(--muted)}
+.sbtile input{width:100%;min-width:0;border:0;background:transparent;padding:0;font-family:var(--f-num);font-size:1.25rem;font-weight:500;color:var(--fg);min-height:2rem}
+.sbOura{grid-template-columns:repeat(4,minmax(0,1fr))}
+.opt{display:grid;gap:.35rem}.opt.two{grid-template-columns:1fr 1fr}.opt.three{grid-template-columns:repeat(3,1fr)}
+.opt button{min-height:2.6rem;border-radius:999px;border:0;background:var(--soft);color:inherit;font:inherit;font-size:.9rem;font-weight:500;cursor:pointer}
+.opt button[aria-pressed="true"]{background:var(--accent);color:var(--accent-fg)}
 /* 화면 모드: two phone thumbnails like iPhone's Display settings */
 .appear{display:grid;grid-template-columns:1fr 1fr;gap:.6rem}
 .appear button{display:grid;justify-items:center;gap:.5rem;padding:.4rem 0;border:0;background:transparent;color:inherit;font:inherit;font-weight:500;cursor:pointer}
@@ -802,23 +818,24 @@ h1,h2,h3{font-weight:300;letter-spacing:-.02em;line-height:1.2}
     </div>
     <div class="daynav"><button id="ckPrev" class="chip" type="button">‹ 전날</button><button id="ckNext" class="chip" type="button">다음 날 ›</button></div>
     <div id="backToday" class="back" hidden><span>지난 날짜를 고치는 중</span><button id="goToday" class="link" type="button">오늘로</button></div>
-    <div id="wakeSeg" class="seg seg3" role="group" aria-label="기상 시각">
-      <button type="button" data-wake="7" aria-pressed="false">7시 기상</button>
-      <button type="button" data-wake="8" aria-pressed="false">8시 기상</button>
-      <button type="button" data-wake="other" aria-pressed="false">다른 시각</button>
-    </div>
+    <section id="sleepBox" class="card sleepbox" aria-labelledby="sbTitle">
+      <div class="sbhd"><span id="sbTitle" class="lbl">어젯밤 수면</span><span id="sbSrc" class="s"></span></div>
+      <div class="sbrow">
+        <button id="sbWake" class="sbtile" type="button"><small>기상</small><b id="sbWakeV" class="num">–</b><span>바꾸기</span></button>
+        <label class="sbtile"><small>취침</small><input id="f-bedAt" data-f="bedAt" type="time" step="60" aria-label="취침 시각"></label>
+        <label class="sbtile"><small>잔 시간</small><input id="f-sleepH" data-f="sleepH" type="number" inputmode="decimal" min="0" max="14" step="0.1" placeholder="0.0" aria-label="잔 시간(시간)"></label>
+      </div>
+      <dl id="sbOura" class="ouradl sbOura" hidden></dl>
+      <div class="field"><label>잠들기까지</label><div class="opt two" data-o="lat"><button type="button" data-v="fast" aria-pressed="false">금방 (15분 안)</button><button type="button" data-v="slow" aria-pressed="false">오래 걸림</button></div></div>
+      <div class="field"><label>밤중에 깬 횟수</label><div class="opt three" data-o="wakeups"><button type="button" data-v="0" aria-pressed="false">없음</button><button type="button" data-v="few" aria-pressed="false">1~2번</button><button type="button" data-v="many" aria-pressed="false">자주</button></div></div>
+      <div class="field"><label>아침 개운함</label><div class="rate" data-r="fresh"></div></div>
+    </section>
     <div class="score"><b id="scorePct" class="num">0%</b><span id="scoreN">0 / 8</span><span id="streakN" class="streak"></span></div>
     <div class="bar"><i id="scoreBar" style="width:0%"></i></div>
     <ul id="checks" class="checks"></ul>
     <details class="memo card" id="memo">
       <summary>기록해 볼 것 (선택)</summary>
       <div class="grid">
-        <div class="row2">
-          <div class="field"><label for="f-wakeAt">실제 기상</label><input id="f-wakeAt" data-f="wakeAt" type="time" step="60"></div>
-          <div class="field"><label for="f-bedAt">취침</label><input id="f-bedAt" data-f="bedAt" type="time" step="60"></div>
-          <div class="field"><label for="f-sleepH">수면(시간)</label><input id="f-sleepH" data-f="sleepH" type="number" inputmode="decimal" min="0" max="14" step="0.5"></div>
-        </div>
-        <div class="field"><label>아침 개운함</label><div class="rate" data-r="fresh"></div></div>
         <div class="field"><label>낮 집중과 에너지</label><div class="rate" data-r="focus"></div></div>
         <div class="field"><label>오후 졸림</label><div class="yn" data-y="slump"><button type="button" data-v="1" aria-pressed="false">있었다</button><button type="button" data-v="0" aria-pressed="false">없었다</button></div></div>
         <div class="field"><label for="f-caffeine">카페인 (시각과 양)</label><input id="f-caffeine" data-f="caffeine" maxlength="80" placeholder="예: 10:10 톨 아메리카노"></div>
@@ -2041,11 +2058,15 @@ $("#checks").addEventListener("click",e=>{
 });
 $$(".rate").forEach(r=>r.addEventListener("click",e=>{const b=e.target.closest("[data-v]");if(!b)return;const f=r.dataset.r,v=+b.dataset.v;patch(S.view,d=>{d[f]=d[f]===v?null:v});renderCheck()}));
 $$(".yn").forEach(r=>r.addEventListener("click",e=>{const b=e.target.closest("[data-v]");if(!b)return;const f=r.dataset.y,v=b.dataset.v==="1";patch(S.view,d=>{d[f]=d[f]===v?null:v});renderCheck()}));
-$$("#memo [data-f]").forEach(inp=>inp.addEventListener("input",()=>{const f=inp.dataset.f;patch(S.view,d=>{d[f]=inp.value})}));
-$$("#wakeSeg [data-wake]").forEach(b=>b.addEventListener("click",()=>{
-  if(b.dataset.wake==="other"){openWake(false,S.view);return}
-  patch(S.view,d=>{d.wake=+b.dataset.wake});renderAll();
-}));
+$$("#memo [data-f],#sleepBox [data-f]").forEach(inp=>inp.addEventListener("input",()=>{const f=inp.dataset.f;patch(S.view,d=>{d[f]=inp.value;if(f==="sleepH")d.sleepAuto=false;if(f==="bedAt")fillSleep(d)})}));
+/* 취침 + 기상 → 잔 시간, unless it was typed or came from Oura */
+function fillSleep(d){
+  const b=hmMin(d.bedAt);if(b==null||!d.wake||(num(d.sleepH)&&!d.sleepAuto)||d.oura)return;
+  const m=((Math.round(d.wake*60)-b)%1440+1440)%1440;if(m<60||m>16*60)return;
+  d.sleepH=Math.round(m/6)/10;d.sleepAuto=true;const i=$("#f-sleepH");if(i)i.value=d.sleepH;
+}
+$$(".opt").forEach(r=>r.addEventListener("click",e=>{const b=e.target.closest("[data-v]");if(!b)return;const f=r.dataset.o,v=b.dataset.v;patch(S.view,d=>{d[f]=d[f]===v?null:v});renderCheck()}));
+$("#sbWake").addEventListener("click",()=>openWake(false,S.view));
 $("#ckPrev").addEventListener("click",()=>{S.view=shift(S.view,-1);renderCheck()});
 $("#ckNext").addEventListener("click",()=>{if(S.view<S.today){S.view=shift(S.view,1);renderCheck()}});
 $("#goToday").addEventListener("click",()=>{S.view=S.today;renderCheck()});
@@ -2054,12 +2075,14 @@ function renderCheck(){
   const d=day(S.view),isToday=S.view===S.today;
   $("#checkDate").textContent=dateLabel(S.view)+(isToday?" · 오늘":"");
   $("#backToday").hidden=isToday;$("#ckNext").disabled=isToday;
-  const otherW=!!d.wake&&d.wake!==7&&d.wake!==8;
-  $$("#wakeSeg [data-wake]").forEach(b=>{
-    const o=b.dataset.wake==="other";
-    b.setAttribute("aria-pressed",String(o?otherW:+b.dataset.wake===d.wake));
-    if(o)b.textContent=otherW?fmtW(d.wake)+" 기상":"다른 시각";
-  });
+  /* 어젯밤 수면: this day's wake only, sleep, Oura's numbers when synced, three quick checks */
+  $("#sbWakeV").textContent=d.wake?fmtW(d.wake):"–";$("#sbWake").lastElementChild.textContent=d.wake?"바꾸기":"고르기";
+  const o=d.oura,ok=v=>v!=null&&v!=="";
+  $("#sbSrc").textContent=o?"Oura"+(o.at?" · "+shortTime(o.at)+" 동기화":""):"직접 입력";
+  $("#sbOura").hidden=!o;
+  if(o)$("#sbOura").innerHTML=[["수면 점수",o.sleep,""],["레디니스",o.ready,""],["HRV",o.hrv," ms"],["최저 심박",o.rhr," bpm"]]
+    .map(([t,v,u])=>'<div><dt>'+t+'</dt><dd>'+(ok(v)?esc(String(v))+u:"–")+'</dd></div>').join("");
+  $$(".opt").forEach(r=>$$("button",r).forEach(b=>b.setAttribute("aria-pressed",String(d[r.dataset.o]===b.dataset.v))));
   $$("#checks [data-ck]").forEach(b=>b.setAttribute("aria-checked",String(!!(d.checks&&d.checks[b.dataset.ck]))));
   const sm=(id,txt)=>{const el=$('#checks [data-ck="'+id+'"] small');if(el)el.textContent=txt};
   const sn=sunOf(d).filter(Boolean).length;
@@ -2074,7 +2097,7 @@ function renderCheck(){
   $("#scorePct").textContent=p+"%";$("#scoreN").textContent=n+" / "+CHECKS.length+" 항목";$("#scoreBar").style.width=p+"%";
   $$(".rate").forEach(r=>$$("button",r).forEach(b=>b.setAttribute("aria-pressed",String(d[r.dataset.r]===+b.dataset.v))));
   $$(".yn").forEach(r=>$$("button",r).forEach(b=>b.setAttribute("aria-pressed",String(d[r.dataset.y]===(b.dataset.v==="1")))));
-  $$("#memo [data-f]").forEach(inp=>{if(document.activeElement!==inp||S.ckKey!==S.view){const v=d[inp.dataset.f];inp.value=v==null?"":v}});
+  $$("#memo [data-f],#sleepBox [data-f]").forEach(inp=>{if(document.activeElement!==inp||S.ckKey!==S.view){const v=d[inp.dataset.f];inp.value=v==null?"":v}});
   if(S.ckKey!==S.view){S.ckKey=S.view;$("#savedMsg").textContent="";if(!isToday)$("#memo").open=true}
   const st=streakOf();
   $("#streakN").textContent=isToday&&st.cur?st.cur+"일 연속"+(st.todayOn?"":" · 오늘 "+Math.max(0,GOAL-n)+"개 더"):"";
@@ -3195,10 +3218,10 @@ $("#woAgeSave").addEventListener("click",async()=>{
 /* ---------- export ---------- */
 function exportRows(){
   const rows=Object.values(S.days).filter(x=>x&&x.date).sort((a,b)=>a.date.localeCompare(b.date));
-  const head=["날짜","기상","달성률(%)"].concat(CHECKS.map(c=>c.t),["햇빛 아침","햇빛 점심","햇빛 퇴근길","실제 기상","취침","수면(시간)","아침 개운함","낮 집중","오후 졸림","카페인","메모"]);
+  const head=["날짜","기상","달성률(%)"].concat(CHECKS.map(c=>c.t),["햇빛 아침","햇빛 점심","햇빛 퇴근길","실제 기상","취침","수면(시간)","잠들기까지","밤중에 깸","아침 개운함","낮 집중","오후 졸림","카페인","메모"]);
   const yn=v=>v===true?"1":v===false?"0":"";
   const body=rows.map(x=>{const s=sunOf(x);return [x.date,x.wake?fmtW(+x.wake):"",x.wake?Math.round(pctOf(x)*100):""]
-    .concat(CHECKS.map(c=>x.checks&&x.checks[c.id]?"1":"0"),s.map(v=>v?"1":"0"),[x.wakeAt||"",x.bedAt||"",x.sleepH??"",x.fresh??"",x.focus??"",yn(x.slump),x.caffeine||"",x.note||""])});
+    .concat(CHECKS.map(c=>x.checks&&x.checks[c.id]?"1":"0"),s.map(v=>v?"1":"0"),[x.wakeAt||"",x.bedAt||"",x.sleepH??"",{fast:"금방",slow:"오래"}[x.lat]||"",{"0":"없음",few:"1~2번",many:"자주"}[x.wakeups]||"",x.fresh??"",x.focus??"",yn(x.slump),x.caffeine||"",x.note||""])});
   return {rows,head,body};
 }
 function exportFile(kind){

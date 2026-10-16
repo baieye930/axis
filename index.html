@@ -663,6 +663,11 @@ h1,h2,h3{font-weight:300;letter-spacing:-.02em;line-height:1.2}
 .alert .box{border-radius:26px}
 .alert button{border-radius:999px;background:var(--bg1);color:var(--fg)}
 .gbtn{border-radius:999px}
+/* 워크아웃 빠른 입력 */
+.sets input.cur{border-color:var(--accent);border-width:2px}
+.qadj{display:flex;flex-wrap:wrap;gap:.3rem;align-items:center;margin-top:.15rem}
+.qadj .s{font-size:.78rem;color:var(--muted);margin-right:.2rem}
+.qadj .chip{min-height:2.5rem;padding:.2rem .8rem;background:var(--soft);font-family:var(--f-num);font-size:.9rem;font-weight:600}
 /* 체크 › 어젯밤 수면 */
 .sleepbox{display:grid;gap:.9rem}
 .sbhd{display:flex;justify-content:space-between;align-items:baseline;gap:.5rem}
@@ -2503,6 +2508,11 @@ function liftHtml(w,P){
   h+=w.end?'<button class="btn block" type="button" data-wact="reopen">기록 이어서 고치기</button>':'<button class="btn primary block" type="button" data-wact="finish">운동 끝내기</button>';
   return h;
 }
+/* weight jump for quick adjust: dumbbells go up 1kg at a time in most gyms, everything else 2.5kg */
+const wStep=id=>exDef(id).eq==="덤벨"?1:2.5;
+/* what an empty set would be filled with: weight from the set above, else the same set last time; reps from the same set
+   last time, else the set above, else the top of the range */
+function setGuess(a,i,id,T){const L=lastSets(id),ls=L&&L.all[i],up=i>0&&a[i-1];return {w:(up&&up.w)||(ls&&ls.w)||"",r:(ls&&ls.r)||(up&&up.r)||(range(T.r)||[])[1]||""}}
 function exCard(w,P,id,n,len){
   const E=exDef(id),T=tgt(P,id),sets=(w.ex||{})[id]||[],N=setN(w,P,id),hint=nextHint(id),L=lastSets(id),ref=bestE1(id);
   const acts=[["assist","세트 도우미"],["load","지난 기록"],["swap","교체"],["video","영상"],["up","↑"],["down","↓"],["del","빼기"]]
@@ -2512,15 +2522,20 @@ function exCard(w,P,id,n,len){
     +(hint?'<p class="hint">'+esc(hint)+'</p>':'')
     +'<div class="exbar">'+acts.map(([a,t])=>'<button type="button" class="chip" data-exact="'+a+'" data-id="'+id+'">'+t+'</button>').join("")+'</div>'
     +'<div class="sets"><span class="sh">세트</span><span class="sh">kg</span><span class="sh">회</span><span class="sh rir">RIR</span><span></span>';
+  let cur=-1;for(let i=0;i<N;i++)if(!(sets[i]&&sets[i].done)){cur=i;break}
   for(let i=0;i<N;i++){
-    const s=sets[i]||{},ls=L&&L.all[i],pw=(sets[i-1]&&sets[i-1].w)||(ls&&ls.w)||"",pr=(ls&&ls.r)||(range(T.r)||["",""])[1]||"";
+    const s=sets[i]||{},g=setGuess(sets,i,id,T),pw=g.w,pr=g.r;
     const pct=ref&&+s.w?Math.round(+s.w/ref*100)+"%":"";
     h+='<button type="button" class="sn kind'+(s.k?" k"+s.k:"")+'" data-wkind="'+id+'" data-i="'+i+'" aria-label="'+(i+1)+'세트 종류 바꾸기">'+(s.k?KIND[s.k]:(i+1))+(pct?'<small>'+pct+'</small>':'')+'</button>'
-      +'<input class="num" type="number" inputmode="decimal" step="0.5" min="0" data-wset="'+id+'" data-i="'+i+'" data-f="w" value="'+(s.w??"")+'" placeholder="'+esc(pw)+'" aria-label="'+(i+1)+'세트 무게">'
-      +'<input class="num" type="number" inputmode="numeric" min="0" data-wset="'+id+'" data-i="'+i+'" data-f="r" value="'+(s.r??"")+'" placeholder="'+esc(pr)+'" aria-label="'+(i+1)+'세트 횟수">'
+      +'<input class="num'+(i===cur?" cur":"")+'" type="number" inputmode="decimal" enterkeyhint="next" step="0.5" min="0" data-wset="'+id+'" data-i="'+i+'" data-f="w" value="'+(s.w??"")+'" placeholder="'+esc(pw)+'" aria-label="'+(i+1)+'세트 무게">'
+      +'<input class="num'+(i===cur?" cur":"")+'" type="number" inputmode="numeric" enterkeyhint="done" min="0" data-wset="'+id+'" data-i="'+i+'" data-f="r" value="'+(s.r??"")+'" placeholder="'+esc(pr)+'" aria-label="'+(i+1)+'세트 횟수">'
       +'<select class="rir" data-wset="'+id+'" data-i="'+i+'" data-f="rir" aria-label="'+(i+1)+'세트 RIR(남긴 횟수)">'+["","0","1","2","3","4","5"].map(v=>'<option value="'+v+'"'+(String(s.rir??"")===v?" selected":"")+'>'+(v===""?"–":v==="5"?"5+":v)+'</option>').join("")+'</select>'
       +'<button type="button" class="sdone" data-wdone="'+id+'" data-i="'+i+'" aria-pressed="'+!!s.done+'" aria-label="'+(i+1)+'세트 완료"><svg aria-hidden="true"><use href="#ic-check"/></svg></button>';
   }
+  /* quick adjust for the set you're on: weight by the equipment's usual jump, reps by one */
+  if(cur>=0&&!w.end){const st=wStep(id);
+    h+='</div><div class="qadj" role="group" aria-label="'+(cur+1)+'세트 빠르게 고치기"><span class="s">'+(cur+1)+'세트</span>'
+      +[["w",-st,"−"+st+"kg"],["w",st,"+"+st+"kg"],["r",-1,"−1회"],["r",1,"+1회"]].map(([f,d,t])=>'<button type="button" class="chip" data-qadj="'+id+'" data-i="'+cur+'" data-f="'+f+'" data-d="'+d+'">'+t+'</button>').join("");}
   return h+'</div><div class="setpm"><button type="button" class="chip" data-exact="addset" data-id="'+id+'">+ 세트</button>'+(N>1?'<button type="button" class="chip" data-exact="rmset" data-id="'+id+'">− 세트</button>':'')
     +(n?'':'<span class="s">세트 번호를 누르면 일반 → 워밍업 W → 드롭 D → 실패 F</span>')+'</div></div>';
 }
@@ -2566,12 +2581,18 @@ $("#woBody").addEventListener("click",e=>{
   const k=e.target.closest("[data-wchk]");if(k){const id=k.dataset.wchk,i=+k.dataset.i;woPatch(w=>{w[id]=w[id]||[];w[id][i]=!w[id][i]});renderWoToday();return}
   const kd=e.target.closest("[data-wkind]");if(kd){const id=kd.dataset.wkind,i=+kd.dataset.i;woPatch(w=>{w.ex=w.ex||{};const a=w.ex[id]=w.ex[id]||[];const v=a[i]=a[i]||{};const nx=KIND_NEXT[v.k||""];if(nx)v.k=nx;else delete v.k});renderWoToday();return}
   const x=e.target.closest("[data-exact]");if(x){exAction(x.dataset.exact,x.dataset.id);return}
+  const q=e.target.closest("[data-qadj]");
+  if(q){const id=q.dataset.qadj,i=+q.dataset.i,f=q.dataset.f,d=+q.dataset.d,T=tgt(curP(),id);
+    woPatch(w=>{w.ex=w.ex||{};const a=w.ex[id]=w.ex[id]||[];const v=a[i]=a[i]||{},g=setGuess(a,i,id,T);
+      const base=num(v[f])?+v[f]:num(g[f])?+g[f]:0;v[f]=Math.max(0,Math.round((base+d)*100)/100)});
+    renderWoToday();return;
+  }
   const s=e.target.closest("[data-wdone]");
   if(s){
     const id=s.dataset.wdone,i=+s.dataset.i,P=curP(),T=tgt(P,id);let nowDone=false,kind="";
-    woPatch(w=>{w.start=w.start||Date.now();w.ex=w.ex||{};const a=w.ex[id]=w.ex[id]||[];const v=a[i]=a[i]||{},L=lastSets(id),ls=L&&L.all[i];
-      if(!num(v.w)){const pw=(i>0&&a[i-1]&&a[i-1].w)||(ls&&ls.w);if(pw)v.w=pw}
-      if(!num(v.r)){const pr=(ls&&ls.r)||(range(T.r)||[])[1];if(pr)v.r=pr}
+    woPatch(w=>{w.start=w.start||Date.now();w.ex=w.ex||{};const a=w.ex[id]=w.ex[id]||[];const v=a[i]=a[i]||{},g=setGuess(a,i,id,T);
+      if(!num(v.w)&&g.w)v.w=g.w;
+      if(!num(v.r)&&g.r)v.r=g.r;
       v.done=!v.done;nowDone=v.done;kind=v.k||""});
     if(nowDone){const w=woOf(day(woDay())),list=sessList(w,P),N=setN(w,P,id),last=i===N-1,ni=list.indexOf(id);
       startRest(kind==="w"?60:T.rest,last?(list[ni+1]?"다음: "+exDef(list[ni+1]).n:"다음: 마무리"):"다음: "+(i+2)+"세트")}
@@ -2604,7 +2625,10 @@ function exAction(act,id){
   if(act==="up"||act==="down")editList(l=>{const i=l.indexOf(id),j=act==="up"?i-1:i+1;if(i<0||j<0||j>=l.length)return;[l[i],l[j]]=[l[j],l[i]]});
   if(act==="del"){if(((w.ex||{})[id]||[]).some(s=>s&&s.done)&&!confirm("‘"+exDef(id).n+"’의 완료한 세트도 함께 지울까요?"))return;
     editList((l,x)=>{const i=l.indexOf(id);if(i>=0)l.splice(i,1);if(x.ex)delete x.ex[id];if(x.n)delete x.n[id]})}
-  if(act==="addset")woPatch(x=>{x.n=x.n||{};x.n[id]=Math.min(20,N+1)});
+  if(act==="addset")woPatch(x=>{x.n=x.n||{};x.n[id]=Math.min(20,N+1);
+    const a=(x.ex=x.ex||{})[id]=x.ex[id]||[]; // copy the last set that has numbers (weight, reps, kind) into the new one
+    let p=null;for(let k=Math.min(N,a.length)-1;k>=0;k--)if(a[k]&&(num(a[k].w)||num(a[k].r))){p=a[k];break}
+    if(N<20&&p&&!a[N]){const o={w:p.w,r:p.r};if(p.k)o.k=p.k;a[N]=o}});
   if(act==="rmset")woPatch(x=>{x.n=x.n||{};x.n[id]=Math.max(1,N-1);if(x.ex&&x.ex[id])x.ex[id].splice(N-1)});
   renderWoToday();
 }
@@ -2615,6 +2639,13 @@ const onSetInput=e=>{
   else if(t.hasAttribute("data-wnote"))woPatch(w=>{w.note=t.value});
 };
 $("#woBody").addEventListener("input",onSetInput);
+/* keyboard flow: Enter in kg moves to 회, Enter in 회 completes the set */
+$("#woBody").addEventListener("keydown",e=>{
+  const t=e.target;if(e.key!=="Enter"||!t.dataset||!t.dataset.wset)return;
+  const id=t.dataset.wset,i=t.dataset.i,sel=f=>$('#woBody [data-wset="'+id+'"][data-i="'+i+'"]'+f);
+  if(t.dataset.f==="w"){e.preventDefault();const r=sel('[data-f="r"]');if(r)r.focus()}
+  else if(t.dataset.f==="r"){e.preventDefault();t.blur();const b=$('#woBody [data-wdone="'+id+'"][data-i="'+i+'"]');if(b&&b.getAttribute("aria-pressed")!=="true")b.click()}
+});
 $("#woBody").addEventListener("change",e=>{if(e.target.tagName==="SELECT")onSetInput(e)});
 /* 1-second tick: rest bar, stopwatch, 4×4 phase changes */
 setInterval(()=>{

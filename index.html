@@ -259,6 +259,14 @@ p{margin:0}
 .xform .xck{display:flex;align-items:center;gap:.5rem;font-size:.92rem;color:var(--fg)}.xck input{width:1.2rem;height:1.2rem;accent-color:var(--accent)}
 .xmsg{margin:0;font-size:.85rem;color:var(--muted);line-height:1.5}.xmsg.warn{color:#b5532a}
 .xnote{margin:.3rem 0 .8rem}
+.tonegroup{display:grid;grid-template-columns:repeat(3,1fr);gap:.4rem}
+.tonegroup button{display:grid;gap:.05rem;justify-items:center;min-height:3rem;border:1.5px solid var(--line);border-radius:14px;background:var(--surface);color:var(--fg);font:inherit;font-weight:600;cursor:pointer;padding:.3rem}
+.tonegroup button small{font-size:.68rem;font-weight:400;color:var(--muted)}
+.tonegroup button[aria-checked="true"]{border-color:var(--accent);background:var(--soft);color:var(--accent)}
+.tonegroup button:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+.tonecard{display:grid;gap:.5rem}
+.tonecard .tp{display:grid;gap:.1rem;padding:.65rem .85rem;border-radius:14px;background:var(--surface2);font-size:.9rem}
+.tonecard .tp small{font-size:.7rem;color:var(--muted)}.tonecard .tp b{font-weight:600}
 #xAdd{margin-top:.6rem}
 .adjstate{margin:0;font-size:.85rem;font-weight:600;color:var(--accent)}
 .now .link,.note .link{display:inline;min-height:0;padding:0}
@@ -1039,8 +1047,16 @@ h1,h2,h3{font-weight:300;letter-spacing:-.02em;line-height:1.2}
         <p id="themeNote" class="note"></p>
       </div></details>
     <details class="acc grp"><summary><span class="gs"><span class="gt">알림</span><small id="sumAlert"></small></span></summary><div class="in">
+        <h4>알림 말투</h4>
+        <div id="toneOpts" class="tonegroup" role="radiogroup" aria-label="알림 말투">
+          <button type="button" role="radio" data-tone="soft" aria-checked="true">부드럽게<small>기본</small></button>
+          <button type="button" role="radio" data-tone="polite" aria-checked="false">정중하게</button>
+          <button type="button" role="radio" data-tone="brief" aria-checked="false">간결하게</button>
+        </div>
+        <div id="tonePrev" class="tonecard" aria-live="polite"></div>
+        <p class="note">말투는 화면 알림, 다른 탭 알림, 운동 휴식·루틴 타이머 안내에 적용돼요. 잠금 화면 알림은 서버가 만드는 문구라서, 서버를 업데이트하기 전까지는 기존 문구로 와요. 이미 도착한 알림은 바뀌지 않아요.</p>
+        <button id="alertTest" class="btn block" type="button">테스트 알림 보내기</button>
         <div class="toggle"><span>앱을 열어 둔 동안 화면 알림</span><button id="alertSw" class="sw" type="button" role="switch" aria-checked="true" aria-label="화면 알림"></button></div>
-        <button id="alertTest" class="btn block" type="button">알림 미리 보기</button>
         <button id="notifyBtn" class="btn block" type="button">다른 탭에 있을 때도 알림 받기</button>
         <p id="notifyMsg" class="note">PC 브라우저에서 이 탭을 열어 둔 채 다른 창을 쓰고 있어도 알림이 뜹니다.</p>
         <h4>잠금 화면 알림</h4>
@@ -1626,11 +1642,11 @@ function beep(){
     setTimeout(()=>ctx.close&&ctx.close(),1200);
   }catch(e){}
 }
-function showAlert(at,title,line){
+function showAlert(at,title,line,test){
   $("#alertAt").textContent=at;$("#alertTitle").textContent=title;$("#alertLine").textContent=line;$("#alert").hidden=false;
   /* vibration only after the person has touched the page (browsers block it before that and log an error) */
   beep();try{if(navigator.vibrate&&(!navigator.userActivation||navigator.userActivation.hasBeenActive))navigator.vibrate([180,90,180])}catch(e){}
-  try{if(document.hidden&&"Notification" in window&&Notification.permission==="granted")new Notification("AXIS · "+title,{body:line,tag:"axis-"+at})}catch(e){}
+  try{if((document.hidden||test)&&"Notification" in window&&Notification.permission==="granted")new Notification("AXIS · "+title,{body:line,tag:"axis-"+at})}catch(e){}   // 권한은 여기서 요청하지 않는다
 }
 $("#alertOk").addEventListener("click",()=>$("#alert").hidden=true);
 
@@ -1925,7 +1941,7 @@ function moreRefresh(){
   const set=(q,t)=>{const e=$(q);if(e)e.textContent=t},html=(q,h)=>{const e=$(q);if(e)e.innerHTML=h};
   const auto=$("#themeAuto").getAttribute("aria-checked")==="true",lk=$$("[data-look]").find(b=>b.getAttribute("aria-checked")==="true");
   set("#sumTheme",auto?"자동 전환":(lk?lk.textContent.trim():""));
-  set("#sumAlert","화면 알림 "+($("#alertSw").getAttribute("aria-checked")==="true"?"켜짐":"꺼짐")+" · 잠금 화면 알림 "+(pushOn?"켜짐":"꺼짐"));
+  set("#sumAlert","화면 알림 "+($("#alertSw").getAttribute("aria-checked")==="true"?"켜짐":"꺼짐")+" · 잠금 화면 알림 "+(pushOn?"켜짐":"꺼짐")+" · 말투 "+TONE_LABEL[toneOf()]);toneView();
   set("#sumBase","평소 기상 "+fmtW(baseWake())+" · 목표 수면 "+sleepTarget()+"시간");
   const P=woP();set("#sumInfo","나이 "+(age()||"–")+" · 체중 "+(bw()?bw()+"kg":"–")+" · 칼로리 목표 "+(P.kcal||"–"));
   set("#sumOura",S.guest?"로그인 필요":$("#ouraConnect").hidden?"연결됨":"연결 안 됨");
@@ -2324,7 +2340,7 @@ setInterval(()=>{
   if(!runSeg)return;const st=runOf(runSeg),step=st&&runSteps(runSeg)[st.i];if(!step||st.end)return;
   const left=runLeft(st,step),c=$("[data-runclock]");if(left==null||!c)return;
   c.textContent=(left<0?"+":"")+mmss(Math.abs(left));c.classList.toggle("over",left<0);
-  if(left<=0&&runRang!==st.i){runRang=st.i;beep();try{if(navigator.vibrate&&(!navigator.userActivation||navigator.userActivation.hasBeenActive))navigator.vibrate([200,100,200])}catch(e){}toast(step.t+" 시간이 다 됐어요. 끝났으면 ‘완료’를 눌러 주세요.")}
+  if(left<=0&&runRang!==st.i){runRang=st.i;beep();try{if(navigator.vibrate&&(!navigator.userActivation||navigator.userActivation.hasBeenActive))navigator.vibrate([200,100,200])}catch(e){}toast(notifyText("runEnd").body)}
 },1000);
 
 /* ---------- render: check ---------- */
@@ -2805,7 +2821,7 @@ function restTick(){
   $("#restBar").hidden=S.tab==="wtoday"&&!!$("#restBig");   // 운동 화면에 휴식 카드가 있으면 떠 있는 막대는 숨긴다
   $("#restLeft").textContent=mmss(left);$("#restNext").textContent=rest.next;
   const rb=$("#restBig");if(rb)rb.textContent=mmss(left);
-  if(left<=0){stopRest();beep();try{navigator.vibrate&&navigator.vibrate([200,100,200])}catch(e){}toast("휴식 끝. 다음 세트를 시작하세요.")}
+  if(left<=0){stopRest();beep();try{navigator.vibrate&&navigator.vibrate([200,100,200])}catch(e){}toast(notifyText("restEnd").body)}
 }
 $("#restPlus").addEventListener("click",()=>{if(rest){rest.end+=30000;restTick()}});
 $("#restSkip").addEventListener("click",stopRest);
@@ -4038,11 +4054,56 @@ function wxNote(W,it){
   return "오늘 예보 "+skyWord(f)+" (구름 "+f.cloud+"%"+(f.rain?", 비 "+f.rain+"%":"")+") → "+sunMinutes(f);
 }
 
+/* ---------- 알림 말투 ----------
+   prefs.tone = soft(부드럽게, 기본) | polite(정중하게) | brief(간결하게). 값이 없거나 모르는 값이면 soft.
+   이벤트마다 말투별 문장을 따로 쓴다(문장 끝만 바꾸는 치환이 아님). 제목은 짧은 항목명, 본문은 행동 안내.
+   화면 알림·다른 탭 알림·운동 휴식/루틴 타이머 안내가 모두 이 표를 쓴다. 같은 표가 server/notify-copy.mjs에도 있어 서버(잠금 화면 푸시)가 쓸 수 있다. */
+const TONE_LABEL={soft:"부드럽게",polite:"정중하게",brief:"간결하게"};
+const toneOf=()=>TONE_LABEL[prefs().tone]?prefs().tone:"soft";
+const NCOPY={
+  water:{title:"물과 소금",soft:"물과 소금을 챙길 시간이에요.",polite:"물과 소금을 챙기실 시간입니다.",brief:"물과 소금 시간"},
+  sun1:{title:"아침 햇빛 걷기",soft:"햇빛을 쬐며 걸을 시간이에요.",polite:"햇빛을 쬐며 걸으실 시간입니다.",brief:"아침 햇빛 걷기 시간"},
+  move:{title:"공복 운동",soft:"운동할 시간이에요. 가볍게 몸을 풀어보세요.",polite:"운동하실 시간입니다. 가볍게 몸을 풀어 주세요.",brief:"운동 시작 시간"},
+  deep1:{title:"딥워크 1",soft:"집중할 시간이에요. 하던 일을 잠시 정리해 주세요.",polite:"집중하실 시간입니다. 하시던 일을 잠시 정리해 주세요.",brief:"집중 시작 시간"},
+  meal1:{title:"첫 식사",soft:"첫 식사 시간이에요.",polite:"첫 식사 시간입니다.",brief:"첫 식사 시간"},
+  sun2:{title:"점심 후 햇빛 걷기",soft:"잠시 밖에서 걸을 시간이에요.",polite:"잠시 밖에서 걸으실 시간입니다.",brief:"점심 후 걷기 시간"},
+  caff:{title:"카페인 마감",soft:"오늘 카페인은 여기까지예요.",polite:"오늘 카페인은 여기까지입니다.",brief:"카페인 마감"},
+  nsdr:{title:"NSDR",soft:"잠시 쉬어갈 시간이에요.",polite:"잠시 쉬어가실 시간입니다.",brief:"NSDR 시간"},
+  caffnsdr:{title:"카페인 마감 · NSDR",soft:"오늘 카페인은 여기까지예요. 잠시 쉬어갈 시간이에요.",polite:"오늘 카페인은 여기까지입니다. 잠시 쉬어가실 시간입니다.",brief:"카페인 마감 · NSDR 시간"},
+  sun3:{title:"퇴근길 햇빛",soft:"햇빛을 쬐며 잠시 걸어보세요.",polite:"햇빛을 쬐며 잠시 걸어 보세요.",brief:"퇴근길 햇빛 시간"},
+  meal2:{title:"저녁 식사",soft:"저녁 식사 시간이에요.",polite:"저녁 식사 시간입니다.",brief:"저녁 식사 시간"},
+  dim:{title:"조명 낮추기",soft:"조명을 낮추고 쉴 준비를 해보세요.",polite:"조명을 낮추고 쉴 준비를 해 주세요.",brief:"조명 낮추기 시간"},
+  sleep:{title:"취침",soft:"잠자리에 들 시간이에요. 편안한 밤 보내세요.",polite:"취침하실 시간입니다. 편안한 밤 보내세요.",brief:"취침 시간"},
+  plan:{title:"내일 계획",soft:"내일 계획을 가볍게 정리해 볼까요?",polite:"내일 계획을 가볍게 정리해 보시겠어요?",brief:"내일 계획 정리 시간"},   // 문구만 준비. 정기 알림으로 예약하지 않는다
+  restEnd:{title:"휴식",soft:"휴식 시간이 끝났어요. 다음 세트를 시작해 주세요.",polite:"휴식 시간이 종료되었습니다. 다음 세트를 시작해 주세요.",brief:"휴식 종료 · 다음 세트 시작"},
+  runEnd:{title:"루틴 타이머",soft:"예정된 시간이 끝났어요. 마쳤다면 ‘완료’를 눌러 주세요.",polite:"예정된 시간이 종료되었습니다. 마치셨다면 ‘완료’를 눌러 주세요.",brief:"예정 시간 종료 · 마쳤다면 ‘완료’"},
+  extraStart:{title:"내 일정",soft:"‘{t}’ 일정이 시작될 시간이에요.",polite:"‘{t}’ 일정이 시작될 시간입니다.",brief:"‘{t}’ 시작"},
+  extraSoon:{title:"내 일정",soft:"‘{t}’ 일정이 {n}분 뒤 시작돼요.",polite:"‘{t}’ 일정이 {n}분 뒤 시작됩니다.",brief:"‘{t}’ {n}분 뒤 시작"}   // 문구만 준비. 사전 알림은 아직 예약하지 않는다
+};
+/* 이벤트 + 말투 → {title, body}. 사용자 일정명은 {t} 자리에 그대로 넣고(길면 줄임표) 조사는 붙이지 않는다 */
+function notifyText(ev,vars,tone){
+  const c=NCOPY[ev];if(!c)return null;let b=c[tone||toneOf()]||c.soft;vars=vars||{};
+  Object.keys(vars).forEach(k=>{let v=String(vars[k]);if(k==="t"&&v.length>40)v=v.slice(0,40)+"…";b=b.split("{"+k+"}").join(v)});
+  return {title:c.title,body:b};
+}
+const CORE_EV={water:"water",sun1:"sun1",move:"move",deep1:"deep1",meal1:"meal1",sun2:"sun2",nsdr:"caffnsdr",sun3:"sun3",meal2:"meal2",dim:"dim",sleep:"sleep"};
+
 /* ---------- alerts ---------- */
 let alertsOn=LS.get("axis.alerts")!=="0";
 const sw=$("#alertSw");sw.setAttribute("aria-checked",String(alertsOn));
 sw.addEventListener("click",()=>{alertsOn=!alertsOn;LS.set("axis.alerts",alertsOn?"1":"0");sw.setAttribute("aria-checked",String(alertsOn));toast(alertsOn?"화면 알림을 켰어요.":"화면 알림을 껐어요.")});
-$("#alertTest").addEventListener("click",()=>showAlert("미리 보기","아침 햇빛 걷기","선글라스 없이 밖에서 10~30분 걷는다."));
+$("#alertTest").addEventListener("click",()=>{const n=notifyText("sun1");showAlert("테스트",n.title,n.body,true)});
+/* 말투 선택: 저장과 화면 미리보기만 한다. 권한 요청도, 알림 발송도 하지 않는다(알림이 꺼져 있어도 고를 수 있다) */
+function toneView(){
+  const t=toneOf(),a=notifyText("move"),r=notifyText("restEnd");
+  $$("#toneOpts [data-tone]").forEach(b=>{b.setAttribute("aria-checked",String(b.dataset.tone===t));b.tabIndex=b.dataset.tone===t?0:-1});
+  $("#tonePrev").innerHTML='<div class="tp"><small>화면 알림 예시</small><b>'+esc(a.title)+'</b><span>'+esc(a.body)+'</span></div><div class="tp"><small>운동 휴식 종료 예시</small><span>'+esc(r.body)+'</span></div>';
+}
+$("#toneOpts").addEventListener("click",e=>{const b=e.target.closest("[data-tone]");if(!b||!TONE_LABEL[b.dataset.tone]||b.dataset.tone===toneOf())return;
+  const np=JSON.parse(JSON.stringify(prefs()));np.tone=b.dataset.tone;savePrefs(np);moreRefresh()});
+$("#toneOpts").addEventListener("keydown",e=>{const ks=Object.keys(TONE_LABEL),i=ks.indexOf(toneOf());let n=i;
+  if(e.key==="ArrowRight"||e.key==="ArrowDown")n=(i+1)%3;else if(e.key==="ArrowLeft"||e.key==="ArrowUp")n=(i+2)%3;else return;
+  e.preventDefault();const np=JSON.parse(JSON.stringify(prefs()));np.tone=ks[n];savePrefs(np);moreRefresh();$('#toneOpts [data-tone="'+ks[n]+'"]').focus()});
 function notifyState(){
   const m=$("#notifyMsg"),b=$("#notifyBtn");
   if(!("Notification" in window)){b.hidden=true;m.textContent="이 브라우저는 다른 탭 알림을 지원하지 않아요. 앱 화면을 열어 두면 화면 알림은 뜹니다.";return}
@@ -4056,14 +4117,14 @@ function fired(){try{return JSON.parse(LS.get("axis.fired")||"{}")}catch(e){retu
 function dueItems(){
   const d=day(S.today);if(!d.wake)return [];
   const W=Math.round(d.wake*60),P=prefs().tl||{},items=timeline(W,parseYmd(S.today).getDay(),S.today),out=[];
-  for(const [o0,t0,line] of CORE){
+  for(const [o0,t0] of CORE){
     const p=P[CORE_IDS[o0]]||{},it=items.find(x=>x.id===CORE_IDS[o0]);if(p.off||!it||it.skip)continue;
-    out.push({at:W+it.o,id:d.wake+"@"+it.o,t:it.id==="move"&&it.late&&/\(오후\)$/.test(it.t)?it.t:p.t||t0,line});
+    out.push({at:W+it.o,id:d.wake+"@"+it.o,ev:CORE_EV[CORE_IDS[o0]],t:it.id==="move"&&it.late&&/\(오후\)$/.test(it.t)?it.t:p.t||t0,line:notifyText(CORE_EV[CORE_IDS[o0]]).body});
   }
   /* a sleep target over 7h moves the caffeine cutoff (bed − 9h) before NSDR: then they are two alerts */
   const cm=items.find(x=>x.mark),ns=out.find(x=>x.id===d.wake+"@"+(items.find(y=>y.id==="nsdr")||{}).o);
-  if(cm&&ns&&W+cm.o!==ns.at){if(!(P.nsdr&&P.nsdr.t))ns.t="NSDR";ns.line="NSDR 10~20분.";out.push({at:W+cm.o,id:d.wake+"@"+cm.o,t:"카페인 마감",line:"오늘 카페인은 여기까지."});out.sort((a,b)=>a.at-b.at)}
-  items.filter(x=>x.extra&&!x.skip&&x.ex.notify!==false).forEach(x=>out.push({at:W+x.o,id:"x:"+x.ex.id+"@"+S.today,t:x.ex.t,line:x.ex.memo||(x.ex.rep?"반복 일정이에요.":"오늘 추가한 일정이에요."),extra:true}));
+  if(cm&&ns&&W+cm.o!==ns.at){if(!(P.nsdr&&P.nsdr.t))ns.t="NSDR";ns.ev="nsdr";ns.line=notifyText("nsdr").body;out.push({at:W+cm.o,id:d.wake+"@"+cm.o,ev:"caff",t:"카페인 마감",line:notifyText("caff").body});out.sort((a,b)=>a.at-b.at)}
+  items.filter(x=>x.extra&&!x.skip&&x.ex.notify!==false).forEach(x=>out.push({at:W+x.o,id:"x:"+x.ex.id+"@"+S.today,ev:"extraStart",t:NCOPY.extraStart.title,line:notifyText("extraStart",{t:x.ex.t}).body+(x.ex.memo?" · "+x.ex.memo:""),extra:true}));
   out.sort((a,b)=>a.at-b.at);
   return out;
 }
@@ -4087,8 +4148,8 @@ function catchUpAlerts(){
   if(!miss.length)return;
   miss.forEach(x=>list.push(x.id));LS.set("axis.fired",JSON.stringify({[S.today]:list}));
   const last=miss[miss.length-1];
-  if(miss.length===1)showAlert(clk(last.at),"놓친 알림 · "+last.t,last.line);
-  else showAlert(clk(last.at),"놓친 알림 "+miss.length+"개",miss.map(x=>clk(x.at)+" "+x.t).join(" · "));
+  if(miss.length===1)showAlert(clk(last.at),"지나간 알림 · "+last.t,last.line);
+  else showAlert(clk(last.at),"지나간 알림 "+miss.length+"개",miss.map(x=>clk(x.at)+" "+x.t).join(" · "));
 }
 
 /* ---------- clock & sync ---------- */

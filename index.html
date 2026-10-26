@@ -267,11 +267,14 @@ p{margin:0}
 .tonecard{display:grid;gap:.5rem}
 .tonecard .tp{display:grid;gap:.1rem;padding:.65rem .85rem;border-radius:14px;background:var(--surface2);font-size:.9rem}
 .tonecard .tp small{font-size:.7rem;color:var(--muted)}.tonecard .tp b{font-weight:600}
-.tlhead{display:flex;align-items:center;justify-content:space-between;gap:.6rem;flex-wrap:wrap;margin:1.1rem 0 .5rem}
-.tlnav{display:flex;align-items:center;gap:.5rem;min-width:0}
-.tlnav .chip{min-height:2.6rem;min-width:2.6rem;justify-content:center;font-size:1.1rem}
-.tlttl{display:grid;gap:.05rem;min-width:0}.tlttl b{font-family:var(--f-display);font-size:1.15rem;font-weight:600}.tlttl small{font-size:.78rem;color:var(--muted)}
-.tlact{display:flex;align-items:center;gap:.7rem}.tlact .btn{min-height:2.6rem;padding:.3rem 1rem}
+.tlhead{display:grid;gap:.55rem;margin:1.2rem 0 .7rem}
+.tlnav{display:flex;align-items:center;justify-content:space-between;gap:.6rem}
+.tlnav .chip{min-height:3rem;min-width:3rem;justify-content:center;font-size:1.2rem;flex:none}
+.tlttl{flex:1;min-width:0;text-align:center}.tlttl b{font-family:var(--f-display);font-size:1.7rem;font-weight:600;line-height:1.25;letter-spacing:-.01em}
+.tlbar{display:flex;align-items:center;justify-content:space-between;gap:.6rem;padding:0 .2rem}
+.tlbar small{font-size:.88rem;color:var(--muted);min-width:0}
+.tlact{display:flex;align-items:center;gap:.8rem;flex:none}.tlact .btn{min-height:2.7rem;padding:.3rem 1.1rem}
+#tlStatus:empty,#tlMemo:empty,#tlConflict:empty,.tlfold:has(#tlPast[hidden]){display:none}
 .planst{display:grid;gap:.5rem;padding:.8rem 1rem;border-radius:var(--r);background:var(--surface);box-shadow:var(--shadow);margin-bottom:.6rem}
 .planst .row{display:flex;align-items:center;justify-content:space-between;gap:.5rem;flex-wrap:wrap}
 .planst .s{margin:0;font-size:.82rem;color:var(--muted)}.planst .s.warn{color:#b5532a;font-weight:600}
@@ -941,10 +944,12 @@ h1,h2,h3{font-weight:300;letter-spacing:-.02em;line-height:1.2}
     <div class="tlhead">
       <div class="tlnav">
         <button id="tlPrev" class="chip" type="button" aria-label="이전 날짜">〈</button>
-        <div class="tlttl" aria-live="polite"><b id="tlTitle"></b><small id="tlSub"></small></div>
+        <div class="tlttl" aria-live="polite"><b id="tlTitle"></b></div>
         <button id="tlNext" class="chip" type="button" aria-label="다음 날짜">〉</button>
       </div>
-      <div class="tlact"><button id="tlToday" class="link strong" type="button" hidden>오늘로</button><button id="tlAdj" class="btn" type="button" aria-haspopup="dialog">일정 조정</button></div>
+      <div class="tlbar"><small id="tlSub"></small>
+        <div class="tlact"><button id="tlToday" class="link strong" type="button" hidden>오늘로</button><button id="tlAdj" class="btn" type="button" aria-haspopup="dialog">일정 조정</button></div>
+      </div>
     </div>
     <div id="tlStatus"></div>
     <div id="tlMemo"></div>

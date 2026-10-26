@@ -251,6 +251,15 @@ p{margin:0}
 .adjbox.alt{background:transparent;box-shadow:inset 0 0 0 1.5px var(--line)}
 .adjbox h3{margin:0;font-size:1rem}.adjbox .s{margin:0;font-size:.85rem;color:var(--muted)}
 .adjbtns{display:flex;flex-wrap:wrap;gap:.4rem}.adjbtns .btn:not(.primary){background:var(--surface)}.adjbtns .btn{min-height:2.6rem;padding:.3rem 1rem;font-size:.9rem}
+.xform{display:grid;gap:.7rem}
+.xform .row2{display:grid;grid-template-columns:1fr 1fr;gap:.6rem}
+.xform input[type=time],.xform input:not([type]),.xform select{min-height:2.9rem;padding:.3rem .8rem;border-radius:14px;border:1.5px solid var(--line);background:var(--surface);font:inherit;font-size:16px;width:100%;min-width:0;color:inherit}
+.xform .field{display:grid;gap:.25rem}.xform label{font-size:.82rem;color:var(--muted)}
+.xdows{display:flex;flex-wrap:wrap;gap:.35rem}.xdows .chip{display:inline-flex;align-items:center;gap:.3rem;color:var(--fg)}
+.xform .xck{display:flex;align-items:center;gap:.5rem;font-size:.92rem;color:var(--fg)}.xck input{width:1.2rem;height:1.2rem;accent-color:var(--accent)}
+.xmsg{margin:0;font-size:.85rem;color:var(--muted);line-height:1.5}.xmsg.warn{color:#b5532a}
+.xnote{margin:.3rem 0 .8rem}
+#xAdd{margin-top:.6rem}
 .adjstate{margin:0;font-size:.85rem;font-weight:600;color:var(--accent)}
 .now .link,.note .link{display:inline;min-height:0;padding:0}
 section.dangerzone.acct{margin-top:.8rem;padding:1rem 1.1rem;border-radius:var(--r);border:1.5px solid #e2b9a4;background:rgba(226,185,164,.12);display:grid;gap:.5rem}
@@ -890,6 +899,8 @@ h1,h2,h3{font-weight:300;letter-spacing:-.02em;line-height:1.2}
     <p class="note scopenote">오늘 계획은 오늘 하루만 바뀌어요. 앞으로 매일 반복할 루틴은 <button class="link strong" type="button" data-more-open="editAcc">기본 루틴 편집</button>에서 바꿔요.</p>
     <ol id="tl" class="tl"></ol>
     <p id="tlNote" class="note" hidden></p>
+    <button id="xAdd" class="btn block" type="button" hidden>+ 오늘 일정 추가</button>
+    <p class="note xnote">오늘 하루에만 들어가요. 매일 반복할 일정은 추가할 때 ‘반복’을 고르면 돼요.</p>
   </section>
 
   <section id="tab-check" class="tab" role="tabpanel" aria-label="체크" hidden>
@@ -1324,9 +1335,9 @@ function exerciseToday(dow){
 const TL_IDS=["water","sun1","move","shower","commute","deep1","hard","meal1","sun2","work","caffmark","nsdr","deep2","light","sun3","home","meal2","read","plan","dim","screen","sleep"];
 /* the day's timeline: within an hour of the usual wake the whole day shifts with W;
    later than that, meals and the evening keep their usual clock times and the morning is rebuilt from W (reflow) */
-function timeline(W,dow,date){
-  const B=baseWake()*60;
-  return applyAdj(anchorEvening(W-B>LATE_MIN?reflow(W,B,dow):shifted(W,dow),W),date);
+function timeline(W,dow,date,noEx){
+  const B=baseWake()*60,it=applyAdj(anchorEvening(W-B>LATE_MIN?reflow(W,B,dow):shifted(W,dow),W),date);
+  return noEx?it:applyExtra(it,W,date);
 }
 /* ---------- 일정 조정: 그 날짜 하루에만 적용 (day.adj = {항목id: {dt:분} | {skip:true}}) ----------
    기본 루틴(prefs)은 건드리지 않는다. 식사·취침·조명·아침 햇빛처럼 하루 리듬의 기준은 고정이라 옮기지 못한다. */
@@ -1337,6 +1348,41 @@ function applyAdj(items,date){
     if(x.skip){it.skip=true;it.tag=(it.tag?it.tag+" · ":"")+"오늘 건너뜀";return}
     const dt=clampAdj(x.dt);if(dt){it.o+=dt;if(it.e<2000)it.e+=dt;it.tag=(it.tag?it.tag+" · ":"")+"오늘만 "+(dt>0?"+":"")+dt+"분"}});
   return items.sort((p,q)=>p.o-q.o||(q.mark?1:0)-(p.mark?1:0));
+}
+/* ---------- 추가 일정 ----------
+   그날만(day.extra) 또는 반복(prefs.extra: 매일 · 평일 · 요일). 시각은 기상 시각과 상관없는 시계 시각이다.
+   겹침: 겹치는 '이동 가능' 기본 일정은 기본으로 뒤로 밀고(밀기 끄기 가능), 식사·취침·조명 같은 고정 일정은 옮기지 않고 겹친다고 알려 준다. */
+const XMAX=10;
+function extrasFor(date){
+  const dd=S.days[date]||{},dow=parseYmd(date).getDay(),off=dd.extraOff||{};
+  const reps=(prefs().extra||[]).filter(r=>date>=(r.from||"0000-00-00")&&!off[r.id]&&(r.rep==="daily"||(r.rep==="weekdays"&&dow>=1&&dow<=5)||(r.rep==="days"&&(r.dows||[]).includes(dow))));
+  return reps.concat(dd.extra||[]);
+}
+function xRange(x){
+  let a=hmMin(x.at);if(a==null)return null;if(a<240)a+=1440;
+  let b=x.to?hmMin(x.to):null;if(b!=null&&b<240)b+=1440;if(b==null||b<=a)b=a+30;
+  return [a,b];
+}
+function applyExtra(items,W,date,exList){
+  if(!date)return items;const ex=exList||extrasFor(date);if(!ex.length)return items;
+  const add=[],box=[];
+  ex.forEach(x=>{const r=xRange(x);if(!r||r[1]<=W)return;
+    add.push({id:"x:"+x.id,t:esc(x.t),d:esc(x.memo||(x.rep?"반복 일정":"오늘 추가한 일정")),o:Math.max(0,r[0]-W),e:r[1]-W,extra:true,ex:x,tag:x.rep?"반복 일정":"내가 추가"});
+    if(x.shove!==false)box.push([r[0]-W,r[1]-W])});
+  if(box.length){
+    /* 이미 시작한 일정은 추가 일정 시작 전까지로 줄이고(15분 이상 남을 때), 아직 시작 전이면 끝난 뒤로 민다.
+       식사·취침·조명 같은 고정 일정과 부딪히면 건드리지 않고 겹친 채로 둔다 */
+    const fixed=items.filter(f=>!MOVABLE.includes(f.id)&&!f.mark),placed=[];
+    items.filter(i=>MOVABLE.includes(i.id)&&!i.skip&&i.e<2000).sort((p,q)=>p.o-q.o).forEach(it=>{
+      const len=it.e-it.o,o0=it.o,hitAt=(o,e)=>box.find(b=>b[0]<e&&b[1]>o)||placed.find(b=>b[0]<e&&b[1]>o);
+      const h=hitAt(o0,it.e);if(!h)return;
+      if(it.o<h[0]&&h[0]-it.o>=15){it.e=h[0];it.tag=(it.tag?it.tag+" · ":"")+"일정 때문에 "+(len-(it.e-it.o))+"분 줄어요";placed.push([it.o,it.e]);return}
+      let o=o0,guard=0,hit;while((hit=hitAt(o,o+len))&&guard++<8)o=hit[1];
+      let e=o+len;const bl=fixed.find(f=>f.o<e&&f.e>o);if(bl){if(bl.o-o<30)return;e=bl.o}   // 고정 일정 앞까지만(30분 이상 남을 때)
+      it.o=o;it.e=e;it.tag=(it.tag?it.tag+" · ":"")+"일정 때문에 "+(o-o0)+"분 밀려요"+(e<o+len?" · "+(o+len-e)+"분 줄어요":"");placed.push([o,e]);
+    });
+  }
+  return add.concat(items).sort((p,q)=>p.o-q.o||(q.mark?1:0)-(p.mark?1:0));
 }
 const clampAdj=v=>{v=Math.round(+v||0);return Math.max(-120,Math.min(180,v))};
 /* 저녁 식사는 기본 19:00~20:00에 고정하고 취침 4시간 전에 끝내는 것이 목표. 취침은 아무리 늦어도 01:00을 넘기지 않는다.
@@ -1910,9 +1956,9 @@ function renderToday(){
    n.textContent=t;n.hidden=!t;}
   if(!w){
     $("#nowBox").innerHTML='<div class="empty"><p>'+(S.loaded?"오늘 기상 시각을 고르면 그 타입의 타임라인과 지금 할 일을 보여 드려요.":"기록을 불러오는 중이에요…")+'</p></div>';
-    $("#glance").innerHTML="";$("#tl").innerHTML="";S.tlKey="";return;
+    $("#glance").innerHTML="";$("#tl").innerHTML="";S.tlKey="";$("#xAdd").hidden=true;return;
   }
-  const W=Math.round(w*60),items=timeline(W,parseYmd(S.today).getDay(),S.today),k=S.today+":"+w+":"+JSON.stringify(prefs())+":"+(wx?wx.at:0)+":"+JSON.stringify(d.adj||{});
+  const W=Math.round(w*60),items=timeline(W,parseYmd(S.today).getDay(),S.today),k=S.today+":"+w+":"+JSON.stringify(prefs())+":"+(wx?wx.at:0)+":"+JSON.stringify(d.adj||{})+":"+JSON.stringify(d.extra||[])+JSON.stringify(d.extraOff||{});
   items.forEach(it=>{const n=wxNote(W,it);if(n)it.tag=(it.tag?it.tag+" · ":"")+n});
   if(items.length&&items[0].late)$("#wakeChip").innerHTML=fmtW(w)+" 기상 · 늦은 날 <small>바꾸기</small>";
   if(S.tlKey!==k){
@@ -1922,10 +1968,11 @@ function renderToday(){
       :'<li data-i="'+i+'"'+(it.skip?' class="skipped"':'')+'><details><summary'+(it.ck&&!it.skip?' class="has-done"':'')+'><span class="t">'+clk(W+it.o)+'</span><span class="tt">'+it.t+'</span>'
         +(it.ck&&!it.skip?'<button class="tdone" type="button" data-done="'+i+'" aria-pressed="false" aria-label="'+it.t+' 완료"><i><svg aria-hidden="true"><use href="#ic-check"/></svg></i></button>':'')
         +'</summary><p>'+it.d+(it.id==="move"?' <button class="link strong" type="button" data-gowo>Workout에서 오늘 운동 보기 →</button>':'')+(it.ck?' <b>· 완료 표시하면 체크 탭 ‘'+CHECKS.find(c=>c.id===it.ck).t+'’에 반영돼요.</b>':'')+'</p>'+(it.tag?'<p class="tag">'+it.tag+'</p>':'')
-        +'<p class="adjrow"><span class="s">'+(MOVABLE.includes(it.id)?"이동 가능":"고정")+'</span><button class="link strong" type="button" data-adj="'+it.id+'">일정 조정</button></p>'
+        +(it.extra?'<p class="adjrow"><span class="s">'+(it.ex.rep?"반복 일정":"오늘만")+(it.ex.notify===false?" · 알림 꺼짐":" · 시작 알림")+'</span><button class="link strong" type="button" data-xedit="'+esc(it.ex.id)+'">수정 · 빼기</button></p>'
+          :'<p class="adjrow"><span class="s">'+(MOVABLE.includes(it.id)?"이동 가능":"고정")+'</span><button class="link strong" type="button" data-adj="'+it.id+'">일정 조정</button></p>')
         +(it.id==="plan"?'<div class="plannote"><textarea data-plan maxlength="300" rows="3" placeholder="우선순위 3개 + 개선점 1개" aria-label="내일 계획"></textarea><span class="s">적어 두면 내일 아침 오늘 화면 맨 위에 보여 드려요.</span></div>':'')+'</details></li>').join("");
   }
-  S.items=items;
+  S.items=items;$("#xAdd").hidden=false;
   {const pa=$("#tl [data-plan]");if(pa&&document.activeElement!==pa)pa.value=d.plan||"";}
   const rel=nowMin()-W;
   let cur=-1;items.forEach((it,i)=>{if(!it.mark&&!it.skip&&rel>=it.o&&rel<it.e)cur=i});
@@ -1971,6 +2018,75 @@ function renderToday(){
     +'<div class="cups"><button class="chip" type="button" data-cup="-1" aria-label="마신 횟수 하나 빼기"'+(cups?'':' disabled')+'>−</button><span class="num" aria-live="polite">'+cups+' / '+nW+'번</span><button class="chip" type="button" data-cup="1" aria-label="한 번 마셨어요">+</button></div></div><div class="card"><span class="lbl">카페인</span><span class="v">'+cv+'</span><span class="s">'+cs+'</span></div>'+energyCardHtml()+wxCard(W,items);
 }
 
+/* ---------- 추가 일정 입력 시트 ---------- */
+let xEdit=null;
+function openExtra(id){
+  const d=day(S.today);if(!d.wake){toast("오늘 기상 시각을 먼저 골라 주세요.");return}
+  xEdit=id?extrasFor(S.today).find(x=>x.id===id)||null:null;
+  const x=xEdit||{},n=Math.ceil(nowMin()/30)*30,rp=x.rep||"once";
+  sheet(sheetHd(xEdit?"추가 일정 수정":"오늘 일정 추가")
+    +'<div class="xform"><div class="field"><label for="xName">무슨 일정인가요?</label><input id="xName" maxlength="30" placeholder="예: 병원, 미팅, 장보기" value="'+esc(x.t||"")+'"></div>'
+    +'<div class="row2"><div class="field"><label for="xFrom">시작</label><input id="xFrom" type="time" value="'+esc(x.at||clk(n))+'"></div><div class="field"><label for="xTo">끝나는 시각 (선택)</label><input id="xTo" type="time" value="'+esc(x.to||"")+'"></div></div>'
+    +'<div class="field"><label for="xRep">반복</label><select id="xRep">'+[["once","오늘만"],["daily","매일"],["weekdays","평일 (월~금)"],["days","요일 선택"]].map(([v,t])=>'<option value="'+v+'"'+(rp===v?" selected":"")+'>'+t+'</option>').join("")+'</select></div>'
+    +'<div id="xDows" class="xdows"'+(rp==="days"?"":" hidden")+'>'+DOW.map((nm,i)=>'<label class="chip"><input type="checkbox" value="'+i+'"'+((x.dows||[]).includes(i)?" checked":"")+'>'+nm+'</label>').join("")+'</div>'
+    +'<div class="field"><label for="xMemo">메모 (선택)</label><input id="xMemo" maxlength="60" value="'+esc(x.memo||"")+'"></div>'
+    +'<label class="xck"><input id="xNotify" type="checkbox"'+(x.notify===false?"":" checked")+'> 시작할 때 알림 받기</label>'
+    +'<label class="xck"><input id="xShove" type="checkbox"'+(x.shove===false?"":" checked")+'> 겹치는 이동 가능 일정은 뒤로 밀기</label>'
+    +'<p id="xMsg" class="xmsg" role="status"></p>'
+    +'<button id="xSave" class="btn primary block" type="button" data-xsave>'+(xEdit?"저장":"오늘 계획에 넣기")+'</button>'
+    +(xEdit?(xEdit.rep?'<button class="btn block" type="button" data-xdel="today">오늘만 빼기</button><button class="btn block danger" type="button" data-xdel="all">반복 일정 모두 삭제</button>':'<button class="btn block danger" type="button" data-xdel="all">이 일정 빼기</button>'):'')
+    +'</div>');
+  xPreview();
+}
+function xTimes(){let a=hmMin($("#xFrom").value);if(a==null)return null;if(a<240)a+=1440;let b=$("#xTo").value?hmMin($("#xTo").value):null;if(b!=null&&b<240)b+=1440;if(b==null||b<=a)b=a+30;return [a,b]}
+/* 겹침 안내: 고정 일정(식사·취침·조명)은 옮기지 않으니 시간을 바꾸라고, 이동 가능 일정은 밀어 준다고 알려 준다 */
+function xPreview(){
+  const m=$("#xMsg");if(!m)return;const r=xTimes(),d=day(S.today);
+  if(!r||!d.wake){m.textContent="";return}
+  const W=Math.round(d.wake*60),dow=parseYmd(S.today).getDay(),base=timeline(W,dow,S.today,true),id=xEdit&&xEdit.id,shove=$("#xShove").checked;
+  const plain=h=>h.replace(/<[^>]+>/g,""),others=extrasFor(S.today).filter(x=>x.id!==id);
+  const cand={id:"__new",t:"새 일정",at:$("#xFrom").value,to:$("#xTo").value||"",shove};
+  const sim=applyExtra(timeline(W,dow,S.today,true),W,S.today,others.concat(cand)),lines=[];
+  const hit=base.filter(it=>!it.mark&&!it.skip&&it.e<2000&&it.o<r[1]-W&&it.e>r[0]-W);
+  hit.filter(it=>!MOVABLE.includes(it.id)).forEach(it=>lines.push("‘"+plain(it.t)+"’ 시간과 겹쳐요. 식사·취침·조명은 옮길 수 없어서 그대로 겹쳐 보여요. 시간을 바꾸는 걸 추천해요."));
+  sim.filter(x=>!x.extra&&x.tag&&/일정 때문에/.test(x.tag)).forEach(x=>{const o=base.find(b=>b.id===x.id);if(!o||(o.o===x.o&&o.e===x.e))return;
+    lines.push("‘"+plain(x.t)+"’은(는) "+(x.o===o.o?clk(W+x.e)+"까지로 줄어요.":clk(W+x.o)+"로 밀려요"+(x.e-x.o<o.e-o.o?" ("+(x.e-x.o)+"분으로 줄어요)":"")+"."))});
+  if(!shove)hit.filter(it=>MOVABLE.includes(it.id)).forEach(it=>lines.push("‘"+plain(it.t)+"’과(와) 겹쳐요."));
+  else hit.filter(it=>MOVABLE.includes(it.id)).forEach(it=>{const x=sim.find(y=>y.id===it.id);if(x&&x.o===it.o&&x.e===it.e)lines.push("‘"+plain(it.t)+"’은(는) 고정 일정에 막혀 옮기지 못해 겹쳐 보여요.")});
+  const oth=others.filter(x=>{const q=xRange(x);return q&&q[0]<r[1]&&q[1]>r[0]});
+  oth.forEach(x=>lines.push("이미 ‘"+x.t+"’ 일정이 있어요."));
+  if($("#xRep").value!=="once")lines.push("겹침은 오늘 기준으로 알려 드려요. 다른 날은 기상 시각에 따라 달라질 수 있어요.");
+  const warn=lines.some(l=>/시간과 겹쳐요|이미 ‘|막혀/.test(l));
+  m.innerHTML=lines.map(esc).join("<br>");m.classList.toggle("warn",warn);
+  $("#xSave").textContent=warn?"겹쳐도 넣기":(xEdit?"저장":"오늘 계획에 넣기");
+}
+function xSave(){
+  const m=$("#xMsg"),t=$("#xName").value.trim().slice(0,30),r=xTimes(),rp=$("#xRep").value,dows=[...$$("#xDows input:checked")].map(i=>+i.value);
+  if(!t){m.textContent="일정 이름을 넣어 주세요.";return}
+  if(!r){m.textContent="시작 시각을 넣어 주세요.";return}
+  if(rp==="days"&&!dows.length){m.textContent="반복할 요일을 골라 주세요.";return}
+  const o={id:xEdit?xEdit.id:Date.now().toString(36),t,at:$("#xFrom").value,to:$("#xTo").value||"",memo:$("#xMemo").value.trim().slice(0,60),notify:$("#xNotify").checked,shove:$("#xShove").checked};
+  if(rp!=="once"){o.rep=rp;if(rp==="days")o.dows=dows;o.from=xEdit&&xEdit.from||S.today}
+  const reps=prefs().extra||[],isRep=rp!=="once",hadRep=reps.some(x=>x.id===o.id);
+  if(!xEdit&&(isRep?reps.length:(day(S.today).extra||[]).length)>=XMAX){m.textContent="추가 일정은 "+XMAX+"개까지 넣을 수 있어요.";return}
+  patch(S.today,d=>{d.extra=(d.extra||[]).filter(x=>x.id!==o.id);if(!isRep)d.extra.push(o);if(!d.extra.length)delete d.extra});
+  if(isRep||hadRep){const np=JSON.parse(JSON.stringify(prefs()));np.extra=(np.extra||[]).filter(x=>x.id!==o.id);if(isRep)np.extra.push(o);if(!np.extra.length)delete np.extra;savePrefs(np)}
+  closeSheet();S.tlKey="";renderToday();
+  toast(isRep?"반복 일정을 넣었어요. "+(rp==="daily"?"매일":rp==="weekdays"?"평일":"선택한 요일")+" 같은 시각에 알려 드려요.":"오늘 계획에 넣었어요. 내일은 평소대로예요.");
+}
+function xDel(kind){
+  if(!xEdit)return;const id=xEdit.id,isRep=!!xEdit.rep;
+  if(!confirm(kind==="today"?"오늘 하루만 이 일정을 뺄까요?":isRep?"반복 일정을 모두 삭제할까요?":"이 일정을 오늘 계획에서 뺄까요?"))return;
+  if(kind==="today")patch(S.today,d=>{d.extraOff=d.extraOff||{};d.extraOff[id]=1});
+  else if(isRep){const np=JSON.parse(JSON.stringify(prefs()));np.extra=(np.extra||[]).filter(x=>x.id!==id);if(!np.extra.length)delete np.extra;savePrefs(np)}
+  else patch(S.today,d=>{d.extra=(d.extra||[]).filter(x=>x.id!==id);if(!d.extra.length)delete d.extra});
+  closeSheet();S.tlKey="";renderToday();toast("뺐어요.");
+}
+$("#xAdd").addEventListener("click",()=>openExtra(null));
+$("#tl").addEventListener("click",e=>{const a=e.target.closest("[data-xedit]");if(a){e.preventDefault();openExtra(a.dataset.xedit)}});
+$("#woSheetBody").addEventListener("click",e=>{if(e.target.closest("[data-xsave]"))xSave();const d=e.target.closest("[data-xdel]");if(d)xDel(d.dataset.xdel)});
+$("#woSheetBody").addEventListener("input",e=>{if(e.target.closest(".xform")){if(e.target.id==="xRep")$("#xDows").hidden=e.target.value!=="days";xPreview()}});
+$("#woSheetBody").addEventListener("change",e=>{if(e.target.closest(".xform")){if(e.target.id==="xRep")$("#xDows").hidden=e.target.value!=="days";xPreview()}});
 /* ---------- 일정 조정 패널 ---------- */
 function openAdj(id){
   const it=(S.items||[]).find(x=>x.id===id);if(!it)return;
@@ -3947,12 +4063,15 @@ function dueItems(){
   /* a sleep target over 7h moves the caffeine cutoff (bed − 9h) before NSDR: then they are two alerts */
   const cm=items.find(x=>x.mark),ns=out.find(x=>x.id===d.wake+"@"+(items.find(y=>y.id==="nsdr")||{}).o);
   if(cm&&ns&&W+cm.o!==ns.at){if(!(P.nsdr&&P.nsdr.t))ns.t="NSDR";ns.line="NSDR 10~20분.";out.push({at:W+cm.o,id:d.wake+"@"+cm.o,t:"카페인 마감",line:"오늘 카페인은 여기까지."});out.sort((a,b)=>a.at-b.at)}
+  items.filter(x=>x.extra&&!x.skip&&x.ex.notify!==false).forEach(x=>out.push({at:W+x.o,id:"x:"+x.ex.id+"@"+S.today,t:x.ex.t,line:x.ex.memo||(x.ex.rep?"반복 일정이에요.":"오늘 추가한 일정이에요."),extra:true}));
+  out.sort((a,b)=>a.at-b.at);
   return out;
 }
 function checkAlerts(){
-  if(!alertsOn||pushOn||!S.key)return;
+  if(!alertsOn||!S.key)return;   // 잠금 화면 알림(서버)은 추가 일정을 모르므로, 켜져 있어도 추가 일정은 여기서 알린다
   const n=nowMin(),f=fired(),list=f[S.today]||[];
   for(const x of dueItems()){
+    if(pushOn&&!x.extra)continue;
     if(n>=x.at&&n<x.at+3&&!list.includes(x.id)){list.push(x.id);LS.set("axis.fired",JSON.stringify({[S.today]:list}));showAlert(clk(x.at),x.t,x.line);break}
   }
 }
@@ -3962,9 +4081,9 @@ function seenAt(){try{return JSON.parse(LS.get("axis.seen")||"null")}catch(e){re
 function markSeen(){if(S.key&&!document.hidden)LS.set("axis.seen",JSON.stringify({d:S.today,m:Math.floor(nowMin())}))}
 function catchUpAlerts(){
   const s=seenAt();markSeen();
-  if(!alertsOn||pushOn||!S.key||!s||s.d!==S.today)return;
+  if(!alertsOn||!S.key||!s||s.d!==S.today)return;
   const n=nowMin(),f=fired(),list=f[S.today]||[];
-  const miss=dueItems().filter(x=>x.at>s.m&&n>=x.at+3&&!list.includes(x.id));
+  const miss=dueItems().filter(x=>(!pushOn||x.extra)&&x.at>s.m&&n>=x.at+3&&!list.includes(x.id));
   if(!miss.length)return;
   miss.forEach(x=>list.push(x.id));LS.set("axis.fired",JSON.stringify({[S.today]:list}));
   const last=miss[miss.length-1];

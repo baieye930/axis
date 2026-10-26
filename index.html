@@ -245,6 +245,13 @@ p{margin:0}
 .wgrow::after{content:"›";color:var(--muted);font-size:1.2rem}
 .scope{display:grid;gap:.15rem;padding:.6rem .8rem;border-radius:12px;background:var(--soft);font-size:.86rem}.scope b{color:var(--accent)}
 .scopenote{margin:.2rem 0 .6rem}
+.tl li.skipped .tt,.tl li.skipped .t{text-decoration:line-through;opacity:.5}
+.adjrow{display:flex;align-items:center;justify-content:space-between;margin:.3rem 0 0}.adjrow .s{font-size:.78rem;color:var(--muted)}
+.adjbox{display:grid;gap:.5rem;padding:.9rem 1rem;border-radius:16px;background:var(--surface2)}
+.adjbox.alt{background:transparent;box-shadow:inset 0 0 0 1.5px var(--line)}
+.adjbox h3{margin:0;font-size:1rem}.adjbox .s{margin:0;font-size:.85rem;color:var(--muted)}
+.adjbtns{display:flex;flex-wrap:wrap;gap:.4rem}.adjbtns .btn:not(.primary){background:var(--surface)}.adjbtns .btn{min-height:2.6rem;padding:.3rem 1rem;font-size:.9rem}
+.adjstate{margin:0;font-size:.85rem;font-weight:600;color:var(--accent)}
 .now .link,.note .link{display:inline;min-height:0;padding:0}
 section.dangerzone.acct{margin-top:.8rem;padding:1rem 1.1rem;border-radius:var(--r);border:1.5px solid #e2b9a4;background:rgba(226,185,164,.12);display:grid;gap:.5rem}
 .dangerzone h3{margin:0;font-size:.95rem;color:#b5532a}
@@ -1317,10 +1324,21 @@ function exerciseToday(dow){
 const TL_IDS=["water","sun1","move","shower","commute","deep1","hard","meal1","sun2","work","caffmark","nsdr","deep2","light","sun3","home","meal2","read","plan","dim","screen","sleep"];
 /* the day's timeline: within an hour of the usual wake the whole day shifts with W;
    later than that, meals and the evening keep their usual clock times and the morning is rebuilt from W (reflow) */
-function timeline(W,dow){
+function timeline(W,dow,date){
   const B=baseWake()*60;
-  return anchorEvening(W-B>LATE_MIN?reflow(W,B,dow):shifted(W,dow),W);
+  return applyAdj(anchorEvening(W-B>LATE_MIN?reflow(W,B,dow):shifted(W,dow),W),date);
 }
+/* ---------- 일정 조정: 그 날짜 하루에만 적용 (day.adj = {항목id: {dt:분} | {skip:true}}) ----------
+   기본 루틴(prefs)은 건드리지 않는다. 식사·취침·조명·아침 햇빛처럼 하루 리듬의 기준은 고정이라 옮기지 못한다. */
+const MOVABLE=["move","shower","commute","deep1","hard","sun2","work","nsdr","deep2","light","home","read","plan"];
+function applyAdj(items,date){
+  const a=date&&S.days[date]&&S.days[date].adj;if(!a)return items;
+  items.forEach(it=>{const x=a[it.id];if(!x||!MOVABLE.includes(it.id))return;
+    if(x.skip){it.skip=true;it.tag=(it.tag?it.tag+" · ":"")+"오늘 건너뜀";return}
+    const dt=clampAdj(x.dt);if(dt){it.o+=dt;if(it.e<2000)it.e+=dt;it.tag=(it.tag?it.tag+" · ":"")+"오늘만 "+(dt>0?"+":"")+dt+"분"}});
+  return items.sort((p,q)=>p.o-q.o||(q.mark?1:0)-(p.mark?1:0));
+}
+const clampAdj=v=>{v=Math.round(+v||0);return Math.max(-120,Math.min(180,v))};
 /* 저녁 식사는 기본 19:00~20:00에 고정하고 취침 4시간 전에 끝내는 것이 목표. 취침은 아무리 늦어도 01:00을 넘기지 않는다.
    일찍 일어나 취침이 24:00보다 이르면 수면을 줄이지 않고 식사를 앞당긴다(식사 끝 = 취침 − 4시간, 30분 미만이 되면 그대로 둔다).
    저녁 이후(독서 · 계획 · 조명 · 화면 · 취침)는 취침 시각 기준으로 맞추고, 빈 시간은 채우지 않는다. 카페인 마감은 취침 9시간 전을 유지한다. */
@@ -1735,7 +1753,7 @@ const pctOf=d=>CHECKS.filter(c=>d.checks&&d.checks[c.id]).length/CHECKS.length;
    카페인: times in the caffeine note or caffeine drinks in 식단 vs the cutoff (kept once the cutoff has passed; missed at once
    when something came after it). Only a check that was never set, or was set this way (d.ckAuto), follows the data, and
    never once the person taps it (d.ckMe), so checks ticked by hand before this existed stay as they were. */
-const dayItems=(d,date)=>{if(!d||!d.wake)return null;const W=Math.round(d.wake*60);return {W,items:timeline(W,parseYmd(date).getDay())}};
+const dayItems=(d,date)=>{if(!d||!d.wake)return null;const W=Math.round(d.wake*60);return {W,items:timeline(W,parseYmd(date).getDay(),date)}};
 function waterGoalOf(d,date){const p=dayItems(d,date);if(!p)return null;const s=p.items.find(it=>it.id==="sleep");return Math.max(1,Math.round(((s?s.o:1020)-60)/60))}
 function caffCutOf(d,date){const p=dayItems(d,date);if(!p)return null;const c=p.items.find(it=>it.mark);return c?p.W+c.o:null}
 const CAFF_RE=/커피|아메리카노|라떼|에스프레소|콜드\s?브루|카푸치노|모카|마키아토|녹차|홍차|말차|에너지\s?드링크|콜라|카페인|coffee|latte|espresso/i;
@@ -1894,29 +1912,30 @@ function renderToday(){
     $("#nowBox").innerHTML='<div class="empty"><p>'+(S.loaded?"오늘 기상 시각을 고르면 그 타입의 타임라인과 지금 할 일을 보여 드려요.":"기록을 불러오는 중이에요…")+'</p></div>';
     $("#glance").innerHTML="";$("#tl").innerHTML="";S.tlKey="";return;
   }
-  const W=Math.round(w*60),items=timeline(W,parseYmd(S.today).getDay()),k=S.today+":"+w+":"+JSON.stringify(prefs())+":"+(wx?wx.at:0);
+  const W=Math.round(w*60),items=timeline(W,parseYmd(S.today).getDay(),S.today),k=S.today+":"+w+":"+JSON.stringify(prefs())+":"+(wx?wx.at:0)+":"+JSON.stringify(d.adj||{});
   items.forEach(it=>{const n=wxNote(W,it);if(n)it.tag=(it.tag?it.tag+" · ":"")+n});
   if(items.length&&items[0].late)$("#wakeChip").innerHTML=fmtW(w)+" 기상 · 늦은 날 <small>바꾸기</small>";
   if(S.tlKey!==k){
     S.tlKey=k;
     $("#tl").innerHTML=items.map((it,i)=>it.mark
       ?'<li class="markrow" data-i="'+i+'"><span class="t">'+clk(W+it.o)+'</span><span>'+it.t+'</span></li>'
-      :'<li data-i="'+i+'"><details><summary'+(it.ck?' class="has-done"':'')+'><span class="t">'+clk(W+it.o)+'</span><span class="tt">'+it.t+'</span>'
-        +(it.ck?'<button class="tdone" type="button" data-done="'+i+'" aria-pressed="false" aria-label="'+it.t+' 완료"><i><svg aria-hidden="true"><use href="#ic-check"/></svg></i></button>':'')
+      :'<li data-i="'+i+'"'+(it.skip?' class="skipped"':'')+'><details><summary'+(it.ck&&!it.skip?' class="has-done"':'')+'><span class="t">'+clk(W+it.o)+'</span><span class="tt">'+it.t+'</span>'
+        +(it.ck&&!it.skip?'<button class="tdone" type="button" data-done="'+i+'" aria-pressed="false" aria-label="'+it.t+' 완료"><i><svg aria-hidden="true"><use href="#ic-check"/></svg></i></button>':'')
         +'</summary><p>'+it.d+(it.id==="move"?' <button class="link strong" type="button" data-gowo>Workout에서 오늘 운동 보기 →</button>':'')+(it.ck?' <b>· 완료 표시하면 체크 탭 ‘'+CHECKS.find(c=>c.id===it.ck).t+'’에 반영돼요.</b>':'')+'</p>'+(it.tag?'<p class="tag">'+it.tag+'</p>':'')
+        +'<p class="adjrow"><span class="s">'+(MOVABLE.includes(it.id)?"이동 가능":"고정")+'</span><button class="link strong" type="button" data-adj="'+it.id+'">일정 조정</button></p>'
         +(it.id==="plan"?'<div class="plannote"><textarea data-plan maxlength="300" rows="3" placeholder="우선순위 3개 + 개선점 1개" aria-label="내일 계획"></textarea><span class="s">적어 두면 내일 아침 오늘 화면 맨 위에 보여 드려요.</span></div>':'')+'</details></li>').join("");
   }
   S.items=items;
   {const pa=$("#tl [data-plan]");if(pa&&document.activeElement!==pa)pa.value=d.plan||"";}
   const rel=nowMin()-W;
-  let cur=-1;items.forEach((it,i)=>{if(!it.mark&&rel>=it.o&&rel<it.e)cur=i});
+  let cur=-1;items.forEach((it,i)=>{if(!it.mark&&!it.skip&&rel>=it.o&&rel<it.e)cur=i});
   $$("#tl li").forEach(li=>{const i=+li.dataset.i,it=items[i],dn=!!it.ck&&isDone(d,it);
     li.classList.toggle("cur",i===cur);
     li.classList.toggle("past",cur>=0?(it.mark?rel>=it.o:i<cur):false);
     li.classList.toggle("done",dn);
     const b=li.querySelector("[data-done]");if(b)b.setAttribute("aria-pressed",String(dn));
   });
-  const nextOf=i=>{for(let j=i+1;j<items.length;j++)if(!items[j].mark)return items[j];return null};
+  const nextOf=i=>{for(let j=i+1;j<items.length;j++)if(!items[j].mark&&!items[j].skip)return items[j];return null};
   let html;
   if(cur<0){
     const f=items[0];
@@ -1952,6 +1971,31 @@ function renderToday(){
     +'<div class="cups"><button class="chip" type="button" data-cup="-1" aria-label="마신 횟수 하나 빼기"'+(cups?'':' disabled')+'>−</button><span class="num" aria-live="polite">'+cups+' / '+nW+'번</span><button class="chip" type="button" data-cup="1" aria-label="한 번 마셨어요">+</button></div></div><div class="card"><span class="lbl">카페인</span><span class="v">'+cv+'</span><span class="s">'+cs+'</span></div>'+energyCardHtml()+wxCard(W,items);
 }
 
+/* ---------- 일정 조정 패널 ---------- */
+function openAdj(id){
+  const it=(S.items||[]).find(x=>x.id===id);if(!it)return;
+  const W=Math.round(day(S.today).wake*60),a=((day(S.today).adj||{})[id])||{},mv=MOVABLE.includes(id),dt=clampAdj(a.dt);
+  const st=a.skip?"오늘은 건너뛰기로 해 두었어요":dt?"오늘만 "+(dt>0?dt+"분 미룸":-dt+"분 당김"):"";
+  const b=(act,t,cls)=>'<button type="button" class="btn'+(cls?" "+cls:"")+'" data-adjact="'+act+'" data-id="'+id+'">'+t+'</button>';
+  sheet(sheetHd("일정 조정")+'<p class="s">'+clk(W+it.o)+(it.e<2000?"–"+clk(W+it.e):"")+' · <b>'+it.t+'</b></p>'
+    +'<div class="adjbox"><h3>오늘만 바꾸기</h3><p class="s">'+esc(dateLabel(S.today))+' 계획만 바뀌어요. 내일부터는 평소 루틴 그대로예요.</p>'
+    +(mv?'<div class="adjbtns">'+b("shift:-30","30분 당기기")+b("shift:30","30분 미루기")+b("skip","오늘은 건너뛰기")+(st?b("reset","원래대로","primary"):"")+'</div>'+(st?'<p class="adjstate">'+st+'</p>':'')
+       :'<p class="adjstate">식사·취침·조명·아침 햇빛은 하루 리듬의 기준이라 고정이에요. 오늘 하루만 옮길 수 없어요.</p>')+'</div>'
+    +'<div class="adjbox alt"><h3>앞으로 반복할 기본 루틴</h3><p class="s">여기서 바꾸면 앞으로 매일 적용돼요. 오늘 계획은 위에서만 바뀌고, 위 조정이 기본 루틴을 바꾸지는 않아요.</p>'
+    +'<button type="button" class="btn" data-more-open="editAcc" data-close>기본 루틴 편집 ›</button></div>');
+}
+$("#tl").addEventListener("click",e=>{const a=e.target.closest("[data-adj]");if(a){e.preventDefault();openAdj(a.dataset.adj)}});
+$("#woSheetBody").addEventListener("click",e=>{
+  const x=e.target.closest("[data-adjact]");if(!x)return;
+  const id=x.dataset.id,[act,v]=x.dataset.adjact.split(":");if(!MOVABLE.includes(id))return;
+  patch(S.today,d=>{d.adj=d.adj||{};const c=d.adj[id]||{};
+    if(act==="reset")delete d.adj[id];
+    else if(act==="skip")d.adj[id]={skip:true};
+    else if(act==="shift"){const n=clampAdj((+c.dt||0)+(+v));if(n)d.adj[id]={dt:n};else delete d.adj[id]}
+    if(!Object.keys(d.adj).length)delete d.adj});
+  S.tlKey="";renderToday();openAdj(id);
+  if(act==="skip")toast("오늘은 건너뛰기로 했어요. 내일은 평소대로예요.");
+});
 /* ---------- timeline items that count toward a check (sun = 3 separate walks) ---------- */
 const sunOf=d=>[0,1,2].map(i=>!!(d.sunN&&d.sunN[i]));
 const isDone=(d,it)=>it.ck==="sun"?sunOf(d)[it.si]:!!(d.checks&&d.checks[it.ck]);
@@ -2000,7 +2044,7 @@ function energyCurve(awake,debt){
 const energyWord=v=>v>=70?"높음":v>=45?"보통":"낮음";
 function energyNow(){
   const d=day(S.today);if(!d.wake)return null;
-  const W=Math.round(d.wake*60),it=timeline(W,parseYmd(S.today).getDay()),bed=(it.find(x=>x.id==="sleep")||{o:960}).o,awake=bed/60,{debt}=sleepDebt();
+  const W=Math.round(d.wake*60),it=timeline(W,parseYmd(S.today).getDay(),S.today),bed=(it.find(x=>x.id==="sleep")||{o:960}).o,awake=bed/60,{debt}=sleepDebt();
   const pts=energyCurve(awake,debt),rel=(nowMin()-W)/60,cur=rel<0||rel>awake?null:pts[Math.min(pts.length-1,Math.max(0,Math.round(rel*4)))][1];
   /* focus windows: today's best stretches — within 15 points of today's peak (so they exist even with sleep debt) */
   const top=Math.max(...pts.map(p=>p[1])),cut=Math.max(35,top-15);
@@ -2084,7 +2128,7 @@ const RUN_SHORT={water:"물",sun1:"햇빛",move:"운동",shower:"샤워",commute
 let runSeg=null,runRang=-1,wakeLock=null;
 function runSteps(seg){
   const d=day(S.today);if(!d.wake)return [];
-  const W=Math.round(d.wake*60),items=timeline(W,parseYmd(S.today).getDay()),m1=items.find(x=>x.id==="meal1");
+  const W=Math.round(d.wake*60),items=timeline(W,parseYmd(S.today).getDay(),S.today),m1=items.find(x=>x.id==="meal1");
   return items.filter(it=>RUN_IDS[seg].includes(it.id)&&!it.mark&&(seg!=="am"||!m1||it.o<m1.o))
     .map(it=>Object.assign({},it,{min:it.id==="sleep"?0:Math.max(1,(it.e>2000?it.o+30:it.e)-it.o)}));
 }
@@ -3527,7 +3571,7 @@ const dietDay=()=>dDay||S.today;
 const FOODS=[["닭가슴살 100g",165,31,0,4],["계란 1개",75,6,1,5],["밥 1공기",310,6,68,1],["현미밥 1공기",300,6,64,2],["고구마 1개",195,2,45,0],["바나나 1개",105,1,27,0],["그릭요거트 150g",130,15,6,5],["두부 반 모",120,13,3,7],["프로틴 1스쿱",120,24,3,2],["소고기 우둔 100g",150,22,0,6],["연어 100g",210,22,0,13],["우유 200ml",130,6,10,7],["샐러드 한 접시",80,3,10,3],["아메리카노",10,0,2,0]];
 const nowHM=()=>{const d=new Date();return pad(d.getHours())+":"+pad(d.getMinutes())};
 const hmMin=s=>{const m=/^(\d{1,2}):(\d{2})/.exec(s||"");return m?+m[1]*60+ +m[2]:null};
-function mealTimes(D){const x=S.days[D];if(!x||!x.wake)return null;const W=Math.round(x.wake*60),it=timeline(W,parseYmd(D).getDay()),f=id=>{const r=it.find(y=>y.id===id);return r?W+r.o:null};return {m1:f("meal1"),m2:f("meal2")}}
+function mealTimes(D){const x=S.days[D];if(!x||!x.wake)return null;const W=Math.round(x.wake*60),it=timeline(W,parseYmd(D).getDay(),D),f=id=>{const r=it.find(y=>y.id===id);return r?W+r.o:null};return {m1:f("meal1"),m2:f("meal2")}}
 function renderWoDiet(){
   const D=dietDay(),isT=D===S.today,x=day(D),meals=(x.meals||[]).slice().sort((a,b)=>(hmMin(a.at)||0)-(hmMin(b.at)||0));
   $("#dietDate").innerHTML='<button class="chip" type="button" data-dday="-1" aria-label="전날">‹</button> '+esc(dateLabel(D))+(isT?" · 오늘":"")+' <button class="chip" type="button" data-dday="1" aria-label="다음 날"'+(isT?" disabled":"")+'>›</button>';
@@ -3895,9 +3939,9 @@ function fired(){try{return JSON.parse(LS.get("axis.fired")||"{}")}catch(e){retu
 /* today's core reminders after the person's edits and the late-wake rules: [{at, id, t, line}] */
 function dueItems(){
   const d=day(S.today);if(!d.wake)return [];
-  const W=Math.round(d.wake*60),P=prefs().tl||{},items=timeline(W,parseYmd(S.today).getDay()),out=[];
+  const W=Math.round(d.wake*60),P=prefs().tl||{},items=timeline(W,parseYmd(S.today).getDay(),S.today),out=[];
   for(const [o0,t0,line] of CORE){
-    const p=P[CORE_IDS[o0]]||{},it=items.find(x=>x.id===CORE_IDS[o0]);if(p.off||!it)continue;
+    const p=P[CORE_IDS[o0]]||{},it=items.find(x=>x.id===CORE_IDS[o0]);if(p.off||!it||it.skip)continue;
     out.push({at:W+it.o,id:d.wake+"@"+it.o,t:it.id==="move"&&it.late&&/\(오후\)$/.test(it.t)?it.t:p.t||t0,line});
   }
   /* a sleep target over 7h moves the caffeine cutoff (bed − 9h) before NSDR: then they are two alerts */

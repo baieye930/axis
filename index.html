@@ -130,7 +130,7 @@ p{margin:0}
 .tl .tt{font-weight:600;font-size:1rem}
 .tl details p{padding:0 .9rem .9rem 5.6rem;color:var(--muted);font-size:.95rem}
 .tl details p.tag{padding:0;margin:0 .9rem .9rem 5.6rem;color:var(--fg)}
-.tl li.past{opacity:.48}
+.tl li.past{opacity:.78}
 .tl li.cur{background:var(--surface);box-shadow:var(--shadow)}
 .tl li.cur .t,.tl li.cur .tt{color:var(--accent)}
 .tl li.markrow{display:grid;grid-template-columns:4.2rem 1fr;gap:.6rem;padding:.2rem .8rem;font-size:.88rem;color:var(--accent);font-weight:600}
@@ -267,7 +267,42 @@ p{margin:0}
 .tonecard{display:grid;gap:.5rem}
 .tonecard .tp{display:grid;gap:.1rem;padding:.65rem .85rem;border-radius:14px;background:var(--surface2);font-size:.9rem}
 .tonecard .tp small{font-size:.7rem;color:var(--muted)}.tonecard .tp b{font-weight:600}
-#xAdd{margin-top:.6rem}
+.tlhead{display:flex;align-items:center;justify-content:space-between;gap:.6rem;flex-wrap:wrap;margin:1.1rem 0 .5rem}
+.tlnav{display:flex;align-items:center;gap:.5rem;min-width:0}
+.tlnav .chip{min-height:2.6rem;min-width:2.6rem;justify-content:center;font-size:1.1rem}
+.tlttl{display:grid;gap:.05rem;min-width:0}.tlttl b{font-family:var(--f-display);font-size:1.15rem;font-weight:600}.tlttl small{font-size:.78rem;color:var(--muted)}
+.tlact{display:flex;align-items:center;gap:.7rem}.tlact .btn{min-height:2.6rem;padding:.3rem 1rem}
+.planst{display:grid;gap:.5rem;padding:.8rem 1rem;border-radius:var(--r);background:var(--surface);box-shadow:var(--shadow);margin-bottom:.6rem}
+.planst .row{display:flex;align-items:center;justify-content:space-between;gap:.5rem;flex-wrap:wrap}
+.planst .s{margin:0;font-size:.82rem;color:var(--muted)}.planst .s.warn{color:#b5532a;font-weight:600}
+.pst{display:inline-block;font-size:.8rem;font-weight:700;border-radius:99px;padding:.15rem .7rem;background:var(--surface2);color:var(--muted)}
+.pst-edit{background:var(--soft);color:var(--accent)}.pst-saved{background:var(--fg);color:var(--bg1,#fff)}
+.tlfold{display:flex;justify-content:flex-end}.tlfold .link{font-size:.85rem}
+.tl.fold li.past{display:none}
+.now .d.clamp{display:-webkit-box;-webkit-line-clamp:3;-webkit-box-orient:vertical;overflow:hidden}
+.now .d.clamp.open{-webkit-line-clamp:unset;display:block}
+.tl li.empty{display:grid;gap:.5rem;padding:1rem;color:var(--muted)}
+.tl .tt{display:grid;gap:.1rem;min-width:0}.tl .tt .mt{font-weight:600}
+.tl .tt small{font-weight:400;font-size:.8rem;color:var(--muted)}
+.tl .chips{display:flex;flex-wrap:wrap;gap:.25rem;align-items:center;margin-top:.1rem}
+.chp{display:inline-block;font-size:.7rem;font-weight:700;border-radius:99px;padding:.05rem .5rem;background:var(--surface2);color:var(--muted)}
+.chp.ok{background:var(--soft);color:var(--accent)}
+.lockic{width:.95rem;height:.95rem;color:var(--muted);flex:none}
+.tl li.skipped .mt{text-decoration:line-through}
+.conflict{display:block;margin:.4rem 0;font-size:.9rem}
+.planopts{display:grid;gap:.5rem}
+.planopt{display:grid;gap:.1rem;text-align:left;border:0;border-radius:16px;background:var(--surface2);padding:.8rem 1rem;font:inherit;color:inherit;cursor:pointer;min-height:3.2rem}
+.planopt b{font-weight:600}.planopt small{color:var(--muted);font-size:.8rem;line-height:1.4}
+.planopt:focus-visible,.tlnav .chip:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+.props{display:grid;gap:.5rem}
+.prop{display:grid;gap:.4rem;padding:.7rem .85rem;border-radius:14px;background:var(--surface2)}
+.prop .pl{display:grid;gap:.1rem}.prop .pc{font-family:var(--f-num);font-size:.95rem}.prop small{color:var(--muted);font-size:.78rem}
+.prop select{min-height:2.6rem;border-radius:12px;border:1.5px solid var(--line);background:var(--surface);color:inherit;font:inherit;font-size:16px;padding:.2rem .6rem;width:100%}
+.undobar{position:fixed;left:12px;right:12px;bottom:calc(4.8rem + env(safe-area-inset-bottom,0px));z-index:25;display:flex;align-items:center;gap:.6rem;max-width:34rem;margin:0 auto;padding:.6rem .8rem;border-radius:16px;background:var(--fg);color:var(--bg1,#fff);box-shadow:var(--shadow)}
+.undobar span{flex:1;font-size:.92rem}.undobar button{border:0;background:transparent;color:inherit;font:inherit;font-weight:700;cursor:pointer;min-height:2.4rem;padding:0 .5rem}
+.undobar #undoBtn{text-decoration:underline}
+#sleepAsk .sleepask{padding:.7rem .9rem}
+.runcard{padding:.65rem .9rem}.runcard .btn{min-height:2.6rem}
 .adjstate{margin:0;font-size:.85rem;font-weight:600;color:var(--accent)}
 .now .link,.note .link{display:inline;min-height:0;padding:0}
 section.dangerzone.acct{margin-top:.8rem;padding:1rem 1.1rem;border-radius:var(--r);border:1.5px solid #e2b9a4;background:rgba(226,185,164,.12);display:grid;gap:.5rem}
@@ -435,7 +470,7 @@ section.dangerzone.acct{margin-top:.8rem;padding:1rem 1.1rem;border-radius:var(-
 #pickSheet{z-index:31}
 .sheetbody{display:grid;gap:.8rem}
 .sheethd{display:flex;justify-content:space-between;align-items:center;gap:.5rem}
-.sheethd .btn{min-height:2.4rem;padding:.3rem .9rem;font-size:.9rem}
+.sheethd .btn{min-height:2.4rem;padding:.3rem .9rem;font-size:.9rem;white-space:nowrap;flex:none}
 .search,.share,.exsel,.planed select,.field select,.rtc input,.dietf input{min-height:2.6rem;padding:.3rem .7rem;border-radius:10px;border:1.5px solid var(--line);background:var(--surface);color:inherit;font-size:16px;width:100%;min-width:0}
 .share{font-family:var(--f-num);font-size:13px;resize:none}
 .picklist{list-style:none;margin:0;padding:0;display:grid;gap:.3rem}
@@ -898,17 +933,26 @@ h1,h2,h3{font-weight:300;letter-spacing:-.02em;line-height:1.2}
       <span id="todayDate" class="eyebrow"></span>
       <button id="wakeChip" class="chip" type="button"></button>
     </div>
-    <div id="sleepAsk"></div>
-    <div id="runCard"></div>
-    <div id="planCard"></div>
     <div id="nowBox"></div>
-    <div id="glance" class="glance"></div>
-    <div class="head"><h2>오늘 타임라인</h2><p class="note">항목을 누르면 자세한 내용이 열립니다.</p></div>
-    <p class="note scopenote">오늘 계획은 오늘 하루만 바뀌어요. 앞으로 매일 반복할 루틴은 <button class="link strong" type="button" data-more-open="editAcc">기본 루틴 편집</button>에서 바꿔요.</p>
+    <div id="runCard"></div>
+    <div class="tlhead">
+      <div class="tlnav">
+        <button id="tlPrev" class="chip" type="button" aria-label="이전 날짜">〈</button>
+        <div class="tlttl" aria-live="polite"><b id="tlTitle"></b><small id="tlSub"></small></div>
+        <button id="tlNext" class="chip" type="button" aria-label="다음 날짜">〉</button>
+      </div>
+      <div class="tlact"><button id="tlToday" class="link strong" type="button" hidden>오늘로</button><button id="tlAdj" class="btn" type="button" aria-haspopup="dialog">일정 조정</button></div>
+    </div>
+    <div id="tlStatus"></div>
+    <div id="tlMemo"></div>
+    <div class="tlfold"><button id="tlPast" class="link" type="button" hidden></button></div>
     <ol id="tl" class="tl"></ol>
+    <div id="tlConflict"></div>
     <p id="tlNote" class="note" hidden></p>
-    <button id="xAdd" class="btn block" type="button" hidden>+ 오늘 일정 추가</button>
-    <p class="note xnote">오늘 하루에만 들어가요. 매일 반복할 일정은 추가할 때 ‘반복’을 고르면 돼요.</p>
+    <p class="note scopenote">날짜별 계획은 그 날짜만 바뀌어요. 앞으로 매일 반복할 루틴은 <button class="link strong" type="button" data-more-open="editAcc">기본 루틴 편집</button>에서 바꿔요.</p>
+    <div id="planCard"></div>
+    <div id="glance" class="glance"></div>
+    <div id="sleepAsk"></div>
   </section>
 
   <section id="tab-check" class="tab" role="tabpanel" aria-label="체크" hidden>
@@ -1206,6 +1250,7 @@ h1,h2,h3{font-weight:300;letter-spacing:-.02em;line-height:1.2}
     <div id="runBody" class="runbody"></div>
   </div>
 </div>
+<div id="undoBar" class="undobar" role="status" hidden><span id="undoMsg">일정 변경됨</span><button id="undoBtn" type="button">되돌리기</button><button id="undoX" type="button" aria-label="알림 닫기">✕</button></div>
 <div id="restBar" class="restbar" hidden>
   <div class="in"><span class="lbl">휴식</span><b id="restLeft" class="num">0:00</b><span id="restNext" class="s"></span><button id="restPlus" class="btn" type="button">+30초</button><button id="restSkip" class="btn" type="button">건너뛰기</button></div>
 </div>
@@ -1225,7 +1270,7 @@ h1,h2,h3{font-weight:300;letter-spacing:-.02em;line-height:1.2}
 </nav>
 
 <div id="woSheet" class="sheet" hidden>
-  <div class="pane tall" role="dialog" aria-modal="true" aria-label="운동 도구"><div id="woSheetBody" class="sheetbody"></div></div>
+  <div class="pane tall" role="dialog" aria-modal="true" aria-label="상세 설정" tabindex="-1"><div id="woSheetBody" class="sheetbody"></div></div>
 </div>
 <div id="pickSheet" class="sheet" hidden>
   <div class="pane tall" role="dialog" aria-modal="true" aria-labelledby="pickTitle">
@@ -1248,6 +1293,7 @@ h1,h2,h3{font-weight:300;letter-spacing:-.02em;line-height:1.2}
     <h2 id="wakeTitle">오늘 기상 시각을 골라 주세요</h2>
     <button class="wakebtn" type="button" data-pick="7" aria-pressed="false"><b>7:00</b><span data-wakeinfo="7">업무 10:00 · 첫 식사 12:00 · 취침 23:00</span></button>
     <button class="wakebtn" type="button" data-pick="8" aria-pressed="false"><b>8:00</b><span data-wakeinfo="8">업무 11:00 · 첫 식사 13:00 · 취침 24:00</span></button>
+    <p id="wakePlanned" class="note" hidden>어제 계획한 예상 기상 <button id="wakePlanBtn" class="link strong" type="button"></button></p>
     <div class="wakeother">
       <label for="wakeTime">다른 시각 <small>몇 시든, 1분 단위</small></label>
       <div class="row"><input id="wakeTime" type="time" step="60"><button id="wakeApply" class="btn primary" type="button">이 시각으로</button></div>
@@ -1351,40 +1397,33 @@ function exerciseToday(dow){
 const TL_IDS=["water","sun1","move","shower","commute","deep1","hard","meal1","sun2","work","caffmark","nsdr","deep2","light","sun3","home","meal2","read","plan","dim","screen","sleep"];
 /* the day's timeline: within an hour of the usual wake the whole day shifts with W;
    later than that, meals and the evening keep their usual clock times and the morning is rebuilt from W (reflow) */
-function timeline(W,dow,date,noEx){
-  const B=baseWake()*60,it=applyAdj(anchorEvening(W-B>LATE_MIN?reflow(W,B,dow):shifted(W,dow),W),date);
-  return noEx?it:applyExtra(it,W,date);
+function timeline(W,dow,date,opt){
+  const o=opt&&typeof opt==="object"?opt:{noEx:!!opt},B=baseWake()*60,it=applyAdj(anchorEvening(W-B>LATE_MIN?reflow(W,B,dow):shifted(W,dow),W),date,W,o);
+  return o.noEx?it:applyExtra(it,W,date);
 }
 /* ---------- 일정 조정: 그 날짜 하루에만 적용 (day.adj = {항목id: {dt:분} | {skip:true}}) ----------
    기본 루틴(prefs)은 건드리지 않는다. 식사·취침·조명·아침 햇빛처럼 하루 리듬의 기준은 고정이라 옮기지 못한다. */
 const MOVABLE=["move","shower","commute","deep1","hard","sun2","work","nsdr","deep2","light","home","read","plan"];
-function applyAdj(items,date){
-  const a=date&&S.days[date]&&S.days[date].adj;if(!a)return items;
+function applyAdj(items,date,W,o){
+  const a=date&&S.days[date]&&S.days[date].adj;if(!a||(o&&o.noAdj))return items;
   items.forEach(it=>{const x=a[it.id];if(!x||!MOVABLE.includes(it.id))return;
-    if(x.skip){it.skip=true;it.tag=(it.tag?it.tag+" · ":"")+"오늘 건너뜀";return}
-    const dt=clampAdj(x.dt);if(dt){it.o+=dt;if(it.e<2000)it.e+=dt;it.tag=(it.tag?it.tag+" · ":"")+"오늘만 "+(dt>0?"+":"")+dt+"분"}});
+    it.o0=it.o;
+    if(x.skip){it.skip=true;it.tag=(it.tag?it.tag+" · ":"")+"이 날짜 제외";return}
+    const len=it.e<2000?it.e-it.o:null;
+    if(x.at&&clockMin(x.at)!=null){it.o=clockMin(x.at)-W;if(len!=null)it.e=it.o+(+x.len>0?+x.len:len);it.lock=true;it.tag=(it.tag?it.tag+" · ":"")+"직접 지정 "+x.at;return}
+    const dt=clampAdj(x.dt);if(dt){it.o+=dt;if(len!=null)it.e=it.o+(+x.len>0?+x.len:len);it.tag=(it.tag?it.tag+" · ":"")+"이 날짜만 "+(dt>0?"+":"")+dt+"분";return}
+    if(+x.len>0&&len!=null)it.e=it.o+ +x.len});
   return items.sort((p,q)=>p.o-q.o||(q.mark?1:0)-(p.mark?1:0));
 }
 /* ---------- 추가 일정 ----------
    그날만(day.extra) 또는 반복(prefs.extra: 매일 · 평일 · 요일). 시각은 기상 시각과 상관없는 시계 시각이다.
    겹침: 겹치는 '이동 가능' 기본 일정은 기본으로 뒤로 밀고(밀기 끄기 가능), 식사·취침·조명 같은 고정 일정은 옮기지 않고 겹친다고 알려 준다. */
-const XMAX=10;
-function extrasFor(date){
-  const dd=S.days[date]||{},dow=parseYmd(date).getDay(),off=dd.extraOff||{};
-  const reps=(prefs().extra||[]).filter(r=>date>=(r.from||"0000-00-00")&&!off[r.id]&&(r.rep==="daily"||(r.rep==="weekdays"&&dow>=1&&dow<=5)||(r.rep==="days"&&(r.dows||[]).includes(dow))));
-  return reps.concat(dd.extra||[]);
-}
-function xRange(x){
-  let a=hmMin(x.at);if(a==null)return null;if(a<240)a+=1440;
-  let b=x.to?hmMin(x.to):null;if(b!=null&&b<240)b+=1440;if(b==null||b<=a)b=a+30;
-  return [a,b];
-}
 function applyExtra(items,W,date,exList){
   if(!date)return items;const ex=exList||extrasFor(date);if(!ex.length)return items;
   const add=[],box=[];
   ex.forEach(x=>{const r=xRange(x);if(!r||r[1]<=W)return;
     add.push({id:"x:"+x.id,t:esc(x.t),d:esc(x.memo||(x.rep?"반복 일정":"오늘 추가한 일정")),o:Math.max(0,r[0]-W),e:r[1]-W,extra:true,ex:x,tag:x.rep?"반복 일정":"내가 추가"});
-    if(x.shove!==false)box.push([r[0]-W,r[1]-W])});
+    if(x.shove!==false&&!x.v)box.push([r[0]-W,r[1]-W])});
   if(box.length){
     /* 이미 시작한 일정은 추가 일정 시작 전까지로 줄이고(15분 이상 남을 때), 아직 시작 전이면 끝난 뒤로 민다.
        식사·취침·조명 같은 고정 일정과 부딪히면 건드리지 않고 겹친 채로 둔다 */
@@ -1400,7 +1439,7 @@ function applyExtra(items,W,date,exList){
   }
   return add.concat(items).sort((p,q)=>p.o-q.o||(q.mark?1:0)-(p.mark?1:0));
 }
-const clampAdj=v=>{v=Math.round(+v||0);return Math.max(-120,Math.min(180,v))};
+const clampAdj=v=>{v=Math.round(+v||0);return Math.max(-720,Math.min(720,v))};
 /* 저녁 식사는 기본 19:00~20:00에 고정하고 취침 4시간 전에 끝내는 것이 목표. 취침은 아무리 늦어도 01:00을 넘기지 않는다.
    일찍 일어나 취침이 24:00보다 이르면 수면을 줄이지 않고 식사를 앞당긴다(식사 끝 = 취침 − 4시간, 30분 미만이 되면 그대로 둔다).
    저녁 이후(독서 · 계획 · 조명 · 화면 · 취침)는 취침 시각 기준으로 맞추고, 빈 시간은 채우지 않는다. 카페인 마감은 취침 9시간 전을 유지한다. */
@@ -1697,7 +1736,7 @@ function logout(note){
   LS.del("axis.session");
   if(S.key&&!S.guest){LS.del(CK());LS.del(PK());LS.del(FK());LS.del(PPK())}
   Object.values(S.timers).forEach(clearTimeout);
-  Object.assign(S,{auth:null,gtoken:null,email:"",gUser:null,key:null,nick:null,proof:null,guest:false,prefs:{},days:{},dirty:{},timers:{},loaded:false,tlKey:"",ckKey:""});
+  Object.assign(S,{auth:null,gtoken:null,email:"",gUser:null,key:null,nick:null,proof:null,guest:false,prefs:{},days:{},dirty:{},timers:{},loaded:false,tlKey:"",ckKey:"",tlDate:null,pastOpen:false});undoSnap=null;
   applyChecks();
   $("#main").hidden=true;$("#tabbar").hidden=true;$("#wakeSheet").hidden=true;$("#glink").hidden=true;$("#splash").hidden=false;$("#pin").value="";msg.textContent=note||"";
 }
@@ -1864,8 +1903,11 @@ function openWake(first,date){
   $(".wakeother").classList.toggle("on",other);
   $("#wakeTime").value=other?clk(Math.round(w*60)):"";
   $("#wakeClose").hidden=!w;
+  const pw=(S.days[wakeFor]||{}).sc&&+S.days[wakeFor].sc.w>0&&!w?+S.days[wakeFor].sc.w:null;
+  $("#wakePlanned").hidden=!pw;if(pw){$("#wakePlanBtn").textContent=fmtW(pw)+" 그대로 쓰기";$("#wakePlanBtn").dataset.w=pw}
   $("#wakeSheet").hidden=false;
 }
+$("#wakePlanBtn").addEventListener("click",()=>pickWake(+$("#wakePlanBtn").dataset.w));
 /* wake is stored in hours (7, 8, 6.75 for 6:45, 7.15 for 7:09); minutes are always Math.round(wake*60) so 1-minute wakes stay whole */
 const fmtW=w=>{if(w==null||!isFinite(w))return "–";const m=Math.round(w*60)%1440;return m%60?Math.floor(m/60)+":"+pad(m%60):(m/60)+"시"};
 function pickWake(w){
@@ -1873,8 +1915,15 @@ function pickWake(w){
   patch(D,d=>{d.wake=w});
   const late=Math.round(w*60)-baseWake()*60>LATE_MIN&&timeline(Math.round(w*60),parseYmd(D).getDay())[0].late;
   $("#wakeSheet").hidden=true;renderAll();
+  if(D===S.today)setTimeout(()=>wakeConflicts(D),300);
   if(D!==S.today){toast(dateLabel(D)+" 기상을 "+fmtW(w)+"로 고쳤어요.");return}
   toast(late?"평소보다 늦게 일어났어요. 식사·저녁·취침 시각은 그대로 두고, 오전은 지금부터 다시 짰어요.":fmtW(w)+" 기상 타임라인으로 보여 드려요.");
+}
+/* 실제 기상으로 자동 배치가 다시 계산된 뒤 약속·직접 지정 시간과 겹치면 미리보기를 보여 준다. 취소해도 기상 기록과 저장 계획은 그대로다 */
+function wakeConflicts(D){
+  if(D!==S.today||!$("#wakeSheet").hidden||!$("#woSheet").hidden)return;
+  const r=proposePlan(D,"appt",extrasFor(D));
+  if(r.props.length&&!r.hard.length){S.tlDate=null;openProposal("appt","실제 기상에 맞춰 겹침이 생겼어요","기상 시각이 달라져 자동 배치가 바뀌었어요. 겹치는 유동 루틴을 어떻게 할지 골라 주세요. 취소해도 저장한 계획은 그대로예요.")}
 }
 $$("#wakeSheet [data-pick]").forEach(b=>b.addEventListener("click",()=>pickWake(+b.dataset.pick)));
 $("#wakeApply").addEventListener("click",()=>{
@@ -1961,6 +2010,107 @@ function moreRefresh(){
 }
 
 /* ---------- render: today ---------- */
+/* ---------- 홈 타임라인: 날짜 이동 ----------
+   보는 날짜(S.tlDate)와 오늘(S.today)은 별개다. 현재 활동·진행 타이머·완료 표시는 항상 오늘 기준이고,
+   다른 날짜는 계획 확인·편집(미래) 또는 기록 확인(과거)만 한다. 날짜를 보기만 해서는 아무 것도 저장하지 않는다. */
+const LOCK_SVG='<svg class="lockic" viewBox="0 0 24 24" aria-hidden="true"><rect x="5" y="10.5" width="14" height="9.5" rx="2.2" fill="none" stroke="currentColor" stroke-width="2"/><path d="M8.5 10.5V8a3.5 3.5 0 0 1 7 0v2.5" fill="none" stroke="currentColor" stroke-width="2"/></svg>';
+function setViewDate(date){
+  if(date===S.today)date=null;
+  const cur=viewDate(),nx=date||S.today;if(nx===cur)return;
+  if(planUnsaved(cur)){
+    if(confirm("‘"+dateLabel(cur)+"’ 계획에 저장하지 않은 변경이 있어요.\n지금 저장할까요?\n(취소하면 ‘수정 중’ 상태로 그대로 남겨 둬요.)"))savePlan(cur,true);
+  }
+  S.tlDate=date;S.tlKey="";S.pastOpen=false;renderToday();
+}
+const planSync=date=>{
+  if(planState(date)==="auto")return "아직 저장하지 않은 자동 초안이에요.";
+  if(S.guest)return "이 기기에만 저장돼요 (게스트).";
+  return S.dirty[date]?"이 기기에 저장됨 · 서버로 보내는 중":(navigator.onLine===false?"이 기기에 저장됨 · 오프라인":"이 기기에 저장됨 · 서버와 맞춰졌어요");
+};
+function tlRow(it,i,W,kind,d){
+  if(it.mark)return '<li class="markrow" data-i="'+i+'"><span class="t">'+clk(W+it.o)+'</span><span>'+it.t+'</span></li>';
+  const parts=String(it.t).split(" · "),main=parts[0],sub=parts.slice(1).join(" · "),dn=kind!=="future"&&!!it.ck&&!it.skip&&isDone(d,it);
+  const chips=[];
+  if(it.extra)chips.push(LOCK_SVG+'<span class="chp">고정 약속 '+clk(W+it.o)+'–'+clk(W+it.e)+'</span>');
+  if(it.skip)chips.push('<span class="chp">제외됨</span>');
+  else if(it.lock)chips.push('<span class="chp">직접 지정</span>');
+  if(dn)chips.push('<span class="chp ok">완료</span>');
+  const today=kind==="today";
+  return '<li data-i="'+i+'"'+(it.skip?' class="skipped"':'')+'><details><summary'+(it.ck&&!it.skip&&today?' class="has-done"':'')+'><span class="t">'+clk(W+it.o)+'</span>'
+    +'<span class="tt"><span class="mt">'+main+'</span>'+(sub?'<small>'+sub+'</small>':'')+(chips.length?'<span class="chips">'+chips.join("")+'</span>':'')+'</span>'
+    +(it.ck&&!it.skip&&today?'<button class="tdone" type="button" data-done="'+i+'" aria-pressed="false" aria-label="'+it.t+' 완료"><i><svg aria-hidden="true"><use href="#ic-check"/></svg></i></button>':'')
+    +'</summary><p>'+it.d+(it.id==="move"&&today?' <button class="link strong" type="button" data-gowo>Workout에서 오늘 운동 보기 →</button>':'')+(it.ck&&today?' <b>· 완료 표시하면 체크 탭 ‘'+CHECKS.find(c=>c.id===it.ck).t+'’에 반영돼요.</b>':'')+'</p>'+(it.tag?'<p class="tag">'+it.tag+'</p>':'')
+    +(kind==="past"?'':it.extra?'<p class="adjrow"><span class="s">'+(it.ex.rep?"반복 약속":"약속")+(it.ex.notify===false?" · 알림 꺼짐":" · 시작 알림")+'</span><button class="link strong" type="button" data-xedit="'+esc(it.ex.id)+'">수정 · 삭제</button></p>'
+      :'<p class="adjrow"><span class="s">'+(MOVABLE.includes(it.id)?"이동 가능":"고정")+'</span><button class="link strong" type="button" data-adj="'+it.id+'">일정 조정</button></p>')
+    +(it.id==="plan"&&today?'<div class="plannote"><textarea data-plan maxlength="300" rows="3" placeholder="우선순위 3개 + 개선점 1개" aria-label="내일 계획 메모"></textarea><span class="s">적어 두면 내일 아침 홈 맨 아래에 보여 드려요.</span><button class="btn" type="button" data-tomorrow>내일 타임라인 열기 ›</button></div>':'')+'</details></li>';
+}
+function overlapCount(items){
+  const seen=new Set();let n=0;
+  items.filter(a=>a.extra).forEach(a=>items.forEach(o=>{if(o===a||o.mark||o.skip||o.e>2000)return;
+    if(a.o<o.e&&a.e>o.o){const k=o.extra?[a.id,o.id].sort().join("|"):a.id+"|"+o.id;if(!seen.has(k)){seen.add(k);n++}}}));
+  return n;
+}
+function renderTl(vd,kind,d,tItems,tW){
+  const m=+vd.slice(5,7),dd=+vd.slice(8),rel=dayRel(vd),vdD=S.days[vd]||{};
+  $("#tlTitle").textContent=(rel?rel+" · "+m+"월 "+dd+"일":m+"월 "+dd+"일 ("+DOW[parseYmd(vd).getDay()]+")");
+  $("#tlSub").textContent=kind==="today"?"오늘 · 지금 실행 중":kind==="future"?"계획 편집 · "+PLAN_LABEL[planState(vd)]:"지난 날짜 · 기록 확인";
+  $("#tlToday").hidden=kind==="today";
+  $("#tlAdj").textContent=kind==="past"?"기록 수정":"일정 조정";
+  /* 미래 날짜: 저장 상태 · 예상 기상 · 저장 버튼 */
+  let st="";
+  if(kind==="future"){
+    const ps=planState(vd),w=planWake(vd),sv=vd===shift(S.today,1)?"이 계획으로 내일 시작":"이 계획으로 "+m+"월 "+dd+"일 시작";
+    st='<div class="planst"><div class="row"><span class="pst pst-'+ps+'">'+PLAN_LABEL[ps]+'</span><span>예상 기상 <b>'+fmtW(w)+'</b> <button class="link strong" type="button" data-pp2="w">수정</button></span></div>'
+      +(ps==="edit"?'<p class="s warn">저장하지 않은 변경이 있어요.</p>':'')
+      +(ps==="saved"?'':'<button id="tlSavePlan" class="btn primary block" type="button">'+sv+'</button>')
+      +'<p class="s">'+planSync(vd)+'</p></div>';
+  }
+  $("#tlStatus").innerHTML=st;
+  const pm=kind==="future"?String((S.days[shift(vd,-1)]||{}).plan||"").trim():"";
+  $("#tlMemo").innerHTML=pm?'<div class="card plancard"><span class="lbl">'+(vd===shift(S.today,1)?"오늘 적어 둔 내일 계획 메모":"전날 적어 둔 메모")+'</span><p>'+esc(pm)+'</p></div>':"";
+  const P=kind==="today"?(tItems?{W:tW,items:tItems}:null):planOf(vd);
+  $("#tlPast").hidden=true;$("#tlConflict").innerHTML="";
+  if(!P){
+    S.vitems=null;S.tlKey="";
+    $("#tl").innerHTML=kind==="past"?'<li class="empty"><p>이 날은 기상 기록이 없어서 타임라인이 없어요.</p><button class="btn" type="button" data-pp2="wake">기상 시각 기록하기</button></li>'
+      :'<li class="empty"><p>오늘 기상 시각을 고르면 타임라인이 나와요.</p></li>';
+    return;
+  }
+  const {W,items}=P;S.vitems=items;S.vW=W;
+  const k=vd+":"+W+":"+kind+":"+JSON.stringify(prefs())+":"+(wx?wx.at:0)+":"+JSON.stringify(vdD.adj||{})+JSON.stringify(vdD.extra||[])+JSON.stringify(vdD.extraOff||{});
+  if(S.tlKey!==k){S.tlKey=k;$("#tl").innerHTML=items.map((it,i)=>tlRow(it,i,W,kind,vdD)).join("")}
+  {const pa=$("#tl [data-plan]");if(pa&&document.activeElement!==pa)pa.value=d.plan||"";}
+  if(kind==="today"){
+    const rl=nowMin()-W;let cur=-1;items.forEach((it,i)=>{if(!it.mark&&!it.skip&&rl>=it.o&&rl<it.e)cur=i});
+    $$("#tl li").forEach(li=>{const i=+li.dataset.i,it=items[i],dn=!!it.ck&&isDone(d,it);
+      li.classList.toggle("cur",i===cur);
+      li.classList.toggle("past",cur>=0?(it.mark?rl>=it.o:i<cur):false);
+      li.classList.toggle("done",dn);
+      const b=li.querySelector("[data-done]");if(b)b.setAttribute("aria-pressed",String(dn));
+    });
+    const np=$$("#tl li.past").length;$("#tl").classList.toggle("fold",!S.pastOpen);
+    $("#tlPast").hidden=!np;$("#tlPast").textContent=S.pastOpen?"지난 일정 접기":"지난 일정 "+np+"개 보기";$("#tlPast").setAttribute("aria-expanded",String(!!S.pastOpen));
+  }else{$("#tl").classList.remove("fold");$$("#tl li").forEach(li=>li.classList.remove("cur","past","done"))}
+  if(kind!=="past"){const n=overlapCount(items);if(n)$("#tlConflict").innerHTML='<button class="link strong conflict" type="button" data-pp2="fix">겹치는 일정 '+n+'개 · 조정하기</button>'}
+}
+$("#tlPrev").addEventListener("click",()=>setViewDate(shift(viewDate(),-1)));
+$("#tlNext").addEventListener("click",()=>setViewDate(shift(viewDate(),1)));
+$("#tlToday").addEventListener("click",()=>setViewDate(S.today));
+$("#nowBox").addEventListener("click",e=>{const b=e.target.closest("[data-nowmore]");if(!b)return;const d=$("#nowDesc"),o=d.classList.toggle("open");b.setAttribute("aria-expanded",String(o));b.textContent=o?"접기":"자세히 보기"});
+$("#tlAdj").addEventListener("click",()=>{if(planKind(viewDate())==="past")openPlanPanel();else openPlanPanel()});
+$("#tlPast").addEventListener("click",()=>{S.pastOpen=!S.pastOpen;renderToday()});
+$("#tab-today").addEventListener("click",e=>{
+  const a=e.target.closest("[data-adj]");if(a){e.preventDefault();openAdj(a.dataset.adj);return}
+  const x=e.target.closest("[data-xedit]");if(x){e.preventDefault();openExtra(x.dataset.xedit);return}
+  if(e.target.closest("#tlSavePlan")){savePlan(viewDate());return}
+  if(e.target.closest("[data-tomorrow]")){setViewDate(shift(S.today,1));window.scrollTo({top:$("#tlTitle").getBoundingClientRect().top+scrollY-80,behavior:"smooth"});return}
+  const q=e.target.closest("[data-pp2]");
+  if(q){const t=q.dataset.pp2;
+    if(t==="w"){openReplan()}
+    else if(t==="wake"){openWake(false,viewDate())}
+    else if(t==="fix")openProposal("appt","겹침 정리","약속과 겹치는 유동 루틴을 어떻게 할지 골라 주세요.")}
+});
+
 function renderToday(){
   const d=day(S.today),w=d.wake;
   $("#todayDate").textContent=dateLabel(S.today);
@@ -1970,34 +2120,18 @@ function renderToday(){
   {const P=woDef(planFor(S.today)),n=$("#tlNote"),t=!w||!P?"":P.kind==="rest"?"오늘은 "+P.t+" 날이라 운동 구간은 야외 걷기나 스트레칭으로 채워요."
      :P.goal&&P.goal[1]>60?"오늘은 "+P.t+" "+P.goal[0]+"~"+P.goal[1]+"분이라 운동 구간이 길어져요.":"";
    n.textContent=t;n.hidden=!t;}
+  const vd=viewDate(),kind=planKind(vd);
   if(!w){
     $("#nowBox").innerHTML='<div class="empty"><p>'+(S.loaded?"오늘 기상 시각을 고르면 그 타입의 타임라인과 지금 할 일을 보여 드려요.":"기록을 불러오는 중이에요…")+'</p></div>';
-    $("#glance").innerHTML="";$("#tl").innerHTML="";S.tlKey="";$("#xAdd").hidden=true;return;
+    $("#glance").innerHTML="";S.items=null;renderTl(vd,kind,d,null,0);return;
   }
-  const W=Math.round(w*60),items=timeline(W,parseYmd(S.today).getDay(),S.today),k=S.today+":"+w+":"+JSON.stringify(prefs())+":"+(wx?wx.at:0)+":"+JSON.stringify(d.adj||{})+":"+JSON.stringify(d.extra||[])+JSON.stringify(d.extraOff||{});
+  const W=Math.round(w*60),items=timeline(W,parseYmd(S.today).getDay(),S.today);
   items.forEach(it=>{const n=wxNote(W,it);if(n)it.tag=(it.tag?it.tag+" · ":"")+n});
   if(items.length&&items[0].late)$("#wakeChip").innerHTML=fmtW(w)+" 기상 · 늦은 날 <small>바꾸기</small>";
-  if(S.tlKey!==k){
-    S.tlKey=k;
-    $("#tl").innerHTML=items.map((it,i)=>it.mark
-      ?'<li class="markrow" data-i="'+i+'"><span class="t">'+clk(W+it.o)+'</span><span>'+it.t+'</span></li>'
-      :'<li data-i="'+i+'"'+(it.skip?' class="skipped"':'')+'><details><summary'+(it.ck&&!it.skip?' class="has-done"':'')+'><span class="t">'+clk(W+it.o)+'</span><span class="tt">'+it.t+'</span>'
-        +(it.ck&&!it.skip?'<button class="tdone" type="button" data-done="'+i+'" aria-pressed="false" aria-label="'+it.t+' 완료"><i><svg aria-hidden="true"><use href="#ic-check"/></svg></i></button>':'')
-        +'</summary><p>'+it.d+(it.id==="move"?' <button class="link strong" type="button" data-gowo>Workout에서 오늘 운동 보기 →</button>':'')+(it.ck?' <b>· 완료 표시하면 체크 탭 ‘'+CHECKS.find(c=>c.id===it.ck).t+'’에 반영돼요.</b>':'')+'</p>'+(it.tag?'<p class="tag">'+it.tag+'</p>':'')
-        +(it.extra?'<p class="adjrow"><span class="s">'+(it.ex.rep?"반복 일정":"오늘만")+(it.ex.notify===false?" · 알림 꺼짐":" · 시작 알림")+'</span><button class="link strong" type="button" data-xedit="'+esc(it.ex.id)+'">수정 · 빼기</button></p>'
-          :'<p class="adjrow"><span class="s">'+(MOVABLE.includes(it.id)?"이동 가능":"고정")+'</span><button class="link strong" type="button" data-adj="'+it.id+'">일정 조정</button></p>')
-        +(it.id==="plan"?'<div class="plannote"><textarea data-plan maxlength="300" rows="3" placeholder="우선순위 3개 + 개선점 1개" aria-label="내일 계획"></textarea><span class="s">적어 두면 내일 아침 오늘 화면 맨 위에 보여 드려요.</span></div>':'')+'</details></li>').join("");
-  }
-  S.items=items;$("#xAdd").hidden=false;
-  {const pa=$("#tl [data-plan]");if(pa&&document.activeElement!==pa)pa.value=d.plan||"";}
+  S.items=items;
+  renderTl(vd,kind,d,items,W);
   const rel=nowMin()-W;
   let cur=-1;items.forEach((it,i)=>{if(!it.mark&&!it.skip&&rel>=it.o&&rel<it.e)cur=i});
-  $$("#tl li").forEach(li=>{const i=+li.dataset.i,it=items[i],dn=!!it.ck&&isDone(d,it);
-    li.classList.toggle("cur",i===cur);
-    li.classList.toggle("past",cur>=0?(it.mark?rel>=it.o:i<cur):false);
-    li.classList.toggle("done",dn);
-    const b=li.querySelector("[data-done]");if(b)b.setAttribute("aria-pressed",String(dn));
-  });
   const nextOf=i=>{for(let j=i+1;j<items.length;j++)if(!items[j].mark&&!items[j].skip)return items[j];return null};
   let html;
   if(cur<0){
@@ -2007,7 +2141,7 @@ function renderToday(){
     const it=items[cur],nx=nextOf(cur),end=it.e>2000?null:it.e;
     const prog=end?Math.min(100,Math.max(0,(rel-it.o)/(end-it.o)*100)):100;
     const left=end?Math.max(1,Math.ceil(end-rel)):0;
-    html='<div class="now"><span class="k">지금 · '+clk(W+it.o)+(end?'–'+clk(W+end):'')+'</span><h3>'+it.t+'</h3><p class="d">'+it.d+'</p>'
+    html='<div class="now"><span class="k">지금 · '+clk(W+it.o)+(end?'–'+clk(W+end):'')+'</span><h3>'+it.t+'</h3><p class="d clamp" id="nowDesc">'+it.d+'</p>'+(String(it.d).length>70?'<button class="link" type="button" data-nowmore aria-controls="nowDesc" aria-expanded="false">자세히 보기</button>':'')
       +(it.tag?'<span class="tag">'+it.tag+'</span>':'')
       +(it.ck?'<button class="done-btn" type="button" data-done="'+cur+'" aria-pressed="'+isDone(d,it)+'"><i><svg aria-hidden="true"><use href="#ic-check"/></svg></i>'+(isDone(d,it)?"완료했어요":"완료로 표시")+'</button>':'')
       +(it.id==="move"?'<button class="btn primary wo-go" type="button" data-gowo>Workout 열기 · '+esc(woDef(planFor(S.today)).t)+'</button>':'')
@@ -2034,100 +2168,318 @@ function renderToday(){
     +'<div class="cups"><button class="chip" type="button" data-cup="-1" aria-label="마신 횟수 하나 빼기"'+(cups?'':' disabled')+'>−</button><span class="num" aria-live="polite">'+cups+' / '+nW+'번</span><button class="chip" type="button" data-cup="1" aria-label="한 번 마셨어요">+</button></div></div><div class="card"><span class="lbl">카페인</span><span class="v">'+cv+'</span><span class="s">'+cs+'</span></div>'+energyCardHtml()+wxCard(W,items);
 }
 
-/* ---------- 추가 일정 입력 시트 ---------- */
-let xEdit=null;
-function openExtra(id){
-  const d=day(S.today);if(!d.wake){toast("오늘 기상 시각을 먼저 골라 주세요.");return}
-  xEdit=id?extrasFor(S.today).find(x=>x.id===id)||null:null;
-  const x=xEdit||{},n=Math.ceil(nowMin()/30)*30,rp=x.rep||"once";
-  sheet(sheetHd(xEdit?"추가 일정 수정":"오늘 일정 추가")
-    +'<div class="xform"><div class="field"><label for="xName">무슨 일정인가요?</label><input id="xName" maxlength="30" placeholder="예: 병원, 미팅, 장보기" value="'+esc(x.t||"")+'"></div>'
-    +'<div class="row2"><div class="field"><label for="xFrom">시작</label><input id="xFrom" type="time" value="'+esc(x.at||clk(n))+'"></div><div class="field"><label for="xTo">끝나는 시각 (선택)</label><input id="xTo" type="time" value="'+esc(x.to||"")+'"></div></div>'
-    +'<div class="field"><label for="xRep">반복</label><select id="xRep">'+[["once","오늘만"],["daily","매일"],["weekdays","평일 (월~금)"],["days","요일 선택"]].map(([v,t])=>'<option value="'+v+'"'+(rp===v?" selected":"")+'>'+t+'</option>').join("")+'</select></div>'
+/* ---------- 날짜별 계획 ----------
+   한 날짜의 계획 = 기본 반복 루틴(prefs) + 그날의 조정(day.adj) + 그날의 약속(day.extra, 반복은 prefs.extra) + 계획 정보(day.sc).
+   · 실제 수행 기록(wake·checks·sleepH·wo …)은 day의 다른 필드이며 계획 편집이 건드리지 않는다.
+   · 미래 날짜는 day.wake를 만들지 않는다(통계·달성률이 계획을 기록으로 세지 않게). 예상 기상은 day.sc.w.
+   · day.sc.st: 없음 = 자동 초안, "edit" = 수정 중(저장 안 함), "saved" = 저장됨.
+   · 약속(day.extra)은 시계 시각으로 고정. 논리 하루(04:00~다음날 04:00) 안에서만 시작·종료를 허용한다. */
+const clockMin=hm=>{let a=hmMin(hm);if(a==null)return null;if(a<240)a+=1440;return a};
+const cloneJ=v=>v===undefined?undefined:JSON.parse(JSON.stringify(v));
+const viewDate=()=>S.tlDate||S.today;
+const planKind=d=>d===S.today?"today":d>S.today?"future":"past";
+function planWake(date){const x=S.days[date];if(planKind(date)==="future")return x&&x.sc&&+x.sc.w>0?+x.sc.w:baseWake();return x&&x.wake?+x.wake:null}
+function planOf(date,opt){const w=planWake(date);if(w==null)return null;const W=Math.round(w*60);return {W,items:timeline(W,parseYmd(date).getDay(),date,opt)}}
+const planState=date=>{const sc=(S.days[date]||{}).sc;return !sc||!sc.st?"auto":sc.st==="saved"?"saved":"edit"};
+const planUnsaved=date=>planKind(date)==="future"&&planState(date)==="edit";
+const PLAN_LABEL={auto:"자동 초안",edit:"수정 중",saved:"저장됨"};
+function dayRel(date){const n=Math.round((parseYmd(date)-parseYmd(S.today))/864e5);return n===0?"오늘":n===1?"내일":n===-1?"어제":n===2?"모레":""}
+/* 약속 시간 검증: 새벽 4시 경계 안에서 시작 < 종료 */
+function apptCheck(at,to){
+  const s=clockMin(at);if(s==null)return {err:"시작 시각을 넣어 주세요."};
+  if(!to)return {err:"종료 시각을 넣어 주세요."};
+  const e=clockMin(to);if(e==null)return {err:"종료 시각을 넣어 주세요."};
+  if(e<=s)return {err:"종료가 시작보다 빨라요. 새벽 4시를 넘기는 일정은 날짜를 나눠 넣어 주세요."};
+  return {r:[s,e]};
+}
+/* ----- 변경 적용과 되돌리기: 계획 필드만 저장해 두었다가 복원한다(체크·기상·측정·타이머는 건드리지 않는다) ----- */
+let undoSnap=null,undoT=null;
+const planSnap=date=>{const d=S.days[date]||{};return {date,adj:cloneJ(d.adj),extra:cloneJ(d.extra),extraOff:cloneJ(d.extraOff),sc:cloneJ(d.sc),rep:cloneJ(prefs().extra)}};
+function showUndo(label){$("#undoMsg").textContent=label||"일정 변경됨";$("#undoBar").hidden=false;clearTimeout(undoT);undoT=setTimeout(()=>{$("#undoBar").hidden=true},20000)}
+function undoPlan(){
+  const s=undoSnap;if(!s)return;
+  patch(s.date,d=>{for(const k of ["adj","extra","extraOff","sc"]){if(s[k]===undefined)delete d[k];else d[k]=cloneJ(s[k])}});
+  if(JSON.stringify(s.rep)!==JSON.stringify(prefs().extra)){const np=cloneJ(prefs());if(s.rep===undefined)delete np.extra;else np.extra=s.rep;savePrefs(np)}
+  undoSnap=null;$("#undoBar").hidden=true;S.tlKey="";renderAll();toast("직전 일정 변경을 되돌렸어요.");
+}
+function commitPlan(date,label,fn,repFn){
+  const snap=planSnap(date);
+  patch(date,d=>{fn(d);if(planKind(date)==="future"){d.sc=d.sc||{};d.sc.st="edit";delete d.sc.ts;if(!(+d.sc.w>0))d.sc.w=planWake(date)}});
+  if(repFn){const np=cloneJ(prefs());repFn(np);if(!(np.extra&&np.extra.length))delete np.extra;savePrefs(np)}
+  undoSnap=snap;showUndo(label);S.tlKey="";renderAll();
+}
+function savePlan(date,quiet){
+  patch(date,d=>{d.sc=d.sc||{};d.sc.w=planWake(date);d.sc.st="saved";d.sc.ts=Date.now()});
+  S.tlKey="";renderAll();if(!quiet)toast(date===shift(S.today,1)?"내일 계획을 저장했어요.":dateLabel(date)+" 계획을 저장했어요.");
+}
+/* ----- 겹침 계산 ----- */
+const ovl=(a,b)=>a[0]<b[1]&&a[1]>b[0];
+const fmtIv=iv=>clk(iv[0])+"–"+clk(iv[1]);
+/* mode "appt": 약속과 겹치는 유동 루틴, "backlog": 오늘 이미 지났는데 못 한 유동 루틴.
+   고정 일정(식사·취침·조명·아침 햇빛·약속), 직접 시간을 지정한 루틴, 완료한 활동은 옮기지 않는다.
+   유동 루틴은 빈 자리로만 옮기고(길이는 그대로), 자리가 없으면 제외를 제안한다. 선택은 사용자가 한다. */
+function proposePlan(date,mode,exList){
+  const out={props:[],hard:[],warn:[]},P=planOf(date,{noEx:true});if(!P)return out;
+  const {W,items}=P,dow=parseYmd(date).getDay(),raw=timeline(W,dow,date,{noEx:true,noAdj:true}).map(x=>x),d=S.days[date]||{},adj=d.adj||{};
+  const isT=date===S.today,now=isT?Math.ceil(nowMin()):W,sl=items.find(i=>i.id==="sleep"),limit=sl?W+sl.o-30:1e9;
+  const A=exList.map(x=>{const r=xRange(x);return r?{id:x.id,t:x.t,iv:[r[0],r[1]]}:null}).filter(Boolean);
+  for(let i=0;i<A.length;i++)for(let j=i+1;j<A.length;j++)if(ovl(A[i].iv,A[j].iv))out.hard.push("‘"+A[i].t+"’과(와) ‘"+A[j].t+"’ 약속이 겹쳐요. 한쪽 시간을 직접 바꿔 주세요.");
+  const iv=it=>[W+it.o,it.e>2000?1e9:W+it.e],plain=h=>String(h).replace(/<[^>]+>/g,"");
+  const doneIt=it=>!!(it.ck&&isDone(d,it)),locked=it=>!!(adj[it.id]&&adj[it.id].at);
+  const fixed=items.filter(i=>!i.mark&&!MOVABLE.includes(i.id)),lockedIt=items.filter(i=>MOVABLE.includes(i.id)&&!i.skip&&locked(i)),doneList=items.filter(i=>MOVABLE.includes(i.id)&&!i.skip&&doneIt(i));
+  const flex=items.filter(i=>MOVABLE.includes(i.id)&&!i.skip&&!locked(i)&&!doneIt(i)&&i.e<2000);
+  if(mode==="appt"){
+    fixed.forEach(f=>A.forEach(a=>{if(ovl(iv(f),a.iv))out.warn.push("‘"+plain(f.t)+"’ 시간과 겹쳐요. 식사·취침·조명은 옮길 수 없어서 그대로 겹쳐 보여요. 약속 시간을 바꾸는 걸 추천해요.")}));
+    lockedIt.forEach(l=>A.forEach(a=>{if(ovl(iv(l),a.iv))out.props.push({id:l.id,t:plain(l.t),from:iv(l),opts:[{k:"keep"},{k:"skip"}],sel:"keep",reason:"직접 지정한 시간이라 동의 없이 옮기지 않아요."})}));
+  }
+  const trig=mode==="backlog"?flex.filter(i=>W+i.e<=now):flex.filter(i=>A.some(a=>ovl(iv(i),a.iv)));
+  const stay=flex.filter(i=>!trig.includes(i));
+  const busy=A.map(a=>a.iv).concat(fixed.map(iv),lockedIt.map(iv),doneList.map(iv),stay.map(iv));
+  trig.sort((p,q)=>p.o-q.o).forEach(it=>{
+    const len=it.e-it.o,from=iv(it);let pos=Math.max(from[0],mode==="backlog"?now:from[0]),g=0,h;
+    const hit=(p,l)=>busy.find(b=>ovl([p,p+l],b));
+    while((h=hit(pos,len))&&g++<40)pos=h[1];
+    const opts=[],reason=mode==="backlog"?"이미 지나간 시간이에요.":"약속과 겹쳐요.";
+    if(!h&&pos+len<=limit){opts.push({k:"move",to:[pos,pos+len]});busy.push([pos,pos+len])}
+    else{
+      /* 길이를 줄여서라도 들어갈 빈 자리가 있으면 선택지로만 보여 준다(기본 선택은 제외) */
+      let p2=Math.max(from[0],mode==="backlog"?now:from[0]),g2=0,hh;const first=busy.filter(b=>ovl([p2,p2+1],b));
+      while((hh=busy.find(b=>ovl([p2,p2+1],b)))&&g2++<40)p2=hh[1];
+      const nxt=busy.filter(b=>b[0]>=p2).sort((x,y)=>x[0]-y[0])[0],end=Math.min(nxt?nxt[0]:1e9,limit);
+      if(end-p2>=15&&end-p2<len)opts.push({k:"fit",to:[p2,end]});
+    }
+    opts.push({k:"skip"},{k:"keep"});
+    out.props.push({id:it.id,t:plain(it.t),from,opts,sel:opts[0].k==="move"||opts[0].k==="fit"?opts[0].k:"skip",reason:opts[0].k==="move"?reason:opts[0].k==="fit"?reason+" 통째로 옮길 자리가 없어서 겹치는 부분만 줄이는 안이에요.":"하루 안에 옮길 자리가 없어요. 제외하거나 그대로 둘 수 있어요."});
+  });
+  return out;
+}
+/* 선택한 제안을 그날 조정(adj)으로 바꾼다 */
+function propsToAdj(date,props){
+  const P=planOf(date,{noEx:true}),W=P.W,raw=timeline(W,parseYmd(date).getDay(),date,{noEx:true,noAdj:true}),a={};
+  props.forEach(p=>{const o=p.opts.find(x=>x.k===p.sel);if(!o||o.k==="keep")return;
+    if(o.k==="skip"){a[p.id]={skip:true};return}
+    const r=raw.find(i=>i.id===p.id);if(!r)return;const v={dt:o.to[0]-(W+r.o)};if(o.k==="fit")v.len=o.to[1]-o.to[0];a[p.id]=v});
+  return a;
+}
+const OPT_LABEL={move:"제안대로 이동",fit:"줄여서 넣기",skip:"해당 날짜 제외",keep:"그대로 두기"};
+function propsHtml(r){
+  let h="";
+  if(r.hard.length)h+='<p class="xmsg warn" role="alert">'+r.hard.map(esc).join("<br>")+'</p>';
+  if(r.warn.length)h+='<p class="xmsg warn">'+[...new Set(r.warn)].map(esc).join("<br>")+'</p>';
+  if(r.props.length){
+    h+='<div class="props" role="group" aria-label="변경될 일정"><p class="s">아래 변경을 제안해요. 적용하기 전에는 아무것도 바뀌지 않아요.</p>'+r.props.map((p,i)=>{
+      const o=p.opts.find(x=>x.k===p.sel)||p.opts[0],to=o.k==="move"||o.k==="fit"?fmtIv(o.to):o.k==="skip"?"해당 날짜 제외":"그대로";
+      return '<div class="prop"><div class="pl"><b>'+esc(p.t)+'</b><span class="pc">'+fmtIv(p.from)+' → '+esc(to)+'</span><small>'+esc(p.reason)+'</small></div>'
+        +'<select data-prop="'+i+'" aria-label="'+esc(p.t)+' 처리 방법">'+p.opts.map(x=>'<option value="'+x.k+'"'+(x.k===p.sel?" selected":"")+'>'+OPT_LABEL[x.k]+(x.to?" ("+fmtIv(x.to)+")":"")+'</option>').join("")+'</select></div>'}).join("")+'</div>';
+  }
+  return h;
+}
+let propCtx=null;   // 열려 있는 미리보기: {date,mode,exList,res}
+function renderProps(box){propCtx.res=proposePlan(propCtx.date,propCtx.mode,propCtx.exList);box.innerHTML=propsHtml(propCtx.res)}
+/* ----- 약속 입력 ----- */
+const XMAX=10;
+function extrasFor(date){
+  const dd=S.days[date]||{},dow=parseYmd(date).getDay(),off=dd.extraOff||{};
+  const reps=(prefs().extra||[]).filter(r=>date>=(r.from||"0000-00-00")&&!off[r.id]&&(r.rep==="daily"||(r.rep==="weekdays"&&dow>=1&&dow<=5)||(r.rep==="days"&&(r.dows||[]).includes(dow))));
+  return reps.concat(dd.extra||[]);
+}
+function xRange(x){
+  let a=hmMin(x.at);if(a==null)return null;if(a<240)a+=1440;
+  let b=x.to?hmMin(x.to):null;if(b!=null&&b<240)b+=1440;if(b==null||b<=a)b=a+30;
+  return [a,b];
+}
+let xEdit=null,xDate=null;
+function openExtra(id,date){
+  xDate=date||viewDate();
+  if(planKind(xDate)==="past"){toast("지난 날짜에는 약속을 추가하지 않아요. 기록 탭에서 수정해 주세요.");return}
+  if(planKind(xDate)==="today"&&!day(xDate).wake){toast("오늘 기상 시각을 먼저 골라 주세요.");return}
+  xEdit=id?extrasFor(xDate).find(x=>x.id===id)||null:null;
+  const x=xEdit||{},rp=x.rep||"once",n=Math.ceil(nowMin()/30)*30,st=x.at||(xDate===S.today?clk(n):"09:00");
+  sheet(sheetHd(xEdit?"약속 수정":"약속 추가")
+    +'<div class="xform"><p class="s">약속은 정해진 시각에 고정돼요. 자동으로 움직이지 않아요.</p>'
+    +'<div class="field"><label for="xName">제목</label><input id="xName" maxlength="30" placeholder="예: 병원, 미팅, 장보기" value="'+esc(x.t||"")+'"></div>'
+    +'<div class="field"><label for="xDate">날짜</label><input id="xDate" type="date" value="'+xDate+'" min="'+S.today+'"'+(xEdit&&xEdit.rep?" disabled":"")+'></div>'
+    +'<div class="row2"><div class="field"><label for="xFrom">시작</label><input id="xFrom" type="time" value="'+esc(st)+'"></div><div class="field"><label for="xTo">종료</label><input id="xTo" type="time" value="'+esc(x.to||(hmMin(st)!=null?clk(clockMin(st)+60):""))+'"></div></div>'
+    +'<div class="field"><label for="xRep">반복</label><select id="xRep">'+[["once","이 날짜만"],["daily","매일"],["weekdays","평일 (월~금)"],["days","요일 선택"]].map(([v,t])=>'<option value="'+v+'"'+(rp===v?" selected":"")+'>'+t+'</option>').join("")+'</select></div>'
     +'<div id="xDows" class="xdows"'+(rp==="days"?"":" hidden")+'>'+DOW.map((nm,i)=>'<label class="chip"><input type="checkbox" value="'+i+'"'+((x.dows||[]).includes(i)?" checked":"")+'>'+nm+'</label>').join("")+'</div>'
     +'<div class="field"><label for="xMemo">메모 (선택)</label><input id="xMemo" maxlength="60" value="'+esc(x.memo||"")+'"></div>'
     +'<label class="xck"><input id="xNotify" type="checkbox"'+(x.notify===false?"":" checked")+'> 시작할 때 알림 받기</label>'
-    +'<label class="xck"><input id="xShove" type="checkbox"'+(x.shove===false?"":" checked")+'> 겹치는 이동 가능 일정은 뒤로 밀기</label>'
-    +'<p id="xMsg" class="xmsg" role="status"></p>'
-    +'<button id="xSave" class="btn primary block" type="button" data-xsave>'+(xEdit?"저장":"오늘 계획에 넣기")+'</button>'
-    +(xEdit?(xEdit.rep?'<button class="btn block" type="button" data-xdel="today">오늘만 빼기</button><button class="btn block danger" type="button" data-xdel="all">반복 일정 모두 삭제</button>':'<button class="btn block danger" type="button" data-xdel="all">이 일정 빼기</button>'):'')
+    +'<div id="xPrev" aria-live="polite"></div><p id="xMsg" class="xmsg" role="status"></p>'
+    +'<button id="xSave" class="btn primary block" type="button" data-xsave>'+(xEdit?"저장":"약속 넣기")+'</button>'
+    +(xEdit?(xEdit.rep?'<button class="btn block" type="button" data-xdel="today">이 날짜만 빼기</button><button class="btn block danger" type="button" data-xdel="all">반복 약속 모두 삭제</button>':'<button class="btn block danger" type="button" data-xdel="all">이 약속 삭제</button>'):'')
     +'</div>');
   xPreview();
 }
-function xTimes(){let a=hmMin($("#xFrom").value);if(a==null)return null;if(a<240)a+=1440;let b=$("#xTo").value?hmMin($("#xTo").value):null;if(b!=null&&b<240)b+=1440;if(b==null||b<=a)b=a+30;return [a,b]}
-/* 겹침 안내: 고정 일정(식사·취침·조명)은 옮기지 않으니 시간을 바꾸라고, 이동 가능 일정은 밀어 준다고 알려 준다 */
+function xRead(){
+  const t=$("#xName").value.trim().slice(0,30),date=($("#xDate").value||xDate),rp=$("#xRep").value,dows=[...$$("#xDows input:checked")].map(i=>+i.value);
+  const c=apptCheck($("#xFrom").value,$("#xTo").value);
+  const o={id:xEdit?xEdit.id:Date.now().toString(36),t,at:$("#xFrom").value,to:$("#xTo").value,memo:$("#xMemo").value.trim().slice(0,60),notify:$("#xNotify").checked,v:2,shove:false};
+  if(rp!=="once"){o.rep=rp;if(rp==="days")o.dows=dows;o.from=xEdit&&xEdit.from||date}
+  return {o,date,rp,dows,c};
+}
 function xPreview(){
-  const m=$("#xMsg");if(!m)return;const r=xTimes(),d=day(S.today);
-  if(!r||!d.wake){m.textContent="";return}
-  const W=Math.round(d.wake*60),dow=parseYmd(S.today).getDay(),base=timeline(W,dow,S.today,true),id=xEdit&&xEdit.id,shove=$("#xShove").checked;
-  const plain=h=>h.replace(/<[^>]+>/g,""),others=extrasFor(S.today).filter(x=>x.id!==id);
-  const cand={id:"__new",t:"새 일정",at:$("#xFrom").value,to:$("#xTo").value||"",shove};
-  const sim=applyExtra(timeline(W,dow,S.today,true),W,S.today,others.concat(cand)),lines=[];
-  const hit=base.filter(it=>!it.mark&&!it.skip&&it.e<2000&&it.o<r[1]-W&&it.e>r[0]-W);
-  hit.filter(it=>!MOVABLE.includes(it.id)).forEach(it=>lines.push("‘"+plain(it.t)+"’ 시간과 겹쳐요. 식사·취침·조명은 옮길 수 없어서 그대로 겹쳐 보여요. 시간을 바꾸는 걸 추천해요."));
-  sim.filter(x=>!x.extra&&x.tag&&/일정 때문에/.test(x.tag)).forEach(x=>{const o=base.find(b=>b.id===x.id);if(!o||(o.o===x.o&&o.e===x.e))return;
-    lines.push("‘"+plain(x.t)+"’은(는) "+(x.o===o.o?clk(W+x.e)+"까지로 줄어요.":clk(W+x.o)+"로 밀려요"+(x.e-x.o<o.e-o.o?" ("+(x.e-x.o)+"분으로 줄어요)":"")+"."))});
-  if(!shove)hit.filter(it=>MOVABLE.includes(it.id)).forEach(it=>lines.push("‘"+plain(it.t)+"’과(와) 겹쳐요."));
-  else hit.filter(it=>MOVABLE.includes(it.id)).forEach(it=>{const x=sim.find(y=>y.id===it.id);if(x&&x.o===it.o&&x.e===it.e)lines.push("‘"+plain(it.t)+"’은(는) 고정 일정에 막혀 옮기지 못해 겹쳐 보여요.")});
-  const oth=others.filter(x=>{const q=xRange(x);return q&&q[0]<r[1]&&q[1]>r[0]});
-  oth.forEach(x=>lines.push("이미 ‘"+x.t+"’ 일정이 있어요."));
-  if($("#xRep").value!=="once")lines.push("겹침은 오늘 기준으로 알려 드려요. 다른 날은 기상 시각에 따라 달라질 수 있어요.");
-  const warn=lines.some(l=>/시간과 겹쳐요|이미 ‘|막혀/.test(l));
-  m.innerHTML=lines.map(esc).join("<br>");m.classList.toggle("warn",warn);
-  $("#xSave").textContent=warn?"겹쳐도 넣기":(xEdit?"저장":"오늘 계획에 넣기");
+  const m=$("#xMsg"),box=$("#xPrev");if(!m||!box)return;const {o,date,c}=xRead();
+  if(planKind(date)==="past"){m.textContent="지난 날짜에는 넣을 수 없어요.";box.innerHTML="";return}
+  if(c.err){m.textContent=$("#xFrom").value&&$("#xTo").value?c.err:"";box.innerHTML="";return}
+  m.textContent="";
+  if(!planOf(date)){box.innerHTML='<p class="xmsg">그날 기상 시각이 정해지면 겹침을 알려 드려요.</p>';propCtx=null;return}
+  const others=extrasFor(date).filter(x=>x.id!==(xEdit&&xEdit.id));
+  propCtx={date,mode:"appt",exList:others.concat(o)};renderProps(box);
+  const r=propCtx.res;$("#xSave").textContent=r.hard.length?"겹친 약속을 먼저 해결해 주세요":r.props.some(p=>p.sel!=="keep")?"변경 적용하고 넣기":(xEdit?"저장":"약속 넣기");
+  $("#xSave").disabled=!!r.hard.length;
 }
 function xSave(){
-  const m=$("#xMsg"),t=$("#xName").value.trim().slice(0,30),r=xTimes(),rp=$("#xRep").value,dows=[...$$("#xDows input:checked")].map(i=>+i.value);
-  if(!t){m.textContent="일정 이름을 넣어 주세요.";return}
-  if(!r){m.textContent="시작 시각을 넣어 주세요.";return}
+  const m=$("#xMsg"),{o,date,rp,dows,c}=xRead();
+  if(!o.t){m.textContent="제목을 넣어 주세요.";return}
+  if(c.err){m.textContent=c.err;return}
+  if(planKind(date)==="past"){m.textContent="지난 날짜에는 넣을 수 없어요.";return}
   if(rp==="days"&&!dows.length){m.textContent="반복할 요일을 골라 주세요.";return}
-  const o={id:xEdit?xEdit.id:Date.now().toString(36),t,at:$("#xFrom").value,to:$("#xTo").value||"",memo:$("#xMemo").value.trim().slice(0,60),notify:$("#xNotify").checked,shove:$("#xShove").checked};
-  if(rp!=="once"){o.rep=rp;if(rp==="days")o.dows=dows;o.from=xEdit&&xEdit.from||S.today}
   const reps=prefs().extra||[],isRep=rp!=="once",hadRep=reps.some(x=>x.id===o.id);
-  if(!xEdit&&(isRep?reps.length:(day(S.today).extra||[]).length)>=XMAX){m.textContent="추가 일정은 "+XMAX+"개까지 넣을 수 있어요.";return}
-  patch(S.today,d=>{d.extra=(d.extra||[]).filter(x=>x.id!==o.id);if(!isRep)d.extra.push(o);if(!d.extra.length)delete d.extra});
-  if(isRep||hadRep){const np=JSON.parse(JSON.stringify(prefs()));np.extra=(np.extra||[]).filter(x=>x.id!==o.id);if(isRep)np.extra.push(o);if(!np.extra.length)delete np.extra;savePrefs(np)}
-  closeSheet();S.tlKey="";renderToday();
-  toast(isRep?"반복 일정을 넣었어요. "+(rp==="daily"?"매일":rp==="weekdays"?"평일":"선택한 요일")+" 같은 시각에 알려 드려요.":"오늘 계획에 넣었어요. 내일은 평소대로예요.");
+  if(!xEdit&&(isRep?reps.length:(day(date).extra||[]).length)>=XMAX){m.textContent="약속은 "+XMAX+"개까지 넣을 수 있어요.";return}
+  const others=extrasFor(date).filter(x=>x.id!==o.id),res=proposePlan(date,"appt",others.concat(o));
+  if(res.hard.length){m.textContent=res.hard[0];return}
+  const adjNew=propCtx&&propCtx.date===date?propsToAdj(date,res.props.map((p,i)=>Object.assign({},p,{sel:propSel(i,p)}))):{};
+  const editedOnce=xEdit&&!xEdit.rep&&xDate!==date;
+  commitPlan(date,"약속을 넣었어요 · 되돌리기",d=>{
+    d.extra=(d.extra||[]).filter(x=>x.id!==o.id);if(!isRep)d.extra.push(o);if(!d.extra.length)delete d.extra;
+    if(Object.keys(adjNew).length){d.adj=Object.assign({},d.adj,adjNew)}
+  },(isRep||hadRep)?np=>{np.extra=(np.extra||[]).filter(x=>x.id!==o.id);if(isRep)np.extra.push(o)}:null);
+  if(editedOnce)patch(xDate,d=>{d.extra=(d.extra||[]).filter(x=>x.id!==o.id);if(!d.extra.length)delete d.extra});
+  sheetDirty=false;closeSheet();
 }
+const propSel=(i,p)=>{const s=$('[data-prop="'+i+'"]');return s?s.value:p.sel};
 function xDel(kind){
-  if(!xEdit)return;const id=xEdit.id,isRep=!!xEdit.rep;
-  if(!confirm(kind==="today"?"오늘 하루만 이 일정을 뺄까요?":isRep?"반복 일정을 모두 삭제할까요?":"이 일정을 오늘 계획에서 뺄까요?"))return;
-  if(kind==="today")patch(S.today,d=>{d.extraOff=d.extraOff||{};d.extraOff[id]=1});
-  else if(isRep){const np=JSON.parse(JSON.stringify(prefs()));np.extra=(np.extra||[]).filter(x=>x.id!==id);if(!np.extra.length)delete np.extra;savePrefs(np)}
-  else patch(S.today,d=>{d.extra=(d.extra||[]).filter(x=>x.id!==id);if(!d.extra.length)delete d.extra});
-  closeSheet();S.tlKey="";renderToday();toast("뺐어요.");
+  if(!xEdit)return;const id=xEdit.id,isRep=!!xEdit.rep,date=xDate;
+  if(!confirm(kind==="today"?"이 날짜에서만 이 약속을 뺄까요?":isRep?"반복 약속을 모두 삭제할까요?":"이 약속을 삭제할까요?"))return;
+  if(kind==="today")commitPlan(date,"약속을 뺐어요 · 되돌리기",d=>{d.extraOff=d.extraOff||{};d.extraOff[id]=1});
+  else if(isRep)commitPlan(date,"반복 약속을 삭제했어요 · 되돌리기",()=>{},np=>{np.extra=(np.extra||[]).filter(x=>x.id!==id)});
+  else commitPlan(date,"약속을 삭제했어요 · 되돌리기",d=>{d.extra=(d.extra||[]).filter(x=>x.id!==id);if(!d.extra.length)delete d.extra});
+  sheetDirty=false;closeSheet();
 }
-$("#xAdd").addEventListener("click",()=>openExtra(null));
-$("#tl").addEventListener("click",e=>{const a=e.target.closest("[data-xedit]");if(a){e.preventDefault();openExtra(a.dataset.xedit)}});
-$("#woSheetBody").addEventListener("click",e=>{if(e.target.closest("[data-xsave]"))xSave();const d=e.target.closest("[data-xdel]");if(d)xDel(d.dataset.xdel)});
-$("#woSheetBody").addEventListener("input",e=>{if(e.target.closest(".xform")){if(e.target.id==="xRep")$("#xDows").hidden=e.target.value!=="days";xPreview()}});
-$("#woSheetBody").addEventListener("change",e=>{if(e.target.closest(".xform")){if(e.target.id==="xRep")$("#xDows").hidden=e.target.value!=="days";xPreview()}});
-/* ---------- 일정 조정 패널 ---------- */
-function openAdj(id){
-  const it=(S.items||[]).find(x=>x.id===id);if(!it)return;
-  const W=Math.round(day(S.today).wake*60),a=((day(S.today).adj||{})[id])||{},mv=MOVABLE.includes(id),dt=clampAdj(a.dt);
-  const st=a.skip?"오늘은 건너뛰기로 해 두었어요":dt?"오늘만 "+(dt>0?dt+"분 미룸":-dt+"분 당김"):"";
-  const b=(act,t,cls)=>'<button type="button" class="btn'+(cls?" "+cls:"")+'" data-adjact="'+act+'" data-id="'+id+'">'+t+'</button>';
-  sheet(sheetHd("일정 조정")+'<p class="s">'+clk(W+it.o)+(it.e<2000?"–"+clk(W+it.e):"")+' · <b>'+it.t+'</b></p>'
-    +'<div class="adjbox"><h3>오늘만 바꾸기</h3><p class="s">'+esc(dateLabel(S.today))+' 계획만 바뀌어요. 내일부터는 평소 루틴 그대로예요.</p>'
-    +(mv?'<div class="adjbtns">'+b("shift:-30","30분 당기기")+b("shift:30","30분 미루기")+b("skip","오늘은 건너뛰기")+(st?b("reset","원래대로","primary"):"")+'</div>'+(st?'<p class="adjstate">'+st+'</p>':'')
-       :'<p class="adjstate">식사·취침·조명·아침 햇빛은 하루 리듬의 기준이라 고정이에요. 오늘 하루만 옮길 수 없어요.</p>')+'</div>'
-    +'<div class="adjbox alt"><h3>앞으로 반복할 기본 루틴</h3><p class="s">여기서 바꾸면 앞으로 매일 적용돼요. 오늘 계획은 위에서만 바뀌고, 위 조정이 기본 루틴을 바꾸지는 않아요.</p>'
+/* ----- 루틴 조정 (그 날짜만) ----- */
+function openAdj(id,date){
+  date=date||viewDate();const P=planOf(date);if(!P)return;
+  const it=P.items.find(x=>x.id===id);if(!it)return;
+  const W=P.W,a=((S.days[date]||{}).adj||{})[id]||{},mv=MOVABLE.includes(id),dt=Math.round(+a.dt||0),kind=planKind(date);
+  const done=!!(it.ck&&isDone(day(date),it));
+  const st=a.skip?"이 날짜에서 제외했어요":a.at?"시간을 "+a.at+"로 직접 지정했어요":dt?"자동 배치에서 "+(dt>0?dt+"분 미룸":-dt+"분 당김"):"";
+  const b=(act,t,cls,extra)=>'<button type="button" class="btn'+(cls?" "+cls:"")+'" data-adjact="'+act+'" data-id="'+id+'"'+(extra||"")+'>'+t+'</button>';
+  sheet(sheetHd("루틴 조정")+'<p class="s">'+esc(dateLabel(date))+' · '+clk(W+it.o)+(it.e<2000?"–"+clk(W+it.e):"")+' · <b>'+it.t+'</b></p>'
+    +'<div class="adjbox"><h3>이 날짜만 수정</h3><p class="s">다른 날짜와 앞으로 반복할 기본 루틴은 바뀌지 않아요.</p>'
+    +(mv&&!done?(a.skip?'<div class="adjbtns">'+b("restore","제외 취소 (복원)","primary")+'</div>'
+        :'<div class="adjbtns">'+b("shift:-10","10분 당기기")+b("shift:10","10분 미루기")+b("skip","해당 날짜 제외")+'</div>'
+        +'<label class="xck"><input id="adjFollow" type="checkbox"> 뒤 일정도 함께 이동</label>'
+        +'<div class="field"><label for="adjAt">시간 직접 지정 (자동 배치에서 빠져요)</label><div class="row2"><input id="adjAt" type="time" value="'+esc(a.at||clk(W+it.o))+'">'+b("lock","이 시간으로 고정")+'</div></div>'
+        +((st&&!a.skip)?'<div class="adjbtns">'+b("reset","자동 배치로 되돌리기")+'</div>':''))
+      :'<p class="adjstate">'+(done?"이미 완료한 활동이라 시간을 옮기지 않아요.":"식사·취침·조명·아침 햇빛은 하루 리듬의 기준이라 고정이에요.")+'</p>')
+    +(st?'<p class="adjstate">'+st+'</p>':'')+'</div>'
+    +'<div class="adjbox alt"><h3>앞으로 반복할 기본 루틴 수정</h3><p class="s">여기서 바꾸면 매일의 기본 계획이 바뀌어요. 이 날짜 조정과는 별개예요.</p>'
     +'<button type="button" class="btn" data-more-open="editAcc" data-close>기본 루틴 편집 ›</button></div>');
 }
-$("#tl").addEventListener("click",e=>{const a=e.target.closest("[data-adj]");if(a){e.preventDefault();openAdj(a.dataset.adj)}});
+/* ----- 일정 조정 패널 (첫 화면) ----- */
+function openPlanPanel(){
+  const date=viewDate(),kind=planKind(date),P=planOf(date);
+  const btn=(act,t,sub)=>'<button type="button" class="planopt" data-pp="'+act+'"><b>'+t+'</b><small>'+sub+'</small></button>';
+  let h=sheetHd("일정 조정")+'<p class="s">'+esc(dateLabel(date))+(dayRel(date)?" · "+dayRel(date):"")+(kind==="future"?" · "+PLAN_LABEL[planState(date)]:"")+'</p>';
+  if(kind==="past"){
+    h+='<div class="planopts">'+btn("record","이날 기록 열기·수정","체크·수면 기록을 고쳐요")+btn("wake","이날 기상 시각 고치기","실제 기록을 고쳐요")+'</div>'
+      +'<p class="s">지난 날짜는 계획을 다시 배치하지 않아요. 실제 기록만 고칠 수 있어요.</p>';
+  }else{
+    h+='<div class="planopts">'+btn("appt","약속 추가","정해진 시간에 고정돼요")+btn("routine","루틴 조정","시간을 옮기거나 이 날짜만 제외해요")
+      +(kind==="today"?btn("backlog","밀린 일정 정리","지나간 미완료 루틴을 옮기거나 제외해요"):btn("replan","계획 다시 배치","평소대로 · 오늘 계획 복사 · 예상 기상"))+'</div>';
+  }
+  h+='<div class="adjbox alt"><h3>앞으로 반복할 기본 루틴</h3><p class="s">이 날짜만이 아니라 매일 적용돼요.</p><button type="button" class="btn" data-more-open="editAcc" data-close>기본 루틴 편집 ›</button></div>';
+  sheet(h);
+}
+function openRoutineList(){
+  const date=viewDate(),P=planOf(date);if(!P)return;
+  const rows=P.items.filter(i=>MOVABLE.includes(i.id)).map(i=>'<button type="button" class="planopt" data-adjopen="'+i.id+'"><b>'+i.t+'</b><small>'+clk(P.W+i.o)+(i.e<2000?"–"+clk(P.W+i.e):"")+(i.skip?" · 제외됨":"")+'</small></button>').join("");
+  sheet(sheetHd("루틴 조정")+'<p class="s">'+esc(dateLabel(date))+' · 조정할 루틴을 골라 주세요.</p><div class="planopts">'+rows+'</div><button class="btn block" type="button" data-pp="back">‹ 뒤로</button>');
+}
+function openProposal(mode,title,note){
+  const date=viewDate();propCtx={date,mode,exList:extrasFor(date)};
+  sheet(sheetHd(title)+'<p class="s">'+note+'</p><div id="pvBox"></div><p id="pvMsg" class="xmsg" role="status"></p><div class="adjbtns"><button id="pvApply" class="btn primary" type="button" data-pvapply>적용</button><button class="btn" type="button" data-close>취소</button></div>');
+  renderProps($("#pvBox"));
+  const r=propCtx.res,ok=r.props.length&&!r.hard.length;
+  if(!r.props.length)$("#pvBox").innerHTML+='<p class="s">'+(mode==="backlog"?"정리할 밀린 일정이 없어요.":"겹치는 유동 일정이 없어요.")+'</p>';
+  $("#pvApply").disabled=!ok;
+}
+function applyProposal(){
+  if(!propCtx)return;const {date}=propCtx,res=propCtx.res;
+  const adjNew=propsToAdj(date,res.props.map((p,i)=>Object.assign({},p,{sel:propSel(i,p)})));
+  if(!Object.keys(adjNew).length){closeSheet();return}
+  commitPlan(date,"일정 변경됨 · 되돌리기",d=>{d.adj=Object.assign({},d.adj,adjNew)});closeSheet();
+}
+function openReplan(){
+  const date=viewDate(),d=S.days[date]||{},has=!!(d.adj&&Object.keys(d.adj).length)||(d.sc&&d.sc.w);
+  sheet(sheetHd("계획 다시 배치")+'<p class="s">'+esc(dateLabel(date))+' 계획만 바뀌어요.</p>'
+    +'<div class="adjbox"><h3>예상 기상 시각</h3><div class="row2"><input id="planW" type="time" value="'+clk(Math.round(planWake(date)*60)).replace(/^(\d{2}):(\d{2})$/,"$1:$2")+'" aria-label="예상 기상 시각">'
+    +'<button type="button" class="btn" data-pp="setw">저장</button></div></div>'
+    +'<div class="planopts">'
+    +'<button type="button" class="planopt" data-pp="usual"><b>평소대로</b><small>이 날짜의 시간 조정·예상 기상을 지우고 기본 루틴으로 되돌려요. 약속은 그대로예요.</small></button>'
+    +'<button type="button" class="planopt" data-pp="copy"><b>오늘 계획 복사</b><small>오늘의 시간 조정을 이 날짜에 복사해요. 완료 기록·측정값·타이머·오늘만의 약속은 복사하지 않아요.</small></button>'
+    +'<button type="button" class="planopt" data-pp="fix"><b>겹침 정리</b><small>이 날짜 약속과 겹치는 유동 루틴을 미리 보고 정리해요.</small></button></div>'
+    +'<button class="btn block" type="button" data-pp="back">‹ 뒤로</button>');
+}
+function planUsual(){
+  const date=viewDate(),d=S.days[date]||{};
+  if((d.adj&&Object.keys(d.adj).length||d.sc&&d.sc.w)&&!confirm("이 날짜의 시간 조정과 예상 기상이 지워져요. 약속은 그대로 둬요. 계속할까요?"))return;
+  commitPlan(date,"평소대로 되돌렸어요 · 되돌리기",d=>{delete d.adj;if(d.sc)delete d.sc.w});closeSheet();
+}
+/* 오늘의 계획 정보 중 날짜별로 조정 가능한 것(시간 조정·예상 기상)만 복사한다. 완료·측정·타이머·일회성 약속은 복사하지 않는다 */
+function planCopy(){
+  const date=viewDate(),src=S.today,sd=S.days[src]||{},d=S.days[date]||{};
+  if(date<=src)return;
+  const cp=cloneJ(sd.adj)||{};
+  if(!Object.keys(cp).length&&!sd.wake){toast("복사할 오늘 계획이 없어요.");return}
+  if((d.adj&&Object.keys(d.adj).length)&&!confirm("이 날짜에 이미 있는 시간 조정이 오늘 계획으로 바뀌어요. 계속할까요?"))return;
+  commitPlan(date,"오늘 계획을 복사했어요 · 되돌리기",x=>{if(Object.keys(cp).length)x.adj=cp;else delete x.adj;x.sc=x.sc||{};if(sd.wake)x.sc.w=+sd.wake});closeSheet();
+}
+function planSetWake(){
+  const v=$("#planW").value,m=clockMin(v);if(m==null||m<240||m>=900){toast("예상 기상 시각을 확인해 주세요.");return}
+  commitPlan(viewDate(),"예상 기상을 바꿨어요 · 되돌리기",d=>{d.sc=d.sc||{};d.sc.w=m/60});closeSheet();
+}
+/* 시트 안 클릭 */
 $("#woSheetBody").addEventListener("click",e=>{
+  const pp=e.target.closest("[data-pp]");
+  if(pp){const a=pp.dataset.pp;
+    if(a==="appt")openExtra(null);else if(a==="routine")openRoutineList();else if(a==="back")openPlanPanel();
+    else if(a==="backlog")openProposal("backlog","밀린 일정 정리","오늘 이미 지났는데 하지 못한 유동 루틴이에요. 옮기거나 제외할 수 있어요.");
+    else if(a==="replan")openReplan();
+    else if(a==="fix")openProposal("appt","겹침 정리","약속과 겹치는 유동 루틴을 어떻게 할지 골라 주세요.");
+    else if(a==="usual")planUsual();else if(a==="copy")planCopy();else if(a==="setw")planSetWake();
+    else if(a==="record"){const dt=viewDate();closeSheet();S.view=dt;setTab("check")}
+    else if(a==="wake"){const dt=viewDate();closeSheet();openWake(false,dt)}
+    return}
+  const ao=e.target.closest("[data-adjopen]");if(ao){openAdj(ao.dataset.adjopen);return}
+  if(e.target.closest("[data-xsave]")){xSave();return}
+  const dl=e.target.closest("[data-xdel]");if(dl){xDel(dl.dataset.xdel);return}
+  if(e.target.closest("[data-pvapply]")){applyProposal();return}
   const x=e.target.closest("[data-adjact]");if(!x)return;
-  const id=x.dataset.id,[act,v]=x.dataset.adjact.split(":");if(!MOVABLE.includes(id))return;
-  patch(S.today,d=>{d.adj=d.adj||{};const c=d.adj[id]||{};
-    if(act==="reset")delete d.adj[id];
+  const id=x.dataset.id,[act,v]=x.dataset.adjact.split(":"),date=viewDate();if(!MOVABLE.includes(id))return;
+  const P=planOf(date);if(!P)return;
+  const follow=!!($("#adjFollow")&&$("#adjFollow").checked);
+  const flexAfter=()=>{const me=P.items.find(i=>i.id===id),d=S.days[date]||{},adj=d.adj||{};
+    return P.items.filter(i=>MOVABLE.includes(i.id)&&i.id!==id&&!i.skip&&!(adj[i.id]&&adj[i.id].at)&&!(i.ck&&isDone(d,i))&&i.e<2000&&me&&i.o>=me.o).map(i=>i.id)};
+  if(act==="lock"){const t=$("#adjAt").value;if(clockMin(t)==null){toast("시각을 넣어 주세요.");return}
+    commitPlan(date,"시간을 고정했어요 · 되돌리기",d=>{d.adj=d.adj||{};const c=d.adj[id]||{};d.adj[id]={at:t};if(c.len)d.adj[id].len=c.len})}
+  else commitPlan(date,"일정 변경됨 · 되돌리기",d=>{d.adj=d.adj||{};const c=d.adj[id]||{};
+    if(act==="reset"||act==="restore")delete d.adj[id];
     else if(act==="skip")d.adj[id]={skip:true};
-    else if(act==="shift"){const n=clampAdj((+c.dt||0)+(+v));if(n)d.adj[id]={dt:n};else delete d.adj[id]}
+    else if(act==="shift"){const n=Math.round((+c.dt||0)+(+v));const ids=[id].concat(follow?flexAfter():[]);
+      ids.forEach(k=>{const q=d.adj[k]||{};const nn=k===id?n:Math.round((+q.dt||0)+(+v));if(q.skip)return;if(nn)d.adj[k]=Object.assign({},q,{dt:nn});else{delete q.dt;if(Object.keys(q).length)d.adj[k]=q;else delete d.adj[k]}})}
     if(!Object.keys(d.adj).length)delete d.adj});
-  S.tlKey="";renderToday();openAdj(id);
-  if(act==="skip")toast("오늘은 건너뛰기로 했어요. 내일은 평소대로예요.");
+  openAdj(id,date);
 });
+$("#woSheetBody").addEventListener("input",e=>{if(!e.target.closest(".xform"))return;sheetDirty=true;if(e.target.id==="xRep")$("#xDows").hidden=e.target.value!=="days";xPreview()});
+$("#woSheetBody").addEventListener("change",e=>{
+  if(e.target.matches("[data-prop]")&&propCtx){const i=+e.target.dataset.prop;propCtx.res.props[i].sel=e.target.value;
+    const box=$("#xPrev")||$("#pvBox");if(box){const keep=propCtx.res;box.innerHTML=propsHtml(keep)}return}
+  if(!e.target.closest(".xform"))return;if(e.target.id==="xRep")$("#xDows").hidden=e.target.value!=="days";xPreview();
+});
+$("#undoBtn").addEventListener("click",undoPlan);
+$("#undoX").addEventListener("click",()=>{$("#undoBar").hidden=true});
+
 /* ---------- timeline items that count toward a check (sun = 3 separate walks) ---------- */
 const sunOf=d=>[0,1,2].map(i=>!!(d.sunN&&d.sunN[i]));
 const isDone=(d,it)=>it.ck==="sun"?sunOf(d)[it.si]:!!(d.checks&&d.checks[it.ck]);
@@ -2185,6 +2537,7 @@ function energyNow(){
 }
 function energyCardHtml(){
   const e=energyNow();if(!e)return "";
+  if(!sleepDebt().n&&!num(day(S.today).sleepH))return '<div class="card wide ecard"><span class="lbl">에너지 · 수면</span><span class="v">수면 정보 없음</span><span class="s">어젯밤 잔 시간을 넣으면 에너지 리듬을 보여 드려요.</span></div>';
   const next=e.wins.find(([a,b])=>b>e.rel),win=next?(next[0]<=e.rel?"지금 집중 구간 · "+clk(e.W+Math.round(next[1]*60))+"까지":"다음 집중 "+clk(e.W+Math.round(next[0]*60))+"–"+clk(e.W+Math.round(next[1]*60))):e.wins.length?"오늘 집중 구간은 지났어요":"";
   const o=day(S.today).oura,ol=o&&(o.ready!=null||o.sleep!=null)?'<span class="s oura">Oura · 레디니스 '+(o.ready??"–")+' · 수면 '+(o.sleep??"–")+(o.hrv!=null?' · HRV '+Math.round(o.hrv):"")+'</span>':'';
   return '<button class="card wide ecard" type="button" data-energy><span class="lbl">에너지 · 수면</span>'+ol+'<span class="v">'+(e.cur==null?"수면 시간":"지금 "+energyWord(e.cur))+'</span><span class="s">'+esc(win?win+" · ":"")+'수면 부채 '+e.debt+'시간</span>'+sparkSvg(e)+'</button>';
@@ -2207,6 +2560,7 @@ function sparkSvg(e){const w=120,h=28,X=t=>t/e.awake*w,Y=v=>h-2-(v/100)*(h-4);
   return '<svg class="spark" viewBox="0 0 '+w+' '+h+'" aria-hidden="true"><path d="'+smoothPath(energyPts(e).map(([t,v])=>[X(t),Y(v)]))+'"/>'+(e.cur!=null?'<circle cx="'+X(e.rel).toFixed(1)+'" cy="'+Y(e.cur).toFixed(1)+'" r="2.6"/>':'')+'</svg>'}
 function openEnergy(){
   const e=energyNow();if(!e){toast("오늘 기상 시각을 먼저 골라 주세요.");return}
+  if(!sleepDebt().n&&!num(day(S.today).sleepH)){sheet(sheetHd("에너지 리듬")+'<p class="s">수면 정보가 없어서 에너지 리듬을 추정하지 않아요. 홈 아래의 ‘어젯밤 몇 시간 잤어요?’에서 잔 시간을 넣으면 보여 드려요. 수면 부채도 기록이 있어야 계산해요.</p>'+ouraBlock());return}
   const sd=sleepDebt(),W=320,H=200,l=34,r=10,t=30,b=26,X=x=>l+(W-l-r)*x/e.awake,Y=v=>t+4+(H-t-b-8)*(1-v/100);
   let svg='<svg viewBox="0 0 '+W+' '+H+'" role="img" aria-label="오늘 예상 에너지 리듬">'
     +'<defs><linearGradient id="egrad" x1="0" y1="0" x2="0" y2="1"><stop offset="0" style="stop-color:var(--accent);stop-opacity:.28"/><stop offset="1" style="stop-color:var(--accent);stop-opacity:0"/></linearGradient></defs>';
@@ -3169,8 +3523,26 @@ setInterval(()=>{
 
 /* ---------- sheets: exercise picker (#pickSheet, above) and one shared sheet for set helper / video / routine editor / share ---------- */
 const sheetHd=t=>'<div class="sheethd"><h2>'+esc(t)+'</h2><button class="btn" type="button" data-close>닫기</button></div>';
-function sheet(html){$("#woSheetBody").innerHTML=html;$("#woSheet").hidden=false}
-const closeSheet=()=>{$("#woSheet").hidden=true;rtEd=null;recEd=null};
+let sheetOpener=null,sheetDirty=false;
+function sheet(html){
+  if($("#woSheet").hidden)sheetOpener=document.activeElement;
+  sheetDirty=false;$("#woSheetBody").innerHTML=html;$("#woSheet").hidden=false;
+  const f=$("#woSheet").querySelector("input:not([disabled]),select,textarea,button:not([data-close])");($("#woSheet .pane")).scrollTop=0;(f||$("#woSheet .pane")).focus();
+}
+/* 입력 중인 내용이 있으면 닫기 전에 확인한다. 닫으면 열었던 버튼으로 포커스를 돌려준다 */
+const closeSheet=(force)=>{
+  if(!force&&sheetDirty&&!confirm("입력 중인 내용이 저장되지 않았어요. 닫을까요?"))return;
+  sheetDirty=false;$("#woSheet").hidden=true;rtEd=null;recEd=null;propCtx=null;
+  try{if(sheetOpener&&document.contains(sheetOpener)&&sheetOpener.focus)sheetOpener.focus()}catch(e){}
+};
+document.addEventListener("keydown",e=>{
+  if($("#woSheet").hidden)return;
+  if(e.key==="Escape"){e.preventDefault();closeSheet();return}
+  if(e.key==="Tab"){const f=[...$("#woSheet .pane").querySelectorAll('a[href],button:not([disabled]),input:not([disabled]),select,textarea,[tabindex]:not([tabindex="-1"])')].filter(x=>x.offsetParent!==null);
+    if(!f.length)return;const a=f[0],z=f[f.length-1];
+    if(e.shiftKey&&(document.activeElement===a||document.activeElement===$("#woSheet .pane"))){e.preventDefault();z.focus()}
+    else if(!e.shiftKey&&document.activeElement===z){e.preventDefault();a.focus()}}
+});
 $("#woSheet").addEventListener("click",e=>{if(e.target===$("#woSheet")||e.target.closest("[data-close]"))closeSheet()});
 $("#pickSheet").addEventListener("click",e=>{if(e.target===$("#pickSheet")||e.target.closest("[data-close]"))$("#pickSheet").hidden=true});
 
@@ -3766,7 +4138,7 @@ $("#woAgeSave").addEventListener("click",async()=>{
 
 /* ---------- export ---------- */
 function exportRows(){
-  const rows=Object.values(S.days).filter(x=>x&&x.date).sort((a,b)=>a.date.localeCompare(b.date));
+  const rows=Object.values(S.days).filter(x=>x&&x.date&&x.wake).sort((a,b)=>a.date.localeCompare(b.date));
   const head=["날짜","기상","달성률(%)"].concat(CHECKS.map(c=>c.t),["햇빛 아침","햇빛 점심","햇빛 퇴근길","실제 기상","취침","수면(시간)","잠들기까지","밤중에 깸","아침 개운함","낮 집중","오후 졸림","카페인","메모"]);
   const yn=v=>v===true?"1":v===false?"0":"";
   const body=rows.map(x=>{const s=sunOf(x);return [x.date,x.wake?fmtW(+x.wake):"",x.wake?Math.round(pctOf(x)*100):""]
@@ -4119,10 +4491,11 @@ function dueItems(){
   const W=Math.round(d.wake*60),P=prefs().tl||{},items=timeline(W,parseYmd(S.today).getDay(),S.today),out=[];
   for(const [o0,t0] of CORE){
     const p=P[CORE_IDS[o0]]||{},it=items.find(x=>x.id===CORE_IDS[o0]);if(p.off||!it||it.skip)continue;
-    out.push({at:W+it.o,id:d.wake+"@"+it.o,ev:CORE_EV[CORE_IDS[o0]],t:it.id==="move"&&it.late&&/\(오후\)$/.test(it.t)?it.t:p.t||t0,line:notifyText(CORE_EV[CORE_IDS[o0]]).body});
+    if(it.ck&&isDone(d,it))continue;   // 완료한 활동은 알리지 않는다
+    out.push({at:W+it.o,id:d.wake+"@"+(it.o0!=null?it.o0:it.o),ev:CORE_EV[CORE_IDS[o0]],t:it.id==="move"&&it.late&&/\(오후\)$/.test(it.t)?it.t:p.t||t0,line:notifyText(CORE_EV[CORE_IDS[o0]]).body});
   }
   /* a sleep target over 7h moves the caffeine cutoff (bed − 9h) before NSDR: then they are two alerts */
-  const cm=items.find(x=>x.mark),ns=out.find(x=>x.id===d.wake+"@"+(items.find(y=>y.id==="nsdr")||{}).o);
+  const cm=items.find(x=>x.mark),ns=out.find(x=>x.id===d.wake+"@"+((items.find(y=>y.id==="nsdr")||{}).o0??(items.find(y=>y.id==="nsdr")||{}).o));
   if(cm&&ns&&W+cm.o!==ns.at){if(!(P.nsdr&&P.nsdr.t))ns.t="NSDR";ns.ev="nsdr";ns.line=notifyText("nsdr").body;out.push({at:W+cm.o,id:d.wake+"@"+cm.o,ev:"caff",t:"카페인 마감",line:notifyText("caff").body});out.sort((a,b)=>a.at-b.at)}
   items.filter(x=>x.extra&&!x.skip&&x.ex.notify!==false).forEach(x=>out.push({at:W+x.o,id:"x:"+x.ex.id+"@"+S.today,ev:"extraStart",t:NCOPY.extraStart.title,line:notifyText("extraStart",{t:x.ex.t}).body+(x.ex.memo?" · "+x.ex.memo:""),extra:true}));
   out.sort((a,b)=>a.at-b.at);

@@ -224,6 +224,33 @@ p{margin:0}
 .empty{display:grid;gap:.8rem;justify-items:start;padding:1.3rem;border-radius:var(--r);border:1.5px dashed var(--line);background:var(--surface)}
 
 .acc{background:var(--surface);border-radius:var(--r);box-shadow:var(--shadow)}
+.moretabs{display:flex;gap:.25rem;padding:.25rem;border-radius:999px;background:var(--surface2);margin:.2rem 0 .8rem}
+.moretabs button{flex:1;min-height:2.6rem;border:0;border-radius:999px;background:transparent;color:var(--muted);font:inherit;font-weight:600;cursor:pointer}
+.moretabs button[aria-selected="true"]{background:var(--fg);color:var(--bg1,#fff)}
+.moretabs button:focus-visible,.whobtn:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+#mpGuide,#mpSet{display:grid;gap:.6rem}
+#mpGuide[hidden],#mpSet[hidden]{display:none}
+.acc.grp>summary{min-height:3.6rem}
+.gs{display:grid;gap:.1rem;min-width:0}.gt{font-family:var(--f-display);font-weight:600}
+.gs small{font-family:var(--f-body);font-weight:400;font-size:.78rem;color:var(--muted);line-height:1.35}
+.acc.sub{background:var(--surface2);box-shadow:none;border-radius:16px}
+.acc.sub>summary{min-height:3rem;font-size:.95rem}
+.acc.sub .in{font-size:.92rem}
+.bdlegend{margin:0;font-size:.78rem;color:var(--muted);line-height:1.8}
+.bd{display:inline-block;font-size:.66rem;font-weight:700;border-radius:99px;padding:.08rem .5rem;margin-right:.15rem;vertical-align:1px}
+.bd.g{background:var(--surface2);color:var(--muted)}.bd.u{background:var(--soft);color:var(--accent)}.bd.d{border:1px solid var(--fg);color:var(--fg)}
+.now{margin:0;font-size:.88rem;padding:.55rem .75rem;border-radius:12px;background:var(--surface2)}
+.wglist{display:grid;gap:.35rem}
+.wgrow{display:flex;align-items:center;justify-content:space-between;width:100%;text-align:left;border:0;border-radius:16px;background:var(--surface2);padding:.7rem 1rem;font:inherit;color:inherit;cursor:pointer;min-height:3rem}
+.wgrow::after{content:"›";color:var(--muted);font-size:1.2rem}
+.scope{display:grid;gap:.15rem;padding:.6rem .8rem;border-radius:12px;background:var(--soft);font-size:.86rem}.scope b{color:var(--accent)}
+.scopenote{margin:.2rem 0 .6rem}
+.now .link,.note .link{display:inline;min-height:0;padding:0}
+section.dangerzone.acct{margin-top:.8rem;padding:1rem 1.1rem;border-radius:var(--r);border:1.5px solid #e2b9a4;background:rgba(226,185,164,.12);display:grid;gap:.5rem}
+.dangerzone h3{margin:0;font-size:.95rem;color:#b5532a}
+.whobtn{border:0;background:transparent;padding:0;cursor:pointer;font:inherit;color:inherit;max-width:9rem;border-bottom:1.5px solid currentColor}
+.guidesheet{display:grid;gap:.6rem;font-size:.92rem}.guidesheet ul{margin:0;padding-left:1.1rem;display:grid;gap:.5rem}
+.guidesheet li b{font-weight:600}
 .acc>summary{list-style:none;cursor:pointer;display:flex;justify-content:space-between;align-items:center;gap:.6rem;min-height:3.1rem;padding:.5rem 1.05rem;font-family:var(--f-display);font-weight:700;font-size:1.05rem}
 .acc>summary::-webkit-details-marker{display:none}
 .acc>summary::after{content:"";width:.55rem;height:.55rem;border-right:2px solid var(--muted);border-bottom:2px solid var(--muted);transform:rotate(45deg);flex:none;transition:transform .2s}
@@ -835,7 +862,7 @@ h1,h2,h3{font-weight:300;letter-spacing:-.02em;line-height:1.2}
 <div id="main" class="wrap" hidden>
   <header class="top">
     <div class="mark"><svg aria-hidden="true"><use href="#axislogo"/></svg>AXIS</div>
-    <div class="who"><b id="whoName"></b><button id="guestReg" class="link strong" type="button" hidden>등록하기</button><button id="logout" class="link" type="button">나가기</button></div>
+    <div class="who"><button id="whoBtn" class="whobtn" type="button" aria-label="내 설정 열기"><b id="whoName"></b></button><button id="guestReg" class="link strong" type="button" hidden>등록하기</button><button id="logout" class="link" type="button">나가기</button></div>
   </header>
   <div class="modesw seg" role="group" aria-label="화면 전환">
     <button type="button" data-mode="routine" aria-pressed="true">Routine</button>
@@ -853,6 +880,7 @@ h1,h2,h3{font-weight:300;letter-spacing:-.02em;line-height:1.2}
     <div id="nowBox"></div>
     <div id="glance" class="glance"></div>
     <div class="head"><h2>오늘 타임라인</h2><p class="note">항목을 누르면 자세한 내용이 열립니다.</p></div>
+    <p class="note scopenote">오늘 계획은 오늘 하루만 바뀌어요. 앞으로 매일 반복할 루틴은 <button class="link strong" type="button" data-more-open="editAcc">기본 루틴 편집</button>에서 바꿔요.</p>
     <ol id="tl" class="tl"></ol>
     <p id="tlNote" class="note" hidden></p>
   </section>
@@ -896,53 +924,16 @@ h1,h2,h3{font-weight:300;letter-spacing:-.02em;line-height:1.2}
     <div id="logBody"></div>
   </section>
 
-  <section id="tab-guide" class="tab" role="tabpanel" aria-label="기준" hidden>
-    <div class="head"><span class="eyebrow">문서1 기준</span><h2>기준</h2></div>
-    <details class="acc" id="themeAcc">
-      <summary>화면 모드</summary>
-      <div class="in">
-        <div class="appear" role="radiogroup" aria-label="화면 모드">
-          <button type="button" role="radio" data-look="light" aria-checked="true"><span class="thumb light" aria-hidden="true"><i></i><b></b><b></b></span>라이트<span class="radio" aria-hidden="true"></span></button>
-          <button type="button" role="radio" data-look="dark" aria-checked="false"><span class="thumb dark" aria-hidden="true"><i></i><b></b><b></b></span>다크<span class="radio" aria-hidden="true"></span></button>
-        </div>
-        <div class="toggle"><span>자동</span><button id="themeAuto" class="sw" type="button" role="switch" aria-checked="true" aria-label="자동으로 라이트·다크 바꾸기"></button></div>
-        <div id="themeOpt" class="field"><label for="themeBy">옵션</label><select id="themeBy"><option value="time">밤 시간대 (저녁 7시~새벽 4시)</option><option value="system">기기 설정 따르기</option></select></div>
-        <p id="themeNote" class="note"></p>
-      </div>
-    </details>
-
-    <details class="acc">
-      <summary>알림</summary>
-      <div class="in">
-        <div class="toggle"><span>앱을 열어 둔 동안 화면 알림</span><button id="alertSw" class="sw" type="button" role="switch" aria-checked="true" aria-label="화면 알림"></button></div>
-        <button id="alertTest" class="btn block" type="button">알림 미리 보기</button>
-        <button id="notifyBtn" class="btn block" type="button">다른 탭에 있을 때도 알림 받기</button>
-        <p id="notifyMsg" class="note">PC 브라우저에서 이 탭을 열어 둔 채 다른 창을 쓰고 있어도 알림이 뜹니다.</p>
-        <h4>잠금 화면 알림</h4>
-        <p>앱을 닫아도 핵심 11개 시각에 휴대폰 알림이 옵니다. 오늘 고른 기상 시각 기준이고, 아직 안 골랐으면 가장 최근 기상 시각을 씁니다.</p>
-        <button id="pushBtn" class="btn primary block" type="button">잠금 화면 알림 켜기</button>
-        <button id="pushTest" class="btn block" type="button" hidden>테스트 알림 보내기</button>
-        <p id="pushMsg" class="note" role="status"></p>
-      </div>
-    </details>
-
-    <details class="acc" open>
-      <summary>가장 중요한 부분과 효과</summary>
-      <div class="in"><ul>
-        <li><b>아침 햇빛 (기상 후 30~60분 안)</b>: 아침 코르티솔 상승이 최대 약 50% 커진다. 맑은 날 10분 안팎, 흐린 날 15~20분, 아주 흐린 날 30분이 기준이고 밝은 날은 최소 2분도 효과가 있다. 아침에 코르티솔이 제대로 오르면 밤에 내려가 멜라토닌이 오르고 잠이 쉬워진다. 하루 에너지·집중·수면 리듬의 출발점이다.</li>
-        <li><b>저녁 빛 줄이기</b>: 밤 10시~새벽 4시에는 눈이 빛에 매우 민감해, 약한 빛도 도파민 생성과 수면을 방해한다. 아침에는 많은 빛이, 밤에는 적은 빛이 필요하다. 오후 4시경 10~30분 햇빛은 늦은 밤 망막의 민감도를 낮춰 밤 빛의 나쁜 영향을 완충한다.</li>
-        <li><b>카페인 지연과 마감</b>: 졸림은 깨어 있는 시간이 길수록 쌓이는 아데노신 때문이다. 기상 후 90~120분 뒤로 미루면 오후 크래시를 막는다. 마감은 취침 9시간 전이다. 늦게 마셔도 잠은 들 수 있지만 수면 구조가 깨져 훨씬 얕게 잔다.</li>
-        <li><b>기상·취침 시각 고정</b>: 변동은 평일·주말 모두 1시간 이내로 둔다. 저녁에 졸린데 늦게까지 버티면 멜라토닌이 이른 밤에 시작돼 새벽 2~3시에 깨고 다시 못 자기 쉬우니 일찍 자는 것이 해결책이다.</li>
-        <li><b>운동</b>: 하루 60분(±15분) 이내, 근력 3 : 지구력 2 비율로 번갈아 주 5일 이상 한다. 1시간을 넘기는 격렬한 운동은 코르티솔을 높일 수 있다. Zone 2는 심박 118~137bpm에 코 호흡이 유지되는 강도이고, 다른 체력 요소를 방해하지 않고 오히려 돕는다. 기상 직후부터 4시간 안의 운동은 생체 시계를 거의 움직이지 않아서 아침 운동이 시계를 건드리지 않는다.</li>
-        <li><b>딥워크와 NSDR</b>: 작업 블록은 체온 최저점 4~6시간 뒤(기상 2~4시간 뒤)가 가장 좋다. 하루 총 약 3시간 집중하고, 오후 NSDR 10~20분 뒤에 두 번째 블록을 한다. 폰은 완전히 끈다.</li>
-        <li><b>식사 구성</b>: 점심은 탄수화물을 적게 해서 각성을 유지하고, 운동한 날만 전분을 소량 먹는다. 저녁은 전분 탄수화물과 단백질 중심이다. 전분은 세로토닌을 올려 졸림과 잠으로의 전환을 돕는다.</li>
-        <li><b>기록과 순서</b>: 일어난 시각을 메모해 체온 최저점(기상 약 2시간 전)을 파악하면 집중 시간대를 정할 수 있다. 타임라인은 모두 W 기준으로 통째로 밀린다.</li>
-      </ul></div>
-    </details>
-
-    <details class="acc">
-      <summary>하루 수분 양</summary>
-      <div class="in">
+  <section id="tab-guide" class="tab" role="tabpanel" aria-label="더보기" hidden>
+    <div class="head"><span class="eyebrow">더보기</span><h2 id="moreTitle">가이드</h2></div>
+    <div class="moretabs" role="tablist" aria-label="더보기">
+      <button type="button" role="tab" id="mtGuide" aria-controls="mpGuide" aria-selected="true" data-more="guide">가이드</button>
+      <button type="button" role="tab" id="mtSet" aria-controls="mpSet" aria-selected="false" tabindex="-1" data-more="settings">설정</button>
+    </div>
+  <div id="mpGuide" role="tabpanel" aria-labelledby="mtGuide">
+    <p class="bdlegend"><span class="bd g">일반 제안</span> 누구에게나 같은 기본 안내 · <span class="bd u">내 설정</span> 내가 입력한 값으로 계산 · <span class="bd d">기기 측정</span> 연결한 기기에서 가져온 값</p>
+    <details class="acc grp" open><summary><span class="gs"><span class="gt">생활 리듬</span><small>기상·취침·햇빛·집중·휴식</small></span></summary><div class="in"><details class="acc sub"><summary><span class="gs"><span class="gt">아침 햇빛 (기상 후 30~60분 안)</span><small>기상 후 30~60분 안, 맑은 날 10분 안팎</small></span></summary><div class="in"><p>아침 코르티솔 상승이 최대 약 50% 커진다. 맑은 날 10분 안팎, 흐린 날 15~20분, 아주 흐린 날 30분이 기준이고 밝은 날은 최소 2분도 효과가 있다. 아침에 코르티솔이 제대로 오르면 밤에 내려가 멜라토닌이 오르고 잠이 쉬워진다. 하루 에너지·집중·수면 리듬의 출발점이다.</p></div></details><details class="acc sub"><summary><span class="gs"><span class="gt">저녁 빛 줄이기</span><small>밤 10시~새벽 4시에는 강한 빛을 피해요</small></span></summary><div class="in"><p>밤 10시~새벽 4시에는 눈이 빛에 매우 민감해, 약한 빛도 도파민 생성과 수면을 방해한다. 아침에는 많은 빛이, 밤에는 적은 빛이 필요하다. 오후 4시경 10~30분 햇빛은 늦은 밤 망막의 민감도를 낮춰 밤 빛의 나쁜 영향을 완충한다.</p></div></details><details class="acc sub"><summary><span class="gs"><span class="gt">기상·취침 시각 고정</span><small>변동은 평일·주말 모두 1시간 이내</small></span></summary><div class="in"><p>변동은 평일·주말 모두 1시간 이내로 둔다. 저녁에 졸린데 늦게까지 버티면 멜라토닌이 이른 밤에 시작돼 새벽 2~3시에 깨고 다시 못 자기 쉬우니 일찍 자는 것이 해결책이다.</p></div></details><details class="acc sub"><summary><span class="gs"><span class="gt">딥워크와 NSDR</span><small>하루 약 3시간 집중, 오후 NSDR 10~20분</small></span></summary><div class="in"><p>작업 블록은 체온 최저점 4~6시간 뒤(기상 2~4시간 뒤)가 가장 좋다. 하루 총 약 3시간 집중하고, 오후 NSDR 10~20분 뒤에 두 번째 블록을 한다. 폰은 완전히 끈다.</p></div></details><details class="acc sub"><summary><span class="gs"><span class="gt">기록과 순서</span><small>일어난 시각을 메모해 집중 시간대를 정해요</small></span></summary><div class="in"><p>일어난 시각을 메모해 체온 최저점(기상 약 2시간 전)을 파악하면 집중 시간대를 정할 수 있다. 평소 기상보다 1시간 안에서 늦으면 하루가 함께 밀리고, 1시간 넘게 늦으면 식사·취침은 평소 시각을 지켜요.</p></div></details></div></details>
+    <details class="acc grp"><summary><span class="gs"><span class="gt">식사 · 수분 · 카페인</span><small>언제, 얼마나, 어떻게</small></span></summary><div class="in"><p id="mealNow" class="now"></p><details class="acc sub"><summary><span class="gs"><span class="gt">식사 구성</span><small>점심은 탄수화물 적게, 저녁은 전분과 단백질</small></span></summary><div class="in"><p>점심은 탄수화물을 적게 해서 각성을 유지하고, 운동한 날만 전분을 소량 먹는다. 저녁은 전분 탄수화물과 단백질 중심이다. 전분은 세로토닌을 올려 졸림과 잠으로의 전환을 돕는다.</p></div></details><details class="acc sub"><summary><span class="gs"><span class="gt">카페인 지연과 마감</span><small>첫 잔은 기상 90~120분 뒤, 마감은 취침 9시간 전</small></span></summary><div class="in"><p>졸림은 깨어 있는 시간이 길수록 쌓이는 아데노신 때문이다. 기상 후 90~120분 뒤로 미루면 오후 크래시를 막는다. 마감은 취침 9시간 전이다. 늦게 마셔도 잠은 들 수 있지만 수면 구조가 깨져 훨씬 얕게 잔다.</p></div></details><details class="acc sub"><summary><span class="gs"><span class="gt">하루 수분 양</span><small>기상 직후와 시간당 일정 · 총량은 확인 중</small></span></summary><div class="in">
         <p>하루 합계는 기상 직후 0.5~1L까지 더해 약 4~4.5L가 상단 기준이다. 기상 후 10시간 동안은 매시간 약 240ml × 10회 = 약 2.4L, 그 뒤 취침 1시간 전까지는 매시간 약 150ml × 7회 = 약 1L를 마신다. 이 양은 상단이라 갈증에 맞춰 조절하고, 땀이 많이 난 날은 더 마신다. 두통·메스꺼움이 오면 줄이고, 수분 제한이 있는 질환이 있으면 의사에게 먼저 확인한다.</p>
         <table class="tbl">
           <tr><th>기상</th><th>매시간 240ml (10회)</th><th>매시간 150ml (7회)</th></tr>
@@ -958,12 +949,7 @@ h1,h2,h3{font-weight:300;letter-spacing:-.02em;line-height:1.2}
           <li>나트륨은 개인차가 커서 하루 2,000~5,000mg 범위에서 혈압에 맞춰 조절한다(일반 권고는 2,300mg). 혈압을 먼저 확인하고, 고혈압이면 의사 확인 없이 소금을 늘리지 않는다.</li>
           <li>술을 마시는 날은 술 1잔당 물 2잔과 전해질을 챙긴다.</li>
         </ul>
-      </div>
-    </details>
-
-    <details class="acc">
-      <summary>카페인</summary>
-      <div class="in">
+      </div></details><details class="acc sub"><summary><span class="gs"><span class="gt">카페인</span><small>하루 100~400mg 기준 · 마감은 취침 9시간 전</small></span></summary><div class="in">
         <h4>하루 섭취량</h4>
         <ul>
           <li>하루 100~400mg이 기준이다. 한 번에 체중 kg당 1~3mg(체중 70kg면 70~210mg)이고, 처음에는 낮은 쪽부터 시작한다. 반복해서 마실 때는 4시간 이상 간격을 둔다.</li>
@@ -1005,34 +991,47 @@ h1,h2,h3{font-weight:300;letter-spacing:-.02em;line-height:1.2}
           <li>저녁에 마시면 잠이 들어도 수면 구조가 깨져 훨씬 얕게 잔다.</li>
           <li>끊을 때는 첫 2~3일 물을 충분히 마신다(두통이 2~3일 오거나 이후 사라진다).</li>
         </ul>
-      </div>
-    </details>
-
-    <details class="acc">
-      <summary>컨디션이나 일정이 어긋난 날</summary>
-      <div class="in"><ul>
+      </div></details></div></details>
+    <details class="acc grp"><summary><span class="gs"><span class="gt">운동 · 회복</span><small>주간 구조, 근력, Zone 2·4×4, 워밍업</small></span></summary><div class="in"><p id="z2Now" class="now"></p><details class="acc sub"><summary><span class="gs"><span class="gt">운동 기본</span><small>하루 60분(±15분) 이내, 근력 3 : 지구력 2</small></span></summary><div class="in"><p>하루 60분(±15분) 이내, 근력 3 : 지구력 2 비율로 번갈아 주 5일 이상 한다. 1시간을 넘기는 격렬한 운동은 코르티솔을 높일 수 있다. Zone 2는 심박 118~137bpm에 코 호흡이 유지되는 강도이고, 다른 체력 요소를 방해하지 않고 오히려 돕는다. 기상 직후부터 4시간 안의 운동은 생체 시계를 거의 움직이지 않아서 아침 운동이 시계를 건드리지 않는다.</p></div></details><div class="wglist"><button type="button" class="wgrow" data-wg="0"><span class="gs"><span class="gt">한 주 구조</span><small>요일별 구성과 최소량</small></span></button><button type="button" class="wgrow" data-wg="1"><span class="gs"><span class="gt">근력 기본값</span><small>종목·볼륨·강도·진행</small></span></button><button type="button" class="wgrow" data-wg="2"><span class="gs"><span class="gt">Zone 2 · 4×4 · 장시간</span><small>유산소 구성</small></span></button><button type="button" class="wgrow" data-wg="3"><span class="gs"><span class="gt">워밍업 · 마무리 · 회복</span><small>수면과 컨디션별 조정</small></span></button></div></div></details>
+    <details class="acc grp"><summary><span class="gs"><span class="gt">컨디션이나 일정이 어긋난 날</span><small>못 잤거나 바쁜 날 대신 지킬 것</small></span></summary><div class="in"><p id="ouraNow" class="now"></p><ul>
         <li>아침 햇빛·수분·저녁 조명 낮추기 3가지는 어떤 날에도 지킨다.</li>
         <li>수면 6시간 이하: 웨이트는 가볍게 하거나 Zone 2·걷기로 대체하고, NSDR을 늘리고 카페인 마감을 앞당긴다.</li>
         <li>일정이 빡빡한 날: 아침 햇빛, 수분, 저녁 조명 낮추기만 지킨다.</li>
-        <li>늦게 일어난 날: W 기준으로 통째로 민다. 업무 시작이 고정이면 운동과 딥워크 앞부분을 줄이고, 기상·취침 변동은 1시간 이내로 둔다.</li>
+        <li>늦게 일어난 날: 평소 기상보다 1시간 넘게 늦으면 식사·취침은 평소 시각을 지키고, 오전은 일어난 시각부터 물·햇빛을 먼저 넣은 뒤 남는 시간에 운동과 딥워크를 넣는다. 기상·취침 변동은 1시간 이내로 둔다.</li>
         <li>오전에 너무 졸린 날: 카페인을 W+90분까지 앞당겨도 된다. 카페인 지연과 오전 단식은 필수가 아니라 선택이다.</li>
         <li>낮잠: 20분 이내, 오후 1~4시 사이, 오후 3시 이후에는 하지 않는다.</li>
         <li>주말: 기상은 평일과 1시간 이내. 토요일은 완전 휴식(야외 걷기와 사람 만나기), 일요일은 Zone 2 60~75분.</li>
-      </ul></div>
-    </details>
-
-    <details class="acc">
-      <summary>안전 확인</summary>
-      <div class="in"><ul>
+      </ul></div></details>
+    <details class="acc grp"><summary><span class="gs"><span class="gt">안전 확인 · 참고 근거</span><small>시작 전 확인과 자료 출처</small></span></summary><div class="in"><details class="acc sub"><summary><span class="gs"><span class="gt">안전 확인</span><small>시작 전에 확인할 것</small></span></summary><div class="in"><ul>
         <li>소금을 넣은 물은 염분 제한이 있으면 의사에게 먼저 확인한다.</li>
         <li>찬물 샤워는 웨이트 날 짧게(30초~1분) 하거나 몇 시간 뒤로 미룬다. 숨이 가쁘거나 어지러우면 중단하고, 심장 질환·고혈압이 있으면 의사에게 먼저 확인한다.</li>
         <li>마그네슘·아피제닌·테아닌 같은 영양제는 의사 확인 후 선택한다.</li>
         <li>해는 직접 쳐다보지 않는다. 눈부시면 중단한다.</li>
-      </ul></div>
-    </details>
-    <details class="acc" id="editAcc">
-      <summary>내 루틴 편집</summary>
-      <div class="in">
+      </ul></div></details><details class="acc sub"><summary><span class="gs"><span class="gt">참고 근거</span><small>안내가 바탕으로 한 자료 7가지</small></span></summary><div class="in"><p>앱의 기본 안내는 아래 일곱 가지 자료를 바탕으로 해요. 번호는 안내 속 “(근거 1·7)” 표시와 같아요.</p><ul><li><b>근거 1</b> · Huberman</li><li><b>근거 2</b> · Sahar Yousef</li><li><b>근거 3</b> · Rhonda Patrick</li><li><b>근거 4</b> · Satchin Panda</li><li><b>근거 5</b> · Matthew Walker</li><li><b>근거 6</b> · Cal Newport</li><li><b>근거 7</b> · Andy Galpin</li></ul><p class="note">운동 안내는 근거 1(Huberman)·7(Galpin)의 운동 장을 중심으로, 3(Patrick)의 4×4·운동 스낵, 4(Panda)의 운동 시각, 5(Walker)의 수면과 운동, 6(Newport)·2(Yousef)의 휴식 원칙을 반영했습니다. 원래 표기는 “루틴설계서 1~7”입니다.</p><p class="note">자료마다 수치가 다르거나 원문 확인이 끝나지 않은 부분은 단정하지 않고 갈증·컨디션에 맞춰 조절하라고 안내해요. 질환·부상이 있으면 시작 전에 의사와 상의하세요.</p></div></details></div></details>
+    <p class="note">하루의 경계는 새벽 4시입니다. 자정을 넘겨도 새벽 4시 전까지는 전날 기록으로 이어집니다.</p>
+  </div>
+  <div id="mpSet" role="tabpanel" aria-labelledby="mtSet" hidden>
+    <details class="acc grp" id="themeAcc"><summary><span class="gs"><span class="gt">화면</span><small id="sumTheme"></small></span></summary><div class="in">
+        <div class="appear" role="radiogroup" aria-label="화면 모드">
+          <button type="button" role="radio" data-look="light" aria-checked="true"><span class="thumb light" aria-hidden="true"><i></i><b></b><b></b></span>라이트<span class="radio" aria-hidden="true"></span></button>
+          <button type="button" role="radio" data-look="dark" aria-checked="false"><span class="thumb dark" aria-hidden="true"><i></i><b></b><b></b></span>다크<span class="radio" aria-hidden="true"></span></button>
+        </div>
+        <div class="toggle"><span>자동</span><button id="themeAuto" class="sw" type="button" role="switch" aria-checked="true" aria-label="자동으로 라이트·다크 바꾸기"></button></div>
+        <div id="themeOpt" class="field"><label for="themeBy">옵션</label><select id="themeBy"><option value="time">밤 시간대 (저녁 7시~새벽 4시)</option><option value="system">기기 설정 따르기</option></select></div>
+        <p id="themeNote" class="note"></p>
+      </div></details>
+    <details class="acc grp"><summary><span class="gs"><span class="gt">알림</span><small id="sumAlert"></small></span></summary><div class="in">
+        <div class="toggle"><span>앱을 열어 둔 동안 화면 알림</span><button id="alertSw" class="sw" type="button" role="switch" aria-checked="true" aria-label="화면 알림"></button></div>
+        <button id="alertTest" class="btn block" type="button">알림 미리 보기</button>
+        <button id="notifyBtn" class="btn block" type="button">다른 탭에 있을 때도 알림 받기</button>
+        <p id="notifyMsg" class="note">PC 브라우저에서 이 탭을 열어 둔 채 다른 창을 쓰고 있어도 알림이 뜹니다.</p>
+        <h4>잠금 화면 알림</h4>
+        <p>앱을 닫아도 핵심 11개 시각에 휴대폰 알림이 옵니다. 오늘 고른 기상 시각 기준이고, 아직 안 골랐으면 가장 최근 기상 시각을 씁니다.</p>
+        <button id="pushBtn" class="btn primary block" type="button">잠금 화면 알림 켜기</button>
+        <button id="pushTest" class="btn block" type="button" hidden>테스트 알림 보내기</button>
+        <p id="pushMsg" class="note" role="status"></p>
+      </div></details>
+    <details class="acc grp" id="editAcc"><summary><span class="gs"><span class="gt">기본 루틴</span><small id="sumBase"></small></span></summary><div class="in"><div class="scope"><b>앞으로 반복할 기본 루틴</b><span>여기서 바꾸면 매일의 기본 계획이 바뀌어요. 오늘 하루만 바꾸는 설정이 아니에요. (오늘 기상 시각을 고르는 건 그날 계획만 바꿔요.)</span></div>
         <p class="note">끈 항목은 타임라인·알림·체크에서 빠져요. 시간은 기상 시각 기준으로 앞뒤 2시간까지 옮길 수 있어요.</p>
         <h4>평소 기상 · 목표 수면</h4>
         <ul class="edlist"><li><span></span><span class="nm">평소 기상</span><select id="edBase" aria-label="평소 기상 시각"></select></li>
@@ -1045,11 +1044,14 @@ h1,h2,h3{font-weight:300;letter-spacing:-.02em;line-height:1.2}
         <div class="addck"><input id="edNew" maxlength="24" placeholder="나만의 체크 추가 (최대 3개)"><button id="edAdd" class="btn" type="button">추가</button></div>
         <div class="datarow"><button id="edSave" class="btn primary block" type="button">저장</button><button id="edReset" class="btn block" type="button">처음 상태로</button></div>
         <p id="edMsg" class="note" role="status"></p>
-      </div>
-    </details>
-    <details class="acc" id="ouraAcc">
-      <summary>Oura 링 연결</summary>
-      <div class="in">
+      </div></details>
+    <details class="acc grp" id="infoAcc"><summary><span class="gs"><span class="gt">내 정보</span><small id="sumInfo"></small></span></summary><div class="in">
+        <p>나이를 넣으면 Zone 2 심박 범위를 계산해요. 비워 두면 기본값 118~137bpm(근거 1)을 씁니다. 체중은 단백질 목표(체중×1.6g)와 운동 칼로리 추정에 써요.</p>
+        <div class="row2"><div class="field"><label for="woAge">나이</label><input id="woAge" type="number" inputmode="numeric" min="12" max="90"></div><div class="field"><label for="woBw">체중(kg)</label><input id="woBw" type="number" inputmode="decimal" min="30" max="250"></div><div class="field"><label for="woKcal">칼로리 목표</label><input id="woKcal" type="number" inputmode="numeric" min="800" max="6000" placeholder="선택"></div></div>
+        <button id="woAgeSave" class="btn block" type="button">저장</button>
+        <p id="woAgeMsg" class="note" role="status"></p>
+      </div></details>
+    <details class="acc grp" id="ouraAcc"><summary><span class="gs"><span class="gt">연동</span><small id="sumOura"></small></span></summary><div class="in">
         <p id="ouraNote" class="note"></p>
         <div class="datarow ourabtns">
           <button id="ouraConnect" class="btn primary block" type="button">Oura 계정 연결</button>
@@ -1057,11 +1059,8 @@ h1,h2,h3{font-weight:300;letter-spacing:-.02em;line-height:1.2}
           <button id="ouraOff" class="btn block" type="button" hidden>연결 끊기</button>
         </div>
         <p id="ouraMsg" class="note" role="status"></p>
-      </div>
-    </details>
-    <details class="acc" id="dataAcc">
-      <summary>내 데이터 · 계정</summary>
-      <div class="in">
+      </div></details>
+    <details class="acc grp" id="dataAcc"><summary><span class="gs"><span class="gt">데이터 · 계정</span><small id="sumData"></small></span></summary><div class="in"><p id="saveState" class="note" role="status"></p><p id="guestAcctNote" class="note" hidden>게스트 기록은 이 기기(브라우저)에만 저장돼요. 클라우드 동기화가 아니라서 브라우저 데이터를 지우면 사라질 수 있어요. Google 연결·비밀번호 변경·계정 삭제는 위쪽 ‘등록하기’로 계정을 만든 뒤 쓸 수 있어요.</p>
         <p>지금까지의 기록을 파일로 받아 둘 수 있어요. CSV는 엑셀·넘버스에서 바로 열리고, JSON은 모든 값을 그대로 담습니다.</p>
         <div class="datarow">
           <button class="btn block" type="button" data-export="csv">CSV로 받기</button>
@@ -1083,14 +1082,15 @@ h1,h2,h3{font-weight:300;letter-spacing:-.02em;line-height:1.2}
           </div>
           <button id="pinChange" class="btn block" type="button">비밀번호 바꾸기</button>
           </div>
-          <h4>계정 삭제</h4>
-          <p id="delNote" class="note">이 닉네임과 모든 날짜 기록, 알림 등록을 지웁니다. 되돌릴 수 없으니 먼저 파일로 받아 두세요. 위 ‘지금 비밀번호’ 칸에 비밀번호를 넣고 누르세요.</p>
+        </div>
+      </div></details>
+    <section class="dangerzone acct" id="dangerZone">
+          <h3>위험 구역 · 계정 삭제</h3>
+          <p id="delNote" class="note">이 닉네임과 모든 날짜 기록, 알림 등록을 지웁니다. 되돌릴 수 없으니 먼저 파일로 받아 두세요. ‘데이터 · 계정’의 ‘지금 비밀번호’ 칸에 비밀번호를 넣고 누르세요.</p>
           <button id="acctDelete" class="btn block danger" type="button">계정과 기록 모두 삭제</button>
           <p id="acctMsg" class="note" role="status"></p>
-        </div>
-      </div>
-    </details>
-    <p class="note">하루의 경계는 새벽 4시입니다. 자정을 넘겨도 새벽 4시 전까지는 전날 기록으로 이어집니다.</p>
+    </section>
+  </div>
   </section>
 
   <!-- ===== WORKOUT ===== -->
@@ -1120,58 +1120,50 @@ h1,h2,h3{font-weight:300;letter-spacing:-.02em;line-height:1.2}
   </section>
 
   <section id="tab-wguide" class="tab" role="tabpanel" aria-label="운동 가이드" hidden>
-    <div class="head"><span class="eyebrow">루틴설계서 1~7 기준</span><h2>운동 가이드</h2></div>
-    <details class="acc" open>
-      <summary>내 정보</summary>
-      <div class="in">
-        <p>나이를 넣으면 Zone 2 심박 범위를 계산해요. 비워 두면 기본값 118~137bpm(문서1)을 씁니다. 체중은 단백질 목표(체중×1.6g)와 운동 칼로리 추정에 써요.</p>
-        <div class="row2"><div class="field"><label for="woAge">나이</label><input id="woAge" type="number" inputmode="numeric" min="12" max="90"></div><div class="field"><label for="woBw">체중(kg)</label><input id="woBw" type="number" inputmode="decimal" min="30" max="250"></div><div class="field"><label for="woKcal">칼로리 목표</label><input id="woKcal" type="number" inputmode="numeric" min="800" max="6000" placeholder="선택"></div></div>
-        <button id="woAgeSave" class="btn block" type="button">저장</button>
-        <p id="woAgeMsg" class="note" role="status"></p>
-      </div>
-    </details>
+    <div class="head"><span class="eyebrow">참고 근거 1~7</span><h2>운동 가이드</h2></div>
+    <p class="note">나이·체중·칼로리 목표는 <button class="link strong" type="button" data-more-open="infoAcc">더보기 › 설정 › 내 정보</button>에서 바꿔요.</p>
     <details class="acc">
       <summary>한 주 구조</summary>
       <div class="in"><ul>
-        <li><b>근력 3 : 지구력 2, 토요일 완전 휴식</b>: 월·수·금 전신 웨이트, 화·목 Zone 2, 일요일 길고 느린 야외 운동(60~75분). 요일은 컨디션에 맞춰 하루씩 옮겨도 된다. (문서1)</li>
-        <li><b>한 세션 60분(±15분) 이내</b>: 1시간을 넘기는 격렬한 운동은 코르티솔을 높일 수 있다. 강한 운동 두 가지를 같은 날 하지 않는다. (문서1)</li>
-        <li><b>일정이 자주 깨지면 전신 3회</b>: 하루를 빠져도 한 부위를 2주씩 안 하게 되지 않는다. 같은 근육은 48~72시간 간격. (문서1·7)</li>
-        <li><b>바쁜 시기 최소량</b>: 전신 근력 20분 × 주 2회, 또는 3종목 × 3세트 × 3회(약 20분). (문서1·7)</li>
-        <li><b>운동 시각</b>: 기본은 아침 공복(문서1). 공복이 힘들면 바나나·단백질을 먼저 먹는다. 아침이 어려우면 늦은 오후도 좋다(문서3·4). 취침 직전 격렬한 운동만 피한다.</li>
+        <li><b>근력 3 : 지구력 2, 토요일 완전 휴식</b>: 월·수·금 전신 웨이트, 화·목 Zone 2, 일요일 길고 느린 야외 운동(60~75분). 요일은 컨디션에 맞춰 하루씩 옮겨도 된다. (근거 1)</li>
+        <li><b>한 세션 60분(±15분) 이내</b>: 1시간을 넘기는 격렬한 운동은 코르티솔을 높일 수 있다. 강한 운동 두 가지를 같은 날 하지 않는다. (근거 1)</li>
+        <li><b>일정이 자주 깨지면 전신 3회</b>: 하루를 빠져도 한 부위를 2주씩 안 하게 되지 않는다. 같은 근육은 48~72시간 간격. (근거 1·7)</li>
+        <li><b>바쁜 시기 최소량</b>: 전신 근력 20분 × 주 2회, 또는 3종목 × 3세트 × 3회(약 20분). (근거 1·7)</li>
+        <li><b>운동 시각</b>: 기본은 아침 공복(근거 1). 공복이 힘들면 바나나·단백질을 먼저 먹는다. 아침이 어려우면 늦은 오후도 좋다(근거 3·4). 취침 직전 격렬한 운동만 피한다.</li>
       </ul></div>
     </details>
     <details class="acc">
       <summary>근력 기본값</summary>
       <div class="in"><ul>
-        <li><b>동작으로 고른다</b>: 밀기·당기기·힌지·스쿼트·회전 + 캐리. 회전은 6개월, 힌지는 8~10주 이상 빼지 않는다. (문서7)</li>
-        <li><b>볼륨</b>: 근육별 주 9~12세트(최소 10세트), 유지만 하려면 주 5세트 이상. (문서1·7)</li>
-        <li><b>강도</b>: 실패 1~3회 전(RIR 1~3)까지. 세트의 약 10~20%만 한계까지, 바벨 스쿼트는 RIR 1~2에서 멈춘다. 자세가 무너지는 순간이 실패다. (문서1·7)</li>
-        <li><b>반복·휴식</b>: 근력 3~5회·휴식 3~5분, 근비대 8~12회(5~30회 모두 유효)·휴식 약 2분. 큰 복합 운동 먼저, 고립은 뒤에. (문서7)</li>
-        <li><b>템포</b>: 올릴 때 최대한 빠르게(의도가 중요), 내릴 때만 조절. (문서1·7)</li>
-        <li><b>진행</b>: 범위 상단을 2회 이상 넘기면 다음 세트 +2.5%, 하단보다 2회 이상 모자라면 −10%. 강도는 주 3~5%, 볼륨은 주 5% 이내로 올린다. (문서7)</li>
-        <li><b>종목 유지·디로드</b>: 종목은 6주(현실적으로 10~12주) 유지, 약 5주(최대 8주)마다 한 주는 볼륨 약 50%로 쉰다. (문서1·7)</li>
+        <li><b>동작으로 고른다</b>: 밀기·당기기·힌지·스쿼트·회전 + 캐리. 회전은 6개월, 힌지는 8~10주 이상 빼지 않는다. (근거 7)</li>
+        <li><b>볼륨</b>: 근육별 주 9~12세트(최소 10세트), 유지만 하려면 주 5세트 이상. (근거 1·7)</li>
+        <li><b>강도</b>: 실패 1~3회 전(RIR 1~3)까지. 세트의 약 10~20%만 한계까지, 바벨 스쿼트는 RIR 1~2에서 멈춘다. 자세가 무너지는 순간이 실패다. (근거 1·7)</li>
+        <li><b>반복·휴식</b>: 근력 3~5회·휴식 3~5분, 근비대 8~12회(5~30회 모두 유효)·휴식 약 2분. 큰 복합 운동 먼저, 고립은 뒤에. (근거 7)</li>
+        <li><b>템포</b>: 올릴 때 최대한 빠르게(의도가 중요), 내릴 때만 조절. (근거 1·7)</li>
+        <li><b>진행</b>: 범위 상단을 2회 이상 넘기면 다음 세트 +2.5%, 하단보다 2회 이상 모자라면 −10%. 강도는 주 3~5%, 볼륨은 주 5% 이내로 올린다. (근거 7)</li>
+        <li><b>종목 유지·디로드</b>: 종목은 6주(현실적으로 10~12주) 유지, 약 5주(최대 8주)마다 한 주는 볼륨 약 50%로 쉰다. (근거 1·7)</li>
       </ul></div>
     </details>
     <details class="acc">
       <summary>Zone 2 · 4×4 · 장시간</summary>
       <div class="in"><ul>
-        <li><b>Zone 2</b>: 최대심박(220−나이)의 60~70%, 코 호흡이 유지되고 대화할 수 있는 강도. 주 180~195분이 기본. 일상 걷기도 합산된다. (문서1)</li>
-        <li><b>노르웨이 4×4</b>: 4분은 대화가 안 될 만큼(최대심박 약 75~85%) 하지만 4분을 끝까지 유지할 강도, 3분은 아주 가볍게. 4세트, 주 1회 화요일 Zone 2를 대신한다. 처음엔 강도를 낮춰 시작한다. (문서1·3)</li>
-        <li><b>장시간</b>: 일요일 걷기·하이킹·러킹·느린 조깅 60~75분. 속도를 올리지 않는 것이 핵심. (문서1)</li>
-        <li><b>운동 스낵</b>: 20초 계단 오르기나 맨몸 스쿼트 30개를 하루 3회. 앉아 있는 날 혈당과 심폐 체력에 도움. (문서3·7)</li>
+        <li><b>Zone 2</b>: 최대심박(220−나이)의 60~70%, 코 호흡이 유지되고 대화할 수 있는 강도. 주 180~195분이 기본. 일상 걷기도 합산된다. (근거 1)</li>
+        <li><b>노르웨이 4×4</b>: 4분은 대화가 안 될 만큼(최대심박 약 75~85%) 하지만 4분을 끝까지 유지할 강도, 3분은 아주 가볍게. 4세트, 주 1회 화요일 Zone 2를 대신한다. 처음엔 강도를 낮춰 시작한다. (근거 1·3)</li>
+        <li><b>장시간</b>: 일요일 걷기·하이킹·러킹·느린 조깅 60~75분. 속도를 올리지 않는 것이 핵심. (근거 1)</li>
+        <li><b>운동 스낵</b>: 20초 계단 오르기나 맨몸 스쿼트 30개를 하루 3회. 앉아 있는 날 혈당과 심폐 체력에 도움. (근거 3·7)</li>
       </ul></div>
     </details>
     <details class="acc">
       <summary>워밍업 · 마무리 · 회복</summary>
       <div class="in"><ul>
-        <li><b>워밍업</b>: 동적 5~7분(뻐근하면 10분). 운동 전 정적 스트레칭은 하지 않는다. 무거운 날은 점진 세트 8 → 5 → 4 → 2회. (문서1·7)</li>
-        <li><b>마무리</b>: 누워서 코로 박스 호흡 3~5분, 느린 날숨을 60초 이상 할 수 있으면 회복된 것. 정적 스트레칭은 근육군당 30초 × 3세트를 운동 뒤에. (문서1·7)</li>
-        <li><b>찬물</b>: Zone 2 날은 샤워 마지막 1~3분, 웨이트 날은 30초~1분. 근력 직후 얼음물 입수는 근성장 신호를 둔화시킨다. (문서1·7)</li>
-        <li><b>컨디션 나쁜 날</b>: 취소보다 RPE 6, 무게 50% × 10회 × 3세트, 또는 Zone 2·걷기로 대체. 수면 6시간 이하면 고강도를 뺀다. 근육통 6/10 초과 부위는 쉰다. (문서1·7)</li>
-        <li><b>수면이 가장 강력한 회복</b>: 6시간 미만이면 근력·점프·지구력이 최대 30% 떨어진다. (문서5·7)</li>
+        <li><b>워밍업</b>: 동적 5~7분(뻐근하면 10분). 운동 전 정적 스트레칭은 하지 않는다. 무거운 날은 점진 세트 8 → 5 → 4 → 2회. (근거 1·7)</li>
+        <li><b>마무리</b>: 누워서 코로 박스 호흡 3~5분, 느린 날숨을 60초 이상 할 수 있으면 회복된 것. 정적 스트레칭은 근육군당 30초 × 3세트를 운동 뒤에. (근거 1·7)</li>
+        <li><b>찬물</b>: Zone 2 날은 샤워 마지막 1~3분, 웨이트 날은 30초~1분. 근력 직후 얼음물 입수는 근성장 신호를 둔화시킨다. (근거 1·7)</li>
+        <li><b>컨디션 나쁜 날</b>: 취소보다 RPE 6, 무게 50% × 10회 × 3세트, 또는 Zone 2·걷기로 대체. 수면 6시간 이하면 고강도를 뺀다. 근육통 6/10 초과 부위는 쉰다. (근거 1·7)</li>
+        <li><b>수면이 가장 강력한 회복</b>: 6시간 미만이면 근력·점프·지구력이 최대 30% 떨어진다. (근거 5·7)</li>
       </ul></div>
     </details>
-    <p class="note">근거: 루틴설계서 1(Huberman)·7(Galpin)의 운동 장을 중심으로, 3(Patrick)의 4×4·운동 스낵, 4(Panda)의 운동 시각, 5(Walker)의 수면과 운동, 6(Newport)·2(Yousef)의 휴식 원칙을 반영했습니다. 질환·부상이 있으면 시작 전에 의사와 상의하세요.</p>
+    <p class="note">근거: 근거 1(Huberman)·7(Galpin)의 운동 장을 중심으로, 3(Patrick)의 4×4·운동 스낵, 4(Panda)의 운동 시각, 5(Walker)의 수면과 운동, 6(Newport)·2(Yousef)의 휴식 원칙을 반영했습니다. 질환·부상이 있으면 시작 전에 의사와 상의하세요.</p>
   </section>
 </div>
 <div id="runner" class="runner" role="dialog" aria-modal="true" aria-labelledby="runTitle" hidden>
@@ -1189,7 +1181,7 @@ h1,h2,h3{font-weight:300;letter-spacing:-.02em;line-height:1.2}
     <button type="button" role="tab" data-tab="today" aria-selected="true"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="4.2" fill="none" stroke="currentColor" stroke-width="2"/><path d="M12 2.5v2.2M12 19.3v2.2M2.5 12h2.2M19.3 12h2.2M5.3 5.3l1.6 1.6M17.1 17.1l1.6 1.6M5.3 18.7l1.6-1.6M17.1 6.9l1.6-1.6" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>오늘</button>
     <button type="button" role="tab" data-tab="check" aria-selected="false"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3.5" y="3.5" width="17" height="17" rx="4" fill="none" stroke="currentColor" stroke-width="2"/><path d="M8 12.3l2.8 2.8L16.3 9.5" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>체크</button>
     <button type="button" role="tab" data-tab="log" aria-selected="false"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 20V12M10 20V6M15 20v-9M20 20V4" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"/></svg>기록</button>
-    <button type="button" role="tab" data-tab="guide" aria-selected="false"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 5.5C6.5 4 9.5 4 12 5.8 14.5 4 17.5 4 20 5.5V19c-2.5-1.4-5.5-1.4-8 .5-2.5-1.9-5.5-1.9-8-.5z" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/><path d="M12 5.8v13.7" stroke="currentColor" stroke-width="2"/></svg>기준</button>
+    <button type="button" role="tab" data-tab="guide" aria-selected="false" aria-label="더보기"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="5.5" cy="12" r="1.9" fill="currentColor"/><circle cx="12" cy="12" r="1.9" fill="currentColor"/><circle cx="18.5" cy="12" r="1.9" fill="currentColor"/></svg>더보기</button>
     <button type="button" role="tab" data-tab="wtoday" aria-selected="false" hidden><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 9.5v5M6 7.5v9M18 7.5v9M21 9.5v5M6 12h12" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"/></svg>오늘 운동</button>
     <button type="button" role="tab" data-tab="wweek" aria-selected="false" hidden><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3.5" y="5" width="17" height="15.5" rx="3" fill="none" stroke="currentColor" stroke-width="2"/><path d="M3.5 10h17M8 3v4M16 3v4" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>주간</button>
     <button type="button" role="tab" data-tab="wlog" aria-selected="false" hidden><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 19l5-6 4 3 7-9" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg>운동 기록</button>
@@ -1818,6 +1810,7 @@ $("#wakeChip").addEventListener("click",()=>openWake(false));
 /* two modes share one tab bar: 루틴 (today/check/log/guide) and 워크아웃 (wtoday/wweek/wlog/wdiet/wguide) */
 const R_TABS=["today","check","log","guide"],W_TABS=["wtoday","wweek","wlog","wdiet","wguide"];
 function setTab(t){
+  if(t==="settings"){moreWant="settings";t="guide"}else if(t==="more"||t==="base")t="guide";   // 예전·바로가기 식별자는 더보기로
   if(![...R_TABS,...W_TABS].includes(t))t="today";
   const workout=W_TABS.includes(t);
   S.tab=t;S.mode=workout?"workout":"routine";
@@ -1825,11 +1818,67 @@ function setTab(t){
   $$(".tabbar [data-tab]").forEach(b=>{b.hidden=W_TABS.includes(b.dataset.tab)!==workout;b.setAttribute("aria-selected",String(b.dataset.tab===t))});
   $$(".modesw [data-mode]").forEach(b=>b.setAttribute("aria-pressed",String(b.dataset.mode===S.mode)));
   [...R_TABS,...W_TABS].forEach(k=>$("#tab-"+k).hidden=k!==t);
+  if(t==="guide")showMore(moreWant);
   renderAll();window.scrollTo(0,0);
 }
 function setMode(m){setTab(m==="workout"?(LS.get("axis.wtab")||"wtoday"):(LS.get("axis.tab")||"today"))}
 $$(".modesw [data-mode]").forEach(b=>b.addEventListener("click",()=>setMode(b.dataset.mode)));
-$$(".tabbar [data-tab]").forEach(b=>b.addEventListener("click",()=>{if(b.dataset.tab==="check"&&S.tab!=="check")S.view=S.today;setTab(b.dataset.tab)}));
+$$(".tabbar [data-tab]").forEach(b=>b.addEventListener("click",()=>{if(b.dataset.tab==="check"&&S.tab!=="check")S.view=S.today;if(b.dataset.tab==="guide"&&S.tab!=="guide")moreWant=null;setTab(b.dataset.tab)}));
+/* ---------- 더보기: 가이드 | 설정 ----------
+   기본 진입은 가이드, 프로필(닉네임)·설정 바로가기는 설정. Routine/Workout을 오가도 마지막으로 본 쪽을 기억한다(저장 안 함). */
+let moreWant=null;
+function showMore(w){
+  if(w!=="settings")w="guide";moreWant=w;
+  $("#mpGuide").hidden=w!=="guide";$("#mpSet").hidden=w!=="settings";
+  [["#mtGuide","guide"],["#mtSet","settings"]].forEach(([q,k])=>{const b=$(q);b.setAttribute("aria-selected",String(k===w));b.tabIndex=k===w?0:-1});
+  $("#moreTitle").textContent=w==="settings"?"설정":"가이드";
+  renderWoGuide();moreRefresh();
+}
+$$(".moretabs [data-more]").forEach(b=>b.addEventListener("click",()=>{showMore(b.dataset.more);window.scrollTo(0,0)}));
+$(".moretabs").addEventListener("keydown",e=>{
+  const k=e.key;if(!["ArrowLeft","ArrowRight","Home","End"].includes(k))return;e.preventDefault();
+  const w=k==="Home"||k==="ArrowLeft"?"guide":"settings";showMore(w);$(w==="guide"?"#mtGuide":"#mtSet").focus();
+});
+$("#whoBtn").addEventListener("click",()=>{moreWant="settings";setTab("guide")});
+function openMoreItem(id){
+  moreWant="settings";if(S.tab!=="guide")setTab("guide");else showMore("settings");
+  const el=$("#"+id);if(el){el.open=true;setTimeout(()=>el.scrollIntoView({block:"start",behavior:"smooth"}),60)}
+}
+/* 운동 가이드의 설명은 복사하지 않고, 운동 모드 ⓘ 탭에 있는 그대로를 시트로 보여 준다 */
+function openWg(i){
+  const d=[...$("#tab-wguide").children].filter(x=>x.matches("details.acc"))[i];if(!d)return;
+  sheet(sheetHd(d.querySelector("summary").textContent.trim())+'<div class="guidesheet">'+d.querySelector(".in").innerHTML+'</div>');
+}
+document.addEventListener("click",e=>{
+  const mo=e.target.closest("[data-more-open]");if(mo){e.preventDefault();openMoreItem(mo.dataset.moreOpen);return}
+  const wg=e.target.closest("[data-wg]");if(wg)openWg(+wg.dataset.wg);
+});
+$("#tab-guide").addEventListener("click",()=>setTimeout(moreRefresh,120));
+$("#tab-guide").addEventListener("change",()=>setTimeout(moreRefresh,120));
+/* 접힌 그룹에도 현재 값을 한 줄로 보여 주고, 가이드에는 내 설정·기기 측정 값을 일반 제안과 구분해 붙인다 */
+function moreRefresh(){
+  if(!S.key)return;
+  const set=(q,t)=>{const e=$(q);if(e)e.textContent=t},html=(q,h)=>{const e=$(q);if(e)e.innerHTML=h};
+  const auto=$("#themeAuto").getAttribute("aria-checked")==="true",lk=$$("[data-look]").find(b=>b.getAttribute("aria-checked")==="true");
+  set("#sumTheme",auto?"자동 전환":(lk?lk.textContent.trim():""));
+  set("#sumAlert","화면 알림 "+($("#alertSw").getAttribute("aria-checked")==="true"?"켜짐":"꺼짐")+" · 잠금 화면 알림 "+(pushOn?"켜짐":"꺼짐"));
+  set("#sumBase","평소 기상 "+fmtW(baseWake())+" · 목표 수면 "+sleepTarget()+"시간");
+  const P=woP();set("#sumInfo","나이 "+(age()||"–")+" · 체중 "+(bw()?bw()+"kg":"–")+" · 칼로리 목표 "+(P.kcal||"–"));
+  set("#sumOura",S.guest?"로그인 필요":$("#ouraConnect").hidden?"연결됨":"연결 안 됨");
+  const pend=Object.keys(S.dirty).length+(S.prefsDirty?1:0),hm=S.lastLoad?pad(new Date(S.lastLoad).getHours())+":"+pad(new Date(S.lastLoad).getMinutes()):"";
+  if(S.guest){set("#sumData","이 기기에만 저장됨 · 게스트");set("#saveState","저장 상태: 이 기기(브라우저)에만 저장돼요. 서버에는 저장되지 않아요.")}
+  else{
+    set("#sumData",pend?"서버에 보내는 중 · 대기 "+pend+"건":navigator.onLine===false?"오프라인 · 이 기기에 저장됨":"서버로 보낼 변경 없음");
+    set("#saveState","저장 상태: "+(navigator.onLine===false?"오프라인이에요. 변경은 이 기기에 저장되고, 연결되면 서버로 보내요."+(pend?" (대기 "+pend+"건)":""):pend?"서버로 보내는 중이에요 (대기 "+pend+"건). 이 기기에는 이미 저장됐어요.":"서버로 보낼 변경이 없어요"+(hm?" · 마지막으로 서버와 맞춘 시각 "+hm:"")+"."));
+  }
+  $("#guestAcctNote").hidden=!S.guest;
+  const d=day(S.today),g=d.wake?waterGoalOf(d,S.today):null,cut=d.wake?caffCutOf(d,S.today):null;
+  html("#mealNow",d.wake&&g!=null?'<span class="bd u">내 설정</span> 오늘 기상 '+fmtW(+d.wake)+' 기준 · 물 '+g+'번'+(cut!=null?' · 카페인 마감 '+clk(cut):''):'<span class="bd g">일반 제안</span> 오늘 기상 시각을 고르면 내 물 횟수와 카페인 마감을 계산해 줘요.');
+  const z=z2Range();
+  html("#z2Now",age()?'<span class="bd u">내 설정</span> 나이 '+age()+' 기준 Zone 2 '+z[0]+'~'+z[1]+'bpm':'<span class="bd g">일반 제안</span> Zone 2 기본값 '+z[0]+'~'+z[1]+'bpm · <button class="link strong" type="button" data-more-open="infoAcc">나이를 넣으면 맞춰져요</button>');
+  const o=d.oura;
+  html("#ouraNow",o&&(o.ready!=null||o.sleep!=null)?'<span class="bd d">기기 측정</span> Oura 어젯밤 · 레디니스 '+(o.ready??"–")+' · 수면 '+(o.sleep??"–")+(o.hrv!=null?' · HRV '+Math.round(o.hrv):''):'<span class="bd d">기기 측정</span> Oura를 연결하면 어젯밤 측정값을 여기에 보여 줘요. 연결 안 한 경우 일반 제안만 보여요.');
+}
 
 /* ---------- render: today ---------- */
 function renderToday(){
@@ -2005,7 +2054,7 @@ function openEnergy(){
     +ouraBlock()
     +'<span class="lbl">수면 부채 · 최근 14일</span><p><b class="big2">'+sd.debt+'시간</b> <span class="s">(목표 '+sd.need+'시간, 기록 '+sd.n+'일)</span></p><p class="s">'+msg+'</p>'
     +'<span class="lbl">최근 7일 잔 시간</span>'+bars
-    +'<p class="s">목표 수면은 기준 탭 › 내 루틴 편집에서 바꿀 수 있어요.</p>');
+    +'<p class="s">목표 수면은 더보기 › 설정 › 기본 루틴에서 바꿀 수 있어요.</p>');
 }
 /* last night from Oura (when connected) */
 function ouraBlock(){
@@ -2813,7 +2862,7 @@ function z2Html(w,P,type){
   const [lo,hi]=z2Range(),t=w.sw||{},sec=swElapsed(t),run=!!t.run,goal=P.goal;
   const pct=Math.min(100,sec/60/goal[0]*100);
   return '<div class="card wohead"><span class="lbl">목표 심박</span><span class="big num">'+lo+'~'+hi+'<small> bpm</small></span>'
-    +'<span class="s">'+(age()?"최대심박 "+(220-age())+"의 60~70%":"기본값 (가이드 탭에서 나이를 넣으면 맞춰 계산)")+' · 코로만 숨 쉬고 말할 수 있으면 맞는 강도</span></div>'
+    +'<span class="s">'+(age()?"최대심박 "+(220-age())+"의 60~70%":"기본값 (더보기 › 설정 › 내 정보에서 나이를 넣으면 맞춰 계산)")+' · 코로만 숨 쉬고 말할 수 있으면 맞는 강도</span></div>'
     +'<div class="card timer"><span class="lbl">'+(type==="LONG"?"장시간":"Zone 2")+' 타이머 · 목표 '+goal[0]+(goal[1]!==goal[0]?"~"+goal[1]:"")+'분</span>'
     +'<b class="clock num" data-clock="sw">'+mmss(sec)+'</b><div class="bar"><i data-clockbar style="width:'+pct.toFixed(1)+'%"></i></div>'
     +'<div class="datarow"><button class="btn '+(run?"":"primary")+' block" type="button" data-wact="'+(run?"pause":"go")+'">'+(run?"일시정지":sec?"이어서":"시작")+'</button>'
@@ -3203,16 +3252,16 @@ function recAct(e){
    plan: Sun..Sat, a day key or a built-in (Z2·X44·LONG·REST). Session length, days a week and equipment are worked out from these. */
 const PROGRAMS=[
   {id:"huberman",who:"Andrew Huberman, Ph.D.",idea:"근력 3 : 지구력 2. 월·수·금 전신 웨이트, 화·목 Zone 2, 일요일 길고 느린 운동, 토요일 휴식",level:"중급",
-   src:"루틴설계서 1(Huberman) 운동 장 요약. 지금 앱의 기본 계획과 같아요.",
+   src:"근거 1(Huberman) 운동 장 요약. 지금 앱의 기본 계획과 같아요.",
    days:{a:["전신 A",WO.A.ex],b:["전신 B",WO.B.ex],c:["전신 C",WO.C.ex]},plan:["LONG","a","Z2","b","Z2","c","REST"]},
   {id:"galpin",who:"Andy Galpin, Ph.D.",idea:"근력·근비대. 밀기·당기기·힌지·스쿼트·회전·캐리를 고루, 큰 복합 운동 먼저, 실패 1~3회 전(RIR 1~3)까지",level:"중급 이상",
-   src:"루틴설계서 7(Galpin) 근력 기본값 요약: 근력 3~5회·휴식 3~5분, 근비대 8~12회·휴식 약 2분, 근육별 주 9~12세트, 일정이 자주 깨지면 전신 주 3회.",
+   src:"근거 7(Galpin) 근력 기본값 요약: 근력 3~5회·휴식 3~5분, 근비대 8~12회·휴식 약 2분, 근육별 주 9~12세트, 일정이 자주 깨지면 전신 주 3회.",
    days:{a:["근력 A",["sq","bp","pull","rdl","pallof","carry"],null,{sq:{r:"3~5",rest:180},bp:{r:"3~5",rest:180}}],
          b:["근력 B",["tbdl","ohp","brow","bss","rot","hang"],null,{tbdl:{r:"3~5",rest:180},ohp:{r:"3~5",rest:180}}],
          c:["근비대 C",["lp","idb","crow","hip","lc","core3"],null,{lp:{r:"8~12",rest:120},idb:{r:"8~12",rest:120},crow:{r:"8~12",rest:120},hip:{r:"8~12",rest:120},lc:{r:"8~12",rest:120}}]},
    plan:["REST","a","REST","b","REST","c","REST"]},
   {id:"patrick",who:"Rhonda Patrick, Ph.D.",idea:"심폐 체력. Zone 2를 꾸준히, 주 1회 노르웨이 4×4, 짧은 전신 근력과 운동 스낵",level:"입문",
-   src:"루틴설계서 3(Patrick)의 4×4·운동 스낵 요약. Zone 2 시간과 바쁜 날 근력 최소량은 루틴설계서 1·7 기준.",
+   src:"근거 3(Patrick)의 4×4·운동 스낵 요약. Zone 2 시간과 바쁜 날 근력 최소량은 근거 1·7 기준.",
    days:{s:["짧은 전신 근력",["sq","dbp","row1"],{s:3,r:"3~5",rest:120}]},plan:["LONG","Z2","X44","s","Z2","s","REST"]},
   {id:"arnold",short:"Arnold",who:"Arnold Schwarzenegger",idea:"많이 하는 클래식 분할. 가슴·등·하체 날과 어깨·팔 날을 번갈아 월~토 6일, 일요일 휴식",level:"상급",
    src:"『The New Encyclopedia of Modern Bodybuilding』 Level 1 (BarBend 정리). 원래 가슴·등은 아침, 하체·종아리·복근은 저녁에 따로 해서 여기 한 세션으로 합치면 깁니다. 스쿼트·비하인드 넥 프레스는 가벼운 15~20회 세트를 먼저, 복근은 매일.",
@@ -3486,7 +3535,7 @@ function renderWoDiet(){
   const pT=bw()?Math.round(bw()*1.6):null,kT=+woP().kcal||null,mt=mealTimes(D);
   const mbar=(lb,v,t,u)=>'<div class="mbar"><span>'+lb+'</span><div class="bar"><i style="width:'+(t?Math.min(100,v/t*100):0)+'%"></i></div><span class="pv">'+Math.round(v)+(t?' / '+t:'')+u+'</span></div>';
   let h='<div class="card"><span class="lbl">하루 합계</span>'+mbar("칼로리",kcal,kT,"kcal")+mbar("단백질",P,pT,"g")+mbar("탄수화물",C,null,"g")+mbar("지방",F,null,"g")
-    +(!pT||!kT?'<p class="s">'+(!pT?'운동 가이드 > 내 정보에 체중을 넣으면 단백질 목표(체중×1.6g)를 보여 드려요. ':'')+(!kT?'칼로리 목표도 넣을 수 있어요.':'')+'</p>':'')+'</div>';
+    +(!pT||!kT?'<p class="s">'+(!pT?'더보기 › 설정 › 내 정보에 체중을 넣으면 단백질 목표(체중×1.6g)를 보여 드려요. ':'')+(!kT?'칼로리 목표도 넣을 수 있어요.':'')+'</p>':'')+'</div>';
   if(mt&&mt.m1!=null){const near=meals.filter(m=>{const t=hmMin(m.at);return t!=null&&Math.abs((t<240?t+1440:t)-mt.m1)<=90}).reduce((s,m)=>s+(+m.p||0),0);
     h+='<div class="card"><span class="lbl">루틴과 함께 보기</span><p class="s">첫 식사 '+clk(mt.m1)+(mt.m2!=null?' · 저녁 '+clk(mt.m2)+' (취침 4시간 전까지 끝내기)':'')+'</p>'+mbar("첫 식사 단백질",near,40,"g")+'</div>'}
   const pm=(S.days[shift(D,-1)]||{}).meals||[],favs=prefs().favs||[];
@@ -3599,7 +3648,7 @@ $("#acctDelete").addEventListener("click",async()=>{
     }catch(e){m.textContent=G_ERR.net}finally{acctBusy=false}
     return;
   }
-  if(!pinOK(o)){m.textContent="‘지금 비밀번호’ 칸에 비밀번호를 넣고 눌러 주세요.";$("#pinOld").focus();return}
+  if(!pinOK(o)){m.textContent="‘데이터 · 계정’의 ‘지금 비밀번호’ 칸에 비밀번호를 넣고 눌러 주세요.";$("#dataAcc").open=true;$("#pinOld").focus();return}
   if(!confirm("‘"+S.nick+"’ 계정과 기록 "+Object.keys(S.days).length+"일치를 모두 지울까요? 되돌릴 수 없어요."))return;
   acctBusy=true;m.textContent="지우는 중…";
   try{
@@ -3977,10 +4026,10 @@ $("#gCancel").addEventListener("click",async()=>{if(sbc)await sbc.auth.signOut()
 /* settings: what each kind of sign-in can do */
 function acctView(){
   const g=isG();
-  $(".gacct").hidden=!!S.guest;$$(".nickonly").forEach(e=>e.hidden=g);$("#gConnect").hidden=g;
+  $("#guestAcctNote").hidden=!S.guest;$(".gacct").hidden=!!S.guest;$$(".nickonly").forEach(e=>e.hidden=g);$("#gConnect").hidden=g;
   $("#gAcctNote").textContent=g?(S.email||S.nick)+" Google 계정으로 로그인했어요.":"연결하면 Google로도 같은 기록을 열 수 있어요. 닉네임 로그인도 그대로 쓸 수 있어요.";
   $("#delNote").textContent=g?"Google 로그인과 모든 날짜 기록, 알림 등록을 지웁니다. 되돌릴 수 없으니 먼저 파일로 받아 두세요."
-    :"이 닉네임과 모든 날짜 기록, 알림 등록을 지웁니다. 되돌릴 수 없으니 먼저 파일로 받아 두세요. 위 ‘지금 비밀번호’ 칸에 비밀번호를 넣고 누르세요.";
+    :"이 닉네임과 모든 날짜 기록, 알림 등록을 지웁니다. 되돌릴 수 없으니 먼저 파일로 받아 두세요. ‘데이터 · 계정’의 ‘지금 비밀번호’ 칸에 비밀번호를 넣고 누르세요.";
 }
 
 /* ---------- Oura (axis-oura Edge Function holds the Oura sign-in; the app only asks it to start, sync or forget) ----------

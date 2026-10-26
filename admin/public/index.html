@@ -1,0 +1,43 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="robots" content="noindex,nofollow">
+<title>AXIS 운영자 조회</title>
+<link rel="stylesheet" href="/app.css">
+</head>
+<body>
+<header class="top">
+  <div class="brand">AXIS <span>운영자 조회</span></div>
+  <div id="mode" class="mode" role="status"></div>
+</header>
+<main>
+  <section id="login" hidden>
+    <h2>운영자 확인</h2>
+    <p class="muted">이 도구는 이 컴퓨터(127.0.0.1)에서만 열려요. 서버에 설정한 운영자 토큰을 입력해 주세요.</p>
+    <form id="loginForm"><label for="tok">운영자 토큰</label><input id="tok" type="password" autocomplete="off"><button class="btn" type="submit">확인</button></form>
+    <p id="loginMsg" class="err" role="alert"></p>
+  </section>
+  <section id="blocked" hidden>
+    <h2>조회가 차단되어 있어요</h2>
+    <p>관리자 인증이 구성되지 않아 실제 개인 데이터를 조회할 수 없어요. 필요한 환경변수는 <code>docs/analytics/operations.md</code>에 있어요. 합성 데이터로 확인하려면 <code>--synthetic</code>으로 실행해요.</p>
+  </section>
+  <section id="app" hidden>
+    <nav class="tabs" role="tablist" aria-label="화면">
+      <button role="tab" id="t-stats" aria-selected="true" data-tab="stats">전체 통계</button>
+      <button role="tab" id="t-users" aria-selected="false" data-tab="users">사용자 목록</button>
+    </nav>
+    <div class="period" role="group" aria-label="기간">
+      <button data-days="7" aria-pressed="false">최근 7일</button>
+      <button data-days="30" aria-pressed="true">최근 30일</button>
+      <label>시작 <input type="date" id="from"></label><label>끝 <input type="date" id="to"></label>
+      <button id="apply">적용</button>
+    </div>
+    <p id="status" class="muted" role="status"></p>
+    <div id="view"></div>
+  </section>
+</main>
+<script src="/app.js"></script>
+</body>
+</html>

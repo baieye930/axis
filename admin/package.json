@@ -1,0 +1,10 @@
+{
+  "name": "axis-admin",
+  "private": true,
+  "type": "module",
+  "description": "AXIS 운영자 조회 도구(읽기 전용, 로컬 전용). 공개 앱에 배포하지 않는다.",
+  "scripts": {
+    "start:synthetic": "node server.mjs --synthetic",
+    "test": "node --test test/stats.test.mjs test/server.test.mjs"
+  }
+}

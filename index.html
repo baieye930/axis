@@ -1034,7 +1034,7 @@ h1,h2,h3{font-weight:300;letter-spacing:-.02em;line-height:1.2}
         <h4>평소 기상 · 목표 수면</h4>
         <ul class="edlist"><li><span></span><span class="nm">평소 기상</span><select id="edBase" aria-label="평소 기상 시각"></select></li>
           <li><span></span><span class="nm">목표 수면</span><select id="edSleep" aria-label="목표 수면 시간"></select></li></ul>
-        <p class="note">이 시각보다 1시간 넘게 늦게 일어난 날은 하루를 통째로 밀지 않아요. 식사·저녁·취침은 평소 시각 그대로 두고, 오전은 일어난 시각부터 물·햇빛을 먼저 넣은 뒤 남는 시간만큼 운동과 딥워크를 넣어요. 오전에 못 한 운동과 딥워크는 오후로 옮겨요.</p>
+        <p class="note">이 시각보다 1시간 넘게 늦게 일어난 날은 하루를 통째로 밀지 않아요. 식사·취침은 평소 시각 그대로 두고(저녁 식사는 항상 19:00 시작, 취침은 아무리 늦어도 새벽 1시까지), 오전은 일어난 시각부터 물·햇빛을 먼저 넣은 뒤 남는 시간만큼 운동과 딥워크를 넣어요. 오전에 못 한 운동과 딥워크는 오후로 옮겨요.</p>
         <h4>타임라인</h4>
         <ul id="edTl" class="edlist"></ul>
         <h4>매일 체크</h4>
@@ -1324,7 +1324,35 @@ const TL_IDS=["water","sun1","move","shower","commute","deep1","hard","meal1","s
    later than that, meals and the evening keep their usual clock times and the morning is rebuilt from W (reflow) */
 function timeline(W,dow){
   const B=baseWake()*60;
-  return W-B>LATE_MIN?reflow(W,B,dow):shifted(W,dow);
+  return anchorEvening(W-B>LATE_MIN?reflow(W,B,dow):shifted(W,dow),W);
+}
+/* 저녁 식사는 매일 19:00 시작으로 고정하고, 취침은 아무리 늦어도 01:00을 넘기지 않는다.
+   저녁 식사는 취침 3시간 전에 끝나는 것이 기준(식사는 30~90분. 취침이 22:30보다 이르면 19:00 고정 대신 기존 시각 유지).
+   저녁 이후(독서 · 계획 · 조명 · 화면 · 취침)는 취침 시각 기준으로 다시 맞추고, 카페인 마감은 취침 9시간 전을 유지한다. */
+const DINNER_AT=19*60,BED_MAX=25*60,EVE_IDS=["meal2","read","plan","dim","screen","sleep"];
+function anchorEvening(items,W){
+  const sl=items.find(x=>x.id==="sleep");if(!sl)return items;
+  const bed0=W+sl.o,bed=Math.min(bed0,BED_MAX);
+  const din=items.find(x=>x.id==="meal2"),canDin=din&&W<DINNER_AT&&bed-180>=DINNER_AT+30;
+  const dEnd=canDin?DINNER_AT+Math.min(90,Math.max(30,bed-180-DINNER_AT)):0;
+  const set=(id,a,b)=>{const x=items.find(y=>y.id===id);if(!x||x.shift)return;x.o=a-W;if(b!=null)x.e=b-W};
+  if(bed!==bed0||canDin){
+    set("screen",bed-60,bed);set("dim",bed-90,bed-60);set("plan",bed-120,bed-90);
+    if(canDin)set("read",dEnd,Math.max(dEnd+15,Math.min(dEnd+60,bed-120)));
+    sl.o=bed-W;
+  }
+  if(canDin){
+    din.o=DINNER_AT-W;din.e=dEnd-W;
+    const gap=Math.round((bed-dEnd)/30)/2;
+    din.d=clk(DINNER_AT)+" 시작, 늦어도 "+clk(dEnd)+"까지 끝내기(취침 "+gap+"시간 전). "+din.d.slice(din.d.indexOf("). ")+3);
+    /* 저녁 식사 이후에 걸리는 낮 일정은 식사 앞에서 자르거나 뺀다 */
+    for(let i=items.length-1;i>=0;i--){
+      const x=items[i];if(x===din||EVE_IDS.includes(x.id)||x.mark)continue;
+      if(W+x.o>=DINNER_AT)items.splice(i,1);else if(x.e<2000&&W+x.e>DINNER_AT){if(DINNER_AT-W-x.o<10)items.splice(i,1);else x.e=DINNER_AT-W}
+    }
+  }
+  const cm=items.find(x=>x.mark);if(cm&&bed!==bed0)cm.o=bed-540-W;
+  return items.sort((a,b)=>a.o-b.o||(b.mark?1:0)-(a.mark?1:0));
 }
 /* the timeline after this person's edits: hidden rows dropped, renamed, shifted (minutes), re-sorted */
 function shifted(W,dow){

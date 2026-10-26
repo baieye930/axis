@@ -207,6 +207,19 @@ p{margin:0}
 .dots i.p{background:var(--soft)}
 .dots i.on{background:var(--accent)}
 .dots i.today{outline:1.5px solid var(--accent);outline-offset:1px}
+.dots i.miss{background:transparent;box-shadow:inset 0 0 0 1.5px var(--accent)}
+.dots i.n{background:repeating-linear-gradient(45deg,transparent 0 3px,var(--line) 3px 5px);box-shadow:inset 0 0 0 1px var(--line)}
+.dots-key{display:flex;flex-wrap:wrap;gap:.2rem .8rem;font-size:.72rem;color:var(--muted)}
+.dots-key span{display:inline-flex;align-items:center;gap:.3rem}.dots-key i{width:.8rem;height:.8rem;border-radius:3px;background:var(--surface2);display:inline-block}
+.dots-key i.p{background:var(--soft)}.dots-key i.on{background:var(--accent)}
+.dots-key i.miss{background:transparent;box-shadow:inset 0 0 0 1.5px var(--accent)}
+.dots-key i.n{background:repeating-linear-gradient(45deg,transparent 0 2px,var(--line) 2px 4px);box-shadow:inset 0 0 0 1px var(--line)}
+.days .pc.none{color:var(--muted);font-weight:400;font-size:.8rem;white-space:nowrap}
+.wkd{display:grid;grid-template-columns:repeat(7,1fr);gap:.3rem;text-align:center;margin:.5rem 0}
+.wkd div{display:grid;gap:.1rem;padding:.35rem 0;border-radius:10px;background:var(--surface2)}
+.wkd small{font-size:.68rem;color:var(--muted)}.wkd b{font-size:.78rem;font-family:var(--f-num);font-weight:600}
+.wkd .n{background:transparent;box-shadow:inset 0 0 0 1px var(--line)}.wkd .n b{color:var(--muted);font-weight:400}.wkd .fut{opacity:.45}
+.retro{margin:.2rem 0 .4rem;padding-left:1.1rem;display:grid;gap:.25rem;font-size:.9rem}
 .dots-lb{display:flex;justify-content:space-between;font-size:.75rem;color:var(--muted)}
 .empty{display:grid;gap:.8rem;justify-items:start;padding:1.3rem;border-radius:var(--r);border:1.5px dashed var(--line);background:var(--surface)}
 
@@ -437,6 +450,7 @@ p{margin:0}
 .drow{display:grid;grid-template-columns:8.6rem 1fr;gap:.4rem}
 .drow4{display:grid;grid-template-columns:repeat(4,1fr);gap:.35rem}
 .meals .mrow{display:grid;grid-template-columns:3.2rem 1fr auto;gap:.6rem;align-items:center;padding:.55rem 1.05rem}
+.meals .macts{display:flex;gap:.3rem}.meals .macts .chip{width:2.2rem;padding:0;text-align:center}
 .meals li+li .mrow{border-top:1px solid var(--line)}
 .meals small{display:block;color:var(--muted);font-size:.78rem}
 #dietDate{display:flex;align-items:center;gap:.4rem}
@@ -681,6 +695,17 @@ h1,h2,h3{font-weight:300;letter-spacing:-.02em;line-height:1.2}
 /* 워크아웃 빠른 입력 */
 .sets.cardio,.wo-lite .sets.cardio{grid-template-columns:2.4rem 1fr 1fr 3.6rem 2.6rem}
 .sets input.cur{border-color:var(--accent);border-width:2px}
+.exmore>summary{cursor:pointer;font-size:.78rem;color:var(--muted);list-style:none;padding:.1rem 0}
+.exmore>summary::-webkit-details-marker{display:none}
+.exmore[open]>summary{margin-bottom:.35rem}
+.exc .last{margin:0;font-size:.8rem;color:var(--muted)}
+.restcard{display:grid;gap:.4rem;text-align:center}
+.restcard .clock{font-family:var(--f-num);font-size:3rem;font-weight:300;line-height:1.1}
+.exlist{list-style:none;margin:.2rem 0 .4rem;padding:0;display:grid;gap:.3rem}
+.exlist button{display:flex;align-items:center;gap:.6rem;width:100%;text-align:left;border:0;border-radius:14px;background:var(--surface2);padding:.6rem .8rem;font:inherit;color:inherit;cursor:pointer;min-height:2.6rem}
+.exlist button.on{outline:2px solid var(--accent)}
+.exlist button.fin .nm{color:var(--muted);text-decoration:line-through}
+.exlist .nm{flex:1;min-width:0}.exlist small{color:var(--muted)}
 .qadj{display:flex;flex-wrap:wrap;gap:.3rem;align-items:center;margin-top:.15rem}
 .qadj .s{font-size:.78rem;color:var(--muted);margin-right:.2rem}
 .qadj .chip{min-height:2.5rem;padding:.2rem .8rem;background:var(--soft);font-family:var(--f-num);font-size:.9rem;font-weight:600}
@@ -2152,6 +2177,8 @@ function renderCheck(){
 
 /* ---------- streak: days with GOAL+ of the checks in use, in a row ---------- */
 const passes=d=>!!(d&&d.wake&&CHECKS.filter(c=>d.checks&&d.checks[c.id]).length>=GOAL);
+/* 기록한 날 = 기상 시각 말고도 체크·수면·컨디션·수분·식사·운동 중 하나라도 남긴 날. 기상 시각만 있는 날은 '기록 없음'이라 점수·평균에서 뺀다 */
+const hasRec=d=>!!(d&&d.wake&&(CHECKS.some(c=>d.checks&&d.checks[c.id])||num(d.sleepH)||num(d.fresh)||num(d.focus)||typeof d.slump==="boolean"||+d.cups>0||(d.meals&&d.meals.length)||(d.wo&&d.wo.s&&Object.keys(d.wo.s).length)));
 function shift(date,n){const d=parseYmd(date);d.setDate(d.getDate()+n);return ymd(d)}
 function streakOf(){
   const todayOn=passes(S.days[S.today]);
@@ -2168,23 +2195,31 @@ const wband=w=>Math.round(+w)%24,bandL=h=>h+"시";
 /* this week (Mon~today) next to last week: wake, sleep, rate, days passed, and the check kept least */
 function weekHtml(){
   const back=(parseYmd(S.today).getDay()+6)%7,mon=shift(S.today,-back);
-  const span=a=>{const o=[];for(let i=0;i<7;i++){const k=shift(a,i);if(k>S.today)break;const x=S.days[k];if(x&&x.wake)o.push(x)}return o};
-  const cur=span(mon),prev=span(shift(mon,-7));if(!cur.length)return "";
+  const span=a=>{const o=[];for(let i=0;i<7;i++){const k=shift(a,i);if(k>S.today)break;const x=S.days[k];if(hasRec(x))o.push(x)}return o};
+  const cur=span(mon),prev=span(shift(mon,-7));if(!cur.length)return '<div class="empty"><p><b>이번 주 회고는 기록이 쌓이면 보여드려요</b><br>체크 탭에서 오늘 항목을 하나라도 남기면 시작돼요</p></div>';
   const mean=(a,f)=>{const v=a.map(f).filter(v=>v!=null&&isFinite(v));return v.length?v.reduce((s,x)=>s+x,0)/v.length:null};
   const wk=a=>mean(a,x=>+x.wake),sl=a=>mean(a,x=>num(x.sleepH)?+x.sleepH:null),pc=a=>mean(a,x=>pctOf(x)*100),ps=a=>a.filter(passes).length;
   const h1=v=>v==null?"–":v.toFixed(1)+"h",p1=v=>v==null?"–":Math.round(v)+"%";
   const cell=(l,v,s)=>'<div><span class="lbl">'+l+'</span><b>'+v+'</b>'+(s?'<small>'+s+'</small>':'')+'</div>',was=f=>prev.length?"지난주 "+f:"";
   const kept=CHECKS.map(c=>({t:c.t,n:cur.filter(x=>x.checks&&x.checks[c.id]).length})).sort((a,b)=>a.n-b.n)[0];
-  return '<div class="card week"><div class="hd"><span class="eyebrow">이번 주</span><span class="note">'+esc(dateLabel(mon))+'부터 · '+cur.length+'일</span></div><div class="wk4">'
+  /* 주간 회고: 기상 편차, 평균 수면, 낮 집중 — 기록한 날만 */
+  const mw=wk(cur),dev=cur.length>=3&&mw!=null?cur.map(x=>({x,d:Math.round((+x.wake-mw)*60)})).sort((a,b)=>b.d-a.d)[0]:null;
+  const fo=mean(cur,x=>num(x.focus)?+x.focus:null),foN=cur.filter(x=>num(x.focus)).length;
+  const strip='<div class="wkd">'+Array.from({length:7},(_,i)=>{const k=shift(mon,i),x=S.days[k],r=hasRec(x);return '<div class="'+(r?"":"n")+(k>S.today?" fut":"")+'"><small>'+DOW[parseYmd(k).getDay()]+'</small><b>'+(r?fmtW(+x.wake):"–")+'</b></div>'}).join("")+'</div>';
+  const retro=cur.length<3?'<p class="note">기록한 날이 3일 이상이면 기상·수면·집중을 돌아봐 드려요 (지금 '+cur.length+'일)</p>'
+    :'<ul class="retro"><li>기상 평균 '+fmtW(mw)+(dev&&dev.d>=60?' · <b>'+DOW[parseYmd(dev.x.date).getDay()]+'요일</b>이 평균보다 '+dev.d+'분 늦었어요. 기상 시각 변동은 1시간 이내가 기준이에요 (가이드)':' · 변동이 1시간 안이에요')+'</li>'
+      +(sl(cur)!=null?'<li>평균 수면 '+h1(sl(cur))+' ('+cur.filter(x=>num(x.sleepH)).length+'일 기록)</li>':'<li>수면 기록이 없어요. 체크 탭에서 잔 시간을 넣어 보세요</li>')
+      +(fo!=null?'<li>낮 집중 평균 '+fo.toFixed(1)+' / 5 ('+foN+'일 기록)</li>':'')+'</ul>';
+  return '<div class="card week"><div class="hd"><span class="eyebrow">이번 주 회고</span><span class="note">'+esc(dateLabel(mon))+'부터 · '+cur.length+'일</span></div><div class="wk4">'
     +cell("평균 기상",fmtW(wk(cur)),was(fmtW(wk(prev))))+cell("평균 수면",h1(sl(cur)),was(h1(sl(prev))))
-    +cell("평균 달성률",p1(pc(cur)),was(p1(pc(prev))))+cell("달성한 날",ps(cur)+" / "+cur.length+"일",was(ps(prev)+" / "+prev.length+"일"))+'</div>'
+    +cell("평균 달성률",p1(pc(cur)),was(p1(pc(prev))))+cell("달성한 날",ps(cur)+" / "+cur.length+"일",was(ps(prev)+" / "+prev.length+"일"))+'</div>'+strip+retro
     +(cur.length>=3&&kept&&kept.n<cur.length?'<p class="note">가장 덜 지킨 항목 <b>'+esc(kept.t)+'</b> · '+cur.length+'일 중 '+kept.n+'일</p>':'')+'</div>';
 }
 function renderLog(){
   const all=Object.values(S.days).filter(x=>x&&x.wake).sort((a,b)=>b.date.localeCompare(a.date));
   if(!all.length){$("#logBody").innerHTML='<div class="empty"><p>'+(S.loaded?"아직 기록이 없어요. 체크 탭에서 오늘 항목을 체크하면 날짜별로 여기에 쌓입니다.":"기록을 불러오는 중이에요…")+'</p>'+(S.loaded?'<button class="btn" type="button" data-go="check">체크하러 가기</button>':'')+'</div>';return}
   const cnt={};all.forEach(x=>{const k=wband(x.wake);cnt[k]=(cnt[k]||0)+1});const ks=Object.keys(cnt).map(Number).sort((a,b)=>cnt[b]-cnt[a]||a-b);const kA=ks.includes(7)&&ks.includes(8)&&cnt[7]+cnt[8]>=(cnt[ks[0]]||0)?7:ks[0],kB=kA===7&&ks.includes(8)?8:(ks.find(k=>k!==kA)??(kA===8?7:8));const [A,B]=[kA,kB].sort((a,b)=>a-b),L7=bandL(A),L8=bandL(B),other=all.length-(cnt[A]||0)-(cnt[B]||0);const g={7:all.filter(x=>wband(x.wake)===A),8:all.filter(x=>wband(x.wake)===B)};
-  const avg=a=>a.length?Math.round(a.reduce((s,x)=>s+pctOf(x),0)/a.length*100):null;
+  const rec=all.filter(hasRec),avg=a=>{a=a.filter(hasRec);return a.length?Math.round(a.reduce((s,x)=>s+pctOf(x),0)/a.length*100):null};
   const rate=(a,id)=>a.length?Math.round(a.filter(x=>x.checks&&x.checks[id]).length/a.length*100):null;
   const pair=(cls,lbl,v)=>'<div class="pair '+cls+'"><span>'+lbl+'</span><div class="bar"><i style="width:'+(v||0)+'%"></i></div><span class="pv">'+(v==null?"–":v+"%")+'</span></div>';
   const bar=(cls,lbl,w,txt)=>'<div class="pair '+cls+'"><span>'+lbl+'</span><div class="bar"><i style="width:'+(w==null?0:Math.max(0,Math.min(100,w)))+'%"></i></div><span class="pv">'+(txt==null?"–":txt)+'</span></div>';
@@ -2192,14 +2227,17 @@ function renderLog(){
   const mean=(a,f)=>{const v=a.map(x=>x[f]).filter(num).map(Number);return v.length?v.reduce((s,x)=>s+x,0)/v.length:null};
   const yes=(a,f)=>{const v=a.filter(x=>typeof x[f]==="boolean");return v.length?Math.round(v.filter(x=>x[f]).length/v.length*100):null};
   const st=streakOf();
-  const dots=[];for(let i=13;i>=0;i--){const k=shift(S.today,-i),x=S.days[k],p=x&&x.wake?pctOf(x):0;
-    dots.push('<i class="'+(passes(x)?"on":p>0?"p":"")+(i===0?" today":"")+'" title="'+esc(dateLabel(k))+" "+Math.round(p*100)+'%"></i>')}
+  const dots=[];for(let i=13;i>=0;i--){const k=shift(S.today,-i),x=S.days[k],r=hasRec(x),p=r?pctOf(x):0;
+    dots.push('<i class="'+(!r?"n":passes(x)?"on":p>0?"p":"miss")+(i===0?" today":"")+'" title="'+esc(dateLabel(k))+" "+(r?Math.round(p*100)+"%":"기록 없음")+'"></i>')}
   let h=weekHtml()+'<div class="card strk"><div class="hd"><span class="eyebrow">연속 달성</span><span class="note">최고 '+st.best+'일</span></div>'
     +'<span class="big">'+st.cur+'<small>일</small></span>'
-    +'<div class="dots">'+dots.join("")+'</div><div class="dots-lb"><span>2주 전</span><span>'+CHECKS.length+'개 중 '+GOAL+'개 이상이면 달성</span><span>오늘</span></div></div>';
-  h+='<div class="stat"><div class="card"><span class="eyebrow">전체 평균</span><span class="big">'+avg(all)+'%</span><span class="note">'+all.length+'일 기록</span></div>'
-    +'<div class="card"><span class="eyebrow">최근 7일</span><span class="big">'+avg(all.slice(0,7))+'%</span><span class="note">기록한 날 기준</span></div></div>';
-  h+='<div class="card cmp"><div class="head"><span class="eyebrow">기상 타입별 달성률</span></div>'
+    +'<div class="dots">'+dots.join("")+'</div><div class="dots-lb"><span>2주 전</span><span>'+CHECKS.length+'개 중 '+GOAL+'개 이상이면 달성</span><span>오늘</span></div>'
+    +'<div class="dots-key"><span><i class="on"></i>달성</span><span><i class="p"></i>일부</span><span><i class="miss"></i>못 지킴</span><span><i class="n"></i>기록 없음</span></div></div>';
+  h+='<div class="stat"><div class="card"><span class="eyebrow">전체 평균</span><span class="big">'+(avg(all)==null?"–":avg(all)+"%")+'</span><span class="note">'+(rec.length?rec.length+"일 기록":"기록한 날이 아직 없어요")+'</span></div>'
+    +'<div class="card"><span class="eyebrow">최근 7일</span><span class="big">'+(avg(rec.slice(0,7))==null?"–":avg(rec.slice(0,7))+"%")+'</span><span class="note">기록한 날 기준 · 기록 없는 날은 빼요</span></div></div>';
+  const nA=g[7].filter(hasRec).length,nB=g[8].filter(hasRec).length,enough=nA>=2&&nB>=2;
+  h+=!enough?'<div class="empty"><p><b>기상 시각별 비교는 기록이 더 필요해요</b><br>'+L7+'와 '+L8+'를 비교하려면 각각 2일 이상 기록이 있어야 해요 (지금 '+L7+' '+nA+'일 · '+L8+' '+nB+'일)</p></div>'
+    :'<div class="card cmp"><div class="head"><span class="eyebrow">기상 타입별 달성률</span></div>'
     +pair("w7",L7,avg(g[7]))+pair("w8",L8,avg(g[8]))
     +'<p class="note">'+L7+' '+g[7].length+'일 · '+L8+' '+g[8].length+'일 (오늘 포함)'+(other?' · 그 외 시각 '+other+'일':'')+'<br>기상 시각은 가까운 정시로 묶었어요 (예: 7:09 → 7시, 7:30 → 8시).</p></div>';
   const cond=[["아침 개운함","fresh"],["낮 집중과 에너지","focus"]].map(([t,f])=>{const a=mean(g[7],f),b=mean(g[8],f);
@@ -2209,10 +2247,10 @@ function renderLog(){
   const rated=all.filter(x=>num(x.fresh)||num(x.focus)||typeof x.slump==="boolean"||num(x.sleepH)).length;
   h+='<div class="card cmp"><div class="head"><span class="eyebrow">기상 타입별 컨디션</span><div class="legend"><span><i></i>'+L7+'</span><span><i class="w8"></i>'+L8+'</span></div></div>'
     +(rated?cond+'<p class="note">체크 탭 ‘기록해 볼 것’을 입력한 '+rated+'일 기준</p>':'<p class="note">체크 탭의 ‘기록해 볼 것’에 개운함·집중·졸림·수면을 남기면 두 기상 시각을 컨디션으로 비교해 보여 드려요.</p>')+'</div>';
-  h+='<div class="card cmp"><div class="head"><span class="eyebrow">항목별 비교</span><div class="legend"><span><i></i>'+L7+'</span><span><i class="w8"></i>'+L8+'</span></div></div>'
+  if(enough)h+='<div class="card cmp"><div class="head"><span class="eyebrow">항목별 비교</span><div class="legend"><span><i></i>'+L7+'</span><span><i class="w8"></i>'+L8+'</span></div></div>'
     +CHECKS.map(c=>'<div class="r"><div class="lb">'+c.t+'</div>'+pair("w7",L7,rate(g[7],c.id))+pair("w8",L8,rate(g[8],c.id))+'</div>').join("")+'</div>';
   h+='<div class="head"><span class="eyebrow">날짜별 · 누르면 고칠 수 있어요</span></div><ul class="days">'
-    +all.slice(0,90).map(x=>{const p=Math.round(pctOf(x)*100);return '<li><button type="button" data-date="'+esc(x.date)+'"><span>'+esc(dateLabel(x.date))+(x.date===S.today?' · 오늘':'')+'</span><span class="wk">'+fmtW(+x.wake)+'</span><span class="pc">'+p+'%</span></button></li>'}).join("")+'</ul>';
+    +all.slice(0,90).map(x=>{const r=hasRec(x),p=Math.round(pctOf(x)*100);return '<li><button type="button" data-date="'+esc(x.date)+'"><span>'+esc(dateLabel(x.date))+(x.date===S.today?' · 오늘':'')+'</span><span class="wk">'+fmtW(+x.wake)+'</span><span class="pc'+(r?'':' none')+'">'+(r?p+'%':'기록 없음')+'</span></button></li>'}).join("")+'</ul>';
   $("#logBody").innerHTML=h;
 }
 $("#logBody").addEventListener("click",e=>{
@@ -2551,11 +2589,13 @@ function nextHint(id){
 
 /* ---------- rest timer (floating bar) ---------- */
 let rest=null;
-function startRest(sec,next){rest={end:Date.now()+sec*1000,next:next||""};$("#restBar").hidden=false;restTick()}
-function stopRest(){rest=null;$("#restBar").hidden=true}
+function startRest(sec,next){rest={end:Date.now()+sec*1000,next:next||""};restTick()}
+function stopRest(){rest=null;$("#restBar").hidden=true;const rb=$("#restBig");if(rb)rb.textContent="–"}
 function restTick(){
   if(!rest)return;const left=(rest.end-Date.now())/1000;
+  $("#restBar").hidden=S.tab==="wtoday"&&!!$("#restBig");   // 운동 화면에 휴식 카드가 있으면 떠 있는 막대는 숨긴다
   $("#restLeft").textContent=mmss(left);$("#restNext").textContent=rest.next;
+  const rb=$("#restBig");if(rb)rb.textContent=mmss(left);
   if(left<=0){stopRest();beep();try{navigator.vibrate&&navigator.vibrate([200,100,200])}catch(e){}toast("휴식 끝. 다음 세트를 시작하세요.")}
 }
 $("#restPlus").addEventListener("click",()=>{if(rest){rest.end+=30000;restTick()}});
@@ -2632,15 +2672,36 @@ function renderWoToday(){
 }
 $("#woBody").addEventListener("toggle",e=>{if(!e.target.matches||!e.target.matches(".wodetail"))return;const o=e.target.open;LS.set("axis.wodetail",o?"1":"0");$("#woBody").classList.toggle("wo-lite",!o)},true);
 function checklist(id,items,state){return '<ul class="wochk">'+items.map((t,i)=>'<li><button type="button" class="ck mini" role="checkbox" data-wchk="'+id+'" data-i="'+i+'" aria-checked="'+!!(state&&state[i])+'"><span class="box"><svg aria-hidden="true"><use href="#ic-check"/></svg></span><span class="tx">'+esc(t)+'</span></button></li>').join("")+'</ul>'}
+/* 진행 중에는 지금 하는 종목 하나만 크게 보여 준다(나머지는 목록). '전체 보기'로 예전처럼 모든 종목을 펼칠 수 있고, 선택은 이 기기에 기억한다 */
+const focusOn=()=>LS.get("axis.wofocus")!=="0";
+let wFocus=null;
+function focusId(w,P,list){
+  if(wFocus&&list.includes(wFocus))return wFocus;
+  const ex=w.ex||{};for(const id of list)if((ex[id]||[]).filter(s=>s&&s.done).length<setN(w,P,id))return id;
+  return list[list.length-1];
+}
 function liftHtml(w,P){
-  const started=!!w.start,ex=w.ex||{},list=sessList(w,P);
+  const started=!!w.start,ex=w.ex||{},list=sessList(w,P),foc=started&&!w.end&&focusOn()&&list.length>0;
   let done=0,total=0,vol=0;list.forEach(id=>{total+=setN(w,P,id);(ex[id]||[]).forEach(s=>{if(s&&s.done)done++;if(work(s))vol+=(+s.w||0)*(+s.r||0)})});
   let h=(w.end?summaryHtml(w,P,woDay()):"")+'<div class="card wohead"><div class="row"><span class="big num">'+done+'<small> / '+total+' 세트'+(vol?' · '+Math.round(vol).toLocaleString()+'kg':'')+'</small></span>'
     +(w.end?'<span class="tag">완료 · '+Math.round((w.end-w.start)/60000)+'분</span>':started?'<span class="tag">진행 '+Math.round((Date.now()-w.start)/60000)+'분</span>':'')+'</div>'
     +'<div class="bar"><i style="width:'+(total?done/total*100:0)+'%"></i></div>'
-    +(started?'':'<button class="btn primary block" type="button" data-wact="start">운동 시작</button>')+'</div>';
+    +(started?'':(list.some(id=>lastSets(id))?'<button class="btn block" type="button" data-wact="loadlast">지난 기록 불러오기</button>':'')+'<button class="btn primary block" type="button" data-wact="start">운동 시작</button>')+'</div>';
+  if(foc){
+    const cur=focusId(w,P,list),at=list.indexOf(cur),left=rest?(rest.end-Date.now())/1000:0;
+    h+='<details class="acc"'+(done?'':' open')+'><summary>워밍업 5~7분</summary><div class="in">'+checklist("warm",WARM,w.warm)+'</div></details>';
+    h+=exCard(w,P,cur,at,list.length);
+    h+='<div class="card restcard"><span class="lbl">휴식</span><b id="restBig" class="clock num">'+(rest?mmss(left):"–")+'</b>'
+      +'<span class="s">'+(rest?esc(rest.next):"세트를 끝내면 자동으로 시작돼요")+'</span>'
+      +'<div class="datarow"><button class="btn block" type="button" data-wact="restplus">+30초</button><button class="btn block" type="button" data-wact="restskip">건너뛰기</button></div></div>';
+    h+='<div class="card"><span class="lbl">종목 '+(at+1)+' / '+list.length+'</span><ul class="exlist">'+list.map((id,n)=>{const t=setN(w,P,id),dn=(ex[id]||[]).filter(x=>x&&x.done).length;
+      return '<li><button type="button" class="'+(id===cur?"on":"")+(dn>=t?" fin":"")+'" data-focus="'+id+'"><span class="num idx">'+(n+1)+'</span><span class="nm">'+esc(exDef(id).n)+'</span><small>'+dn+' / '+t+'세트</small></button></li>'}).join("")+'</ul>'
+      +'<button class="link" type="button" data-wact="focusoff">모든 종목 펼쳐 보기</button></div>';
+  }else{
   h+='<div class="card"><span class="lbl">워밍업 5~7분</span>'+checklist("warm",WARM,w.warm)+'</div>';
   list.forEach((id,n)=>h+=exCard(w,P,id,n,list.length));
+  if(started&&!w.end&&list.length)h+='<button class="link" type="button" data-wact="focuson">지금 종목만 보기</button>';
+  }
   if(!list.length)h+='<div class="empty"><p>아직 종목이 없어요. 아래에서 추가하세요.</p></div>';
   h+='<button class="btn block" type="button" data-wact="addex">+ 종목 추가</button>';
   h+='<div class="card"><span class="lbl">마무리</span>'+checklist("cool",COOL,w.cool)+'</div>';
@@ -2721,9 +2782,10 @@ function exCard(w,P,id,n,len){
   let h='<div class="card exc"><div class="exh"><span class="num idx">'+(n+1)+'</span><div><b>'+esc(E.n)+'</b><small>'+(cardio?N+'회 × '+esc(T.r)+'분':N+'세트 × '+esc(T.r)+' · 휴식 '+mmss(T.rest))+(E.p?' · '+esc(E.p):'')+(E.eq?' · '+esc(E.eq):'')+(ref?'<span class="e1rm"> · 1RM 약 '+Math.round(ref)+'kg</span>':'')+'</small></div></div>'
     +(E.c||E.alt?'<p class="cue">'+esc(E.c)+(E.alt?' <span>대체: '+esc(E.alt)+'</span>':'')+'</p>':'')
     +(hint?'<p class="hint">'+esc(hint)+'</p>':'')
+    +(L&&!cardio&&L.sets.length?'<p class="last">지난번 '+esc(dateLabel(L.date))+' · '+L.sets.map(x=>(+x.w?x.w+"kg×":"")+(+x.r||0)).join(" · ")+'</p>':'')
     +(()=>{const c=compareEx(id,sets,woDay());if(!c||c.v==="first"&&!c.pr.length)return "";
       return '<p class="ovlline"><span class="ovl '+OVL[c.v][1]+'">지난번보다 '+OVL[c.v][0]+'</span>'+(c.pr.length?'<span class="prtag">신기록 · '+esc(c.pr.join(" · "))+'</span>':'')+'</p>'})()
-    +'<div class="exbar">'+acts.map(([a,t])=>'<button type="button" class="chip" data-exact="'+a+'" data-id="'+id+'">'+t+'</button>').join("")+'</div>'
+    +'<details class="exmore"><summary>더보기</summary><div class="exbar">'+acts.map(([a,t])=>'<button type="button" class="chip" data-exact="'+a+'" data-id="'+id+'">'+t+'</button>').join("")+'</div></details>'
     +(cardio?'<div class="sets cardio"><span class="sh">회</span><span class="sh">분</span><span class="sh">km</span><span class="sh">심박</span><span></span>'
       :'<div class="sets"><span class="sh">세트</span><span class="sh">kg</span><span class="sh">회</span><span class="sh rir">RIR</span><span></span>');
   let cur=-1;for(let i=0;i<N;i++)if(!(sets[i]&&sets[i].done)){cur=i;break}
@@ -2803,11 +2865,19 @@ $("#woBody").addEventListener("click",e=>{
       else{if(!num(v.w)&&g.w)v.w=g.w;if(!num(v.r)&&g.r)v.r=g.r}
       v.done=!v.done;nowDone=v.done;kind=v.k||""});
     if(nowDone)prAlert(id,i);
+    {const w2=woOf(day(woDay()));if(wFocus===id&&((w2.ex||{})[id]||[]).filter(x=>x&&x.done).length>=setN(w2,P,id))wFocus=null}
     if(nowDone&&!isCardio(id)){const w=woOf(day(woDay())),list=sessList(w,P),N=setN(w,P,id),last=i===N-1,ni=list.indexOf(id);
       startRest(kind==="w"?60:T.rest,last?(list[ni+1]?"다음: "+exDef(list[ni+1]).n:"다음: 마무리"):"다음: "+(i+2)+"세트")}
     renderWoToday();return;
   }
+  const fc=e.target.closest("[data-focus]");if(fc){wFocus=fc.dataset.focus;renderWoToday();return}
   const a=e.target.closest("[data-wact]");if(!a)return;const act=a.dataset.wact;
+  if(act==="restplus"){if(rest){rest.end+=30000;restTick()}return}
+  if(act==="restskip"){stopRest();return}
+  if(act==="focusoff"||act==="focuson"){LS.set("axis.wofocus",act==="focuson"?"1":"0");wFocus=null;renderWoToday();return}
+  if(act==="loadlast"){let n=0;const P=curP();woPatch(w=>{w.ex=w.ex||{};w.n=w.n||{};sessList(w,P).forEach(id=>{const L=lastSets(id);if(!L||(w.ex[id]||[]).some(s=>s&&s.done))return;
+      w.ex[id]=L.all.map(x=>{const o={};["w","r","k","min","km","hr"].forEach(f=>{if(x[f]!=null&&x[f]!=="")o[f]=x[f]});return o});w.n[id]=L.all.length;n++})});
+    toast(n?n+"종목의 지난 기록을 불러왔어요. 무게와 횟수를 확인하고 시작하세요.":"불러올 지난 기록이 없어요.");renderWoToday();return}
   if(act==="addex"){openPicker({mode:"add"});return}
   if(act==="start"){woPatch(w=>{w.start=w.start||Date.now();delete w.end});toast("시작했어요. 워밍업부터 체크해 보세요.")}
   if(act==="finish"){
@@ -3418,7 +3488,11 @@ function renderWoDiet(){
   let h='<div class="card"><span class="lbl">하루 합계</span>'+mbar("칼로리",kcal,kT,"kcal")+mbar("단백질",P,pT,"g")+mbar("탄수화물",C,null,"g")+mbar("지방",F,null,"g")
     +(!pT||!kT?'<p class="s">'+(!pT?'운동 가이드 > 내 정보에 체중을 넣으면 단백질 목표(체중×1.6g)를 보여 드려요. ':'')+(!kT?'칼로리 목표도 넣을 수 있어요.':'')+'</p>':'')+'</div>';
   if(mt&&mt.m1!=null){const near=meals.filter(m=>{const t=hmMin(m.at);return t!=null&&Math.abs((t<240?t+1440:t)-mt.m1)<=90}).reduce((s,m)=>s+(+m.p||0),0);
-    h+='<div class="card"><span class="lbl">루틴과 함께 보기</span><p class="s">첫 식사 '+clk(mt.m1)+(mt.m2!=null?' · 저녁 '+clk(mt.m2)+' (취침 3시간 전까지 끝내기)':'')+'</p>'+mbar("첫 식사 단백질",near,40,"g")+'</div>'}
+    h+='<div class="card"><span class="lbl">루틴과 함께 보기</span><p class="s">첫 식사 '+clk(mt.m1)+(mt.m2!=null?' · 저녁 '+clk(mt.m2)+' (취침 4시간 전까지 끝내기)':'')+'</p>'+mbar("첫 식사 단백질",near,40,"g")+'</div>'}
+  const pm=(S.days[shift(D,-1)]||{}).meals||[],favs=prefs().favs||[];
+  h+='<div class="card"><span class="lbl">빠르게 넣기</span><div class="foods"><button type="button" class="chip" data-dact="copy"'+(pm.length?'':' disabled')+'>어제 식사 복사'+(pm.length?' ('+pm.length+'개)':'')+'</button></div>'
+    +(favs.length?'<span class="s">★ 즐겨찾는 식사 (누르면 추가)</span><div class="foods">'+favs.map((f,i)=>'<button type="button" class="chip" data-fav="'+i+'">'+esc(f.n)+'</button>').join("")+'</div>'
+      :'<p class="s">기록한 식사 옆의 ☆를 누르면 여기에 즐겨찾기로 담겨요.</p>')+'</div>';
   const t0=dietAt&&dietAt[0]===D?dietAt[1]:isT?nowHM():(mt&&mt.m1!=null?clk(mt.m1):"12:00");
   h+='<div class="card dietf"><span class="lbl">추가하기</span>'
     +'<div class="drow"><input id="mAt" type="time" value="'+t0+'" aria-label="먹은 시각"><input id="mN" maxlength="30" placeholder="음식 이름" aria-label="음식 이름"></div>'
@@ -3427,7 +3501,7 @@ function renderWoDiet(){
   const recent=[],seen=new Set();for(let i=0;i<30&&recent.length<8;i++){((S.days[shift(S.today,-i)]||{}).meals||[]).forEach(m=>{if(recent.length<8&&m.n&&!seen.has(m.n)&&!FOODS.some(f=>f[0]===m.n)){seen.add(m.n);recent.push([m.n,+m.kcal||0,+m.p||0,+m.c||0,+m.f||0])}})}
   h+=(recent.length?'<span class="s">최근 먹은 것</span><div class="foods">'+recent.map((f,i)=>'<button type="button" class="chip" data-food="r'+i+'">'+esc(f[0])+'</button>').join("")+'</div>':'')
     +'<span class="s">자주 먹는 음식 (대략값, 누르면 바로 추가)</span><div class="foods">'+FOODS.map((f,i)=>'<button type="button" class="chip" data-food="'+i+'">'+esc(f[0])+'</button>').join("")+'</div></div>';
-  h+=meals.length?'<ul class="days meals">'+meals.map(m=>'<li><div class="mrow"><span class="num">'+esc(m.at||"–")+'</span><span><b>'+esc(m.n)+'</b><small>'+(+m.kcal||0)+'kcal · 단 '+(+m.p||0)+' · 탄 '+(+m.c||0)+' · 지 '+(+m.f||0)+'</small></span><button type="button" class="chip" data-mdel="'+esc(m.id)+'" aria-label="'+esc(m.n)+' 지우기">✕</button></div></li>').join("")+'</ul>'
+  h+=meals.length?'<ul class="days meals">'+meals.map(m=>'<li><div class="mrow"><span class="num">'+esc(m.at||"–")+'</span><span><b>'+esc(m.n)+'</b><small>'+(+m.kcal||0)+'kcal · 단 '+(+m.p||0)+' · 탄 '+(+m.c||0)+' · 지 '+(+m.f||0)+'</small></span><span class="macts"><button type="button" class="chip" data-mfav="'+esc(m.id)+'" aria-pressed="'+favs.some(f=>f.n===m.n)+'" aria-label="'+esc(m.n)+' 즐겨찾기">'+(favs.some(f=>f.n===m.n)?"★":"☆")+'</button><button type="button" class="chip" data-mdel="'+esc(m.id)+'" aria-label="'+esc(m.n)+' 지우기">✕</button></span></div></li>').join("")+'</ul>'
     :'<div class="empty"><p>'+(isT?"오늘":"이날")+' 기록한 식사가 없어요.</p></div>';
   $("#dietBody").innerHTML=h;
   dietFoods=recent;
@@ -3436,6 +3510,14 @@ let dietFoods=[],dietAt=null;
 function addMeal(m){dietAt=[dietDay(),m.at];patch(dietDay(),d=>{d.meals=d.meals||[];d.meals.push(Object.assign({id:Date.now().toString(36)},m))});renderWoDiet()}
 $("#dietDate").addEventListener("click",e=>{const b=e.target.closest("[data-dday]");if(!b)return;const n=shift(dietDay(),+b.dataset.dday);dDay=n>=S.today?null:n;renderWoDiet()});
 $("#dietBody").addEventListener("click",e=>{
+  if(e.target.closest('[data-dact="copy"]')){const D=dietDay(),pm=(S.days[shift(D,-1)]||{}).meals||[];if(!pm.length)return;
+    if(((S.days[D]||{}).meals||[]).length&&!confirm("이미 기록한 식사가 있어요. 어제 식사를 추가로 넣을까요?"))return;
+    patch(D,d=>{d.meals=d.meals||[];pm.forEach((m,i)=>d.meals.push({id:Date.now().toString(36)+i,at:m.at,n:m.n,kcal:m.kcal,p:m.p,c:m.c,f:m.f}))});renderWoDiet();toast("어제 식사 "+pm.length+"개를 넣었어요.");return}
+  const fv=e.target.closest("[data-fav]");if(fv){const F=(prefs().favs||[])[+fv.dataset.fav];if(!F)return;addMeal({at:$("#mAt").value||nowHM(),n:F.n,kcal:F.kcal,p:F.p,c:F.c,f:F.f});toast(F.n+" 추가");return}
+  const mf=e.target.closest("[data-mfav]");if(mf){const m=((S.days[dietDay()]||{}).meals||[]).find(x=>x.id===mf.dataset.mfav);if(!m)return;
+    const np=JSON.parse(JSON.stringify(prefs())),a=np.favs||[],i=a.findIndex(x=>x.n===m.n);
+    if(i>=0)a.splice(i,1);else{if(a.length>=12){toast("즐겨찾기는 12개까지 담을 수 있어요.");return}a.push({n:m.n,kcal:+m.kcal||0,p:+m.p||0,c:+m.c||0,f:+m.f||0})}
+    np.favs=a;savePrefs(np);renderWoDiet();return}
   const f=e.target.closest("[data-food]");if(f){const v=f.dataset.food,F=v[0]==="r"?dietFoods[+v.slice(1)]:FOODS[+v];if(!F)return;
     addMeal({at:$("#mAt").value||nowHM(),n:F[0],kcal:F[1],p:F[2],c:F[3],f:F[4]});toast(F[0]+" 추가");return}
   const d=e.target.closest("[data-mdel]");if(d){const id=d.dataset.mdel;patch(dietDay(),x=>{x.meals=(x.meals||[]).filter(m=>m.id!==id)});renderWoDiet();return}

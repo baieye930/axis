@@ -11,7 +11,7 @@ reset role;
 
 -- 운영 설정 채우기(합성 값)
 insert into axis_an.config(key,value) values
- ('collection_enabled','true'),('operator_name','TEST'),('contact','test@example.invalid'),('policy_version','v1'),
+ ('collection_enabled','true'),('operator_name','TEST'),('processing_region','TEST-REGION'),('processors','TEST-PROCESSOR'),('contact','test@example.invalid'),('policy_version','v1'),
  ('retention_events_days','365'),('retention_snapshots_days','365'),('retention_consent_days','1095'),('retention_audit_days','730'),('pseudonym_salt','salt');
 
 -- 1. 인증: 잘못된 증명, 타인 키, Google uid 불일치

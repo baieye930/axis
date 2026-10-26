@@ -29,6 +29,8 @@ as $$
      and coalesce(axis_an.cfg('operator_name'), '') <> ''
      and coalesce(axis_an.cfg('contact'), '') <> ''
      and coalesce(axis_an.cfg('policy_version'), '') <> ''
+     and coalesce(axis_an.cfg('processing_region'), '') <> ''
+     and coalesce(axis_an.cfg('processors'), '') <> ''
      and coalesce(axis_an.cfg('retention_events_days'), '') <> ''
      and coalesce(axis_an.cfg('retention_snapshots_days'), '') <> ''
      and coalesce(axis_an.cfg('retention_consent_days'), '') <> ''

@@ -267,12 +267,14 @@ p{margin:0}
 .tonecard{display:grid;gap:.5rem}
 .tonecard .tp{display:grid;gap:.1rem;padding:.65rem .85rem;border-radius:14px;background:var(--surface2);font-size:.9rem}
 .tonecard .tp small{font-size:.7rem;color:var(--muted)}.tonecard .tp b{font-weight:600}
-.tlhead{display:grid;gap:.55rem;margin:1.2rem 0 .7rem}
-.tlnav{display:flex;align-items:center;justify-content:space-between;gap:.6rem}
+.tlhead{display:grid;gap:.6rem;margin:1.2rem 0 .8rem}
+.tlnav{display:flex;align-items:center;justify-content:space-between;gap:.6rem;padding:1.2rem .7rem 1.1rem;border-radius:28px;background:linear-gradient(180deg,var(--surface),var(--surface2));box-shadow:var(--shadow)}
 .tlnav .chip{min-height:3rem;min-width:3rem;justify-content:center;font-size:1.2rem;flex:none}
-.tlttl{flex:1;min-width:0;text-align:center}.tlttl b{font-family:var(--f-display);font-size:1.7rem;font-weight:600;line-height:1.25;letter-spacing:-.01em}
-.tlbar{display:flex;align-items:center;justify-content:space-between;gap:.6rem;padding:0 .2rem}
-.tlbar small{font-size:.88rem;color:var(--muted);min-width:0}
+.tlttl{flex:1;min-width:0;display:grid;gap:.25rem;justify-items:center;text-align:center}
+.tlttl .rel{font-size:.8rem;font-weight:700;background:var(--soft);color:var(--accent);padding:.1rem .8rem;border-radius:99px}
+.tlttl b{font-family:var(--f-display);font-size:2.1rem;font-weight:600;line-height:1.1;letter-spacing:-.01em}
+.tlttl .dw{font-size:1rem;color:var(--fg)}.tlttl .st{font-size:.82rem;color:var(--muted)}
+.tlbar{display:flex;align-items:center;justify-content:flex-end;gap:.6rem;padding:0 .2rem}
 .tlact{display:flex;align-items:center;gap:.8rem;flex:none}.tlact .btn{min-height:2.7rem;padding:.3rem 1.1rem}
 #tlStatus:empty,#tlMemo:empty,#tlConflict:empty,.tlfold:has(#tlPast[hidden]){display:none}
 .planst{display:grid;gap:.5rem;padding:.8rem 1rem;border-radius:var(--r);background:var(--surface);box-shadow:var(--shadow);margin-bottom:.6rem}
@@ -944,10 +946,10 @@ h1,h2,h3{font-weight:300;letter-spacing:-.02em;line-height:1.2}
     <div class="tlhead">
       <div class="tlnav">
         <button id="tlPrev" class="chip" type="button" aria-label="이전 날짜">〈</button>
-        <div class="tlttl" aria-live="polite"><b id="tlTitle"></b></div>
+        <div class="tlttl" aria-live="polite"><span id="tlRel" class="rel"></span><b id="tlTitle"></b><span id="tlDow" class="dw"></span><small id="tlSub" class="st"></small></div>
         <button id="tlNext" class="chip" type="button" aria-label="다음 날짜">〉</button>
       </div>
-      <div class="tlbar"><small id="tlSub"></small>
+      <div class="tlbar">
         <div class="tlact"><button id="tlToday" class="link strong" type="button" hidden>오늘로</button><button id="tlAdj" class="btn" type="button" aria-haspopup="dialog">일정 조정</button></div>
       </div>
     </div>
@@ -2057,7 +2059,9 @@ function overlapCount(items){
 }
 function renderTl(vd,kind,d,tItems,tW){
   const m=+vd.slice(5,7),dd=+vd.slice(8),rel=dayRel(vd),vdD=S.days[vd]||{};
-  $("#tlTitle").textContent=(rel?rel+" · "+m+"월 "+dd+"일":m+"월 "+dd+"일 ("+DOW[parseYmd(vd).getDay()]+")");
+  const nd=Math.round((parseYmd(vd)-parseYmd(S.today))/864e5);
+  $("#tlRel").textContent=rel||(nd>0?nd+"일 뒤":-nd+"일 전");
+  $("#tlTitle").textContent=m+"월 "+dd+"일";$("#tlDow").textContent=DOW[parseYmd(vd).getDay()]+"요일";
   $("#tlSub").textContent=kind==="today"?"오늘 · 지금 실행 중":kind==="future"?"계획 편집 · "+PLAN_LABEL[planState(vd)]:"지난 날짜 · 기록 확인";
   $("#tlToday").hidden=kind==="today";
   $("#tlAdj").textContent=kind==="past"?"기록 수정":"일정 조정";

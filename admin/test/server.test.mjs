@@ -27,6 +27,13 @@ test('실제 데이터 모드: 인증 미구성이면 조회가 모두 차단된
     assert.equal((await get(18781, '/api/user?u=abc12345&from=2026-10-01&to=2026-10-26')).status, 503);
   } finally { p.kill(); }
 });
+test('정적 화면 파일이 원문 그대로 제공된다(HTML/JS)', async () => {
+  const p = await run(['--synthetic'], {}, 18784);
+  try {
+    assert.match(await (await get(18784, '/')).text(), /^<!doctype html>/i);
+    assert.match(await (await get(18784, '/app.js')).text(), /fetch|async/);
+  } finally { p.kill(); }
+});
 test('합성 모드: 127.0.0.1 에만 바인딩, 읽기 전용, 캐시 금지, 다른 Host 거부', async () => {
   const p = await run(['--synthetic'], {}, 18782);
   try {
